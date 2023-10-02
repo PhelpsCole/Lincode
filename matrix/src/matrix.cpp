@@ -1,12 +1,25 @@
 #include "matrix.h"
 
-using namespace matrix;
+namespace matrix {
 
 Matrix::Matrix(size_t rows, size_t cols)
     : m_rows(rows), m_cols(cols), m_data(rows * cols) {}
 
 Matrix::Matrix(size_t rows, size_t cols, std::vector<char> &vec)
     : m_rows(rows), m_cols(cols), m_data(vec) {}
+
+
+Matrix::Matrix(const std::vector<std::vector<char>> &vec) {
+    m_rows = vec.size();
+    m_cols = vec[0].size();
+    m_data = std::vector<char>();
+    for (size_t i = 0; i < m_rows; ++i) {
+        if (m_cols != vec[i].size()) {
+            throw std::invalid_argument("Incorrect inputted vector set.");
+        }
+        m_data.insert(m_data.end(), vec[i].begin(), vec[i].end() );
+    }
+}
 
 Matrix::Matrix(std::vector<char> &vec, bool isTransposed) {
     m_cols = vec.size();
@@ -107,7 +120,7 @@ Matrix Matrix::operator*(const Matrix &other) const {
 void Matrix::printMatrix() {
     for (size_t i = 0; i < m_rows; ++i) {
         for (size_t j = 0; j < m_cols; ++j) {
-            std::cout << (char) (at(i, j) + '0') << " ";
+            std::cout << static_cast<int>(at(i, j)) << " ";
         }
         std::cout << std::endl;
     }
@@ -175,3 +188,5 @@ void Matrix::concatenateByColumns(const Matrix &second) {
     m_data.insert(m_data.end(), v2.begin(), v2.end());
     m_rows += second.rows();
 }
+
+} // namespace matrix

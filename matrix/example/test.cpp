@@ -16,13 +16,15 @@ int main() {
     matrix::Matrix c = a + b;
     matrix::Matrix d = a * b;
 
+    std::vector<std::vector<char>> code = {{1, 0, 0, 0},
+                                           {1, 1, 0, 1},
+                                           {1, 1, 1, 1},
+                                           {0, 0, 1, 1}};
+    matrix::Matrix mFromCode = matrix::Matrix(code);
+    std::cout << "Matrix from vector of vectors:" << std::endl;
+    mFromCode.printMatrix();
+
     std::cout << "Matrix c (a + b):" << std::endl;
-    /*for (size_t i = 0; i < c.rows(); ++i) {
-        for (size_t j = 0; j < c.cols(); ++j) {
-            std::cout << c.at(i, j) << " ";
-        }
-        std::cout << std::endl;
-    }*/
     c.printMatrix();
 
     std::cout << "Matrix d (a * b):" << std::endl;
@@ -69,20 +71,8 @@ int main() {
     std::cout << std::endl;
 
     matrix::Matrix mat1(vec2); // матрица 1x3
-    /*for (size_t i = 0; i < mat1.rows(); ++i) {
-        for (size_t j = 0; j < mat1.cols(); ++j) {
-            std::cout << mat1.at(i, j) << " ";
-        }
-        std::cout << std::endl;
-    }*/
     mat1.printMatrix();
     matrix::Matrix mat2(vec2, true); // матрица 3x1
-    /*for (size_t i = 0; i < mat2.rows(); ++i) {
-        for (size_t j = 0; j < mat2.cols(); ++j) {
-            std::cout << mat2.at(i, j) << " ";
-        }
-        std::cout << std::endl;
-    }*/
     mat2.printMatrix();
     std::string str = "010100\n101010\n000011";
     matrix::Matrix matrix(str);

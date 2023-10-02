@@ -11,6 +11,7 @@ class Matrix {
 public:
     Matrix(size_t rows, size_t cols);
     Matrix(size_t rows, size_t cols, std::vector<char> &vec);
+    Matrix(const std::vector<std::vector<char>> &vec);
     Matrix(std::vector<char> &vec, bool isTransposed = false);
     Matrix(size_t rows, size_t cols, std::string &str);
     Matrix(std::string &str, char sep='\n');
