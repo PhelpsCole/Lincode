@@ -3,6 +3,6 @@
 
 namespace codes {
 
-matrix::Matrix generatePqsigRMBasis(size_t r, size_t m);
+matrix::Matrix pqsigRMGenerator(size_t r, size_t m);
 
 } // namespace codes

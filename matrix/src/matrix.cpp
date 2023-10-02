@@ -65,6 +65,7 @@ Matrix::Matrix(std::string &str, char sep) {
         throw std::invalid_argument("Bad data in string");
     }
     ++m_rows;
+    m_data.resize(m_cols * m_rows);
 }
 
 char& Matrix::at(size_t row, size_t col) {
@@ -154,6 +155,103 @@ void Matrix::printMatrix() {
     }
 }
 
+void Matrix::T() {
+    std::vector<char> tmp(m_rows * m_cols);
+    for (size_t i = 0; i < m_rows; ++i) {
+        for (size_t j = 0; j < m_cols; ++j) {
+            tmp[j * m_rows + i] = m_data[i * m_cols + j];
+        }
+    }
+    m_data = tmp;
+    size_t temp = m_cols;
+    m_cols = m_rows;
+    m_rows = temp;
+}
+
+// Do Gauss elimination to matrix
+// Returns positions of maximum rank submatrix
+// if len(columns) then apply only on submatrixes on these columns
+// NOTE: Correct only for n х n matrixes
+std::vector<int> Matrix::gaussElimination(bool onlyForward, std::vector<int> columns) {
+    if (m_cols == 0 || m_rows == 0) {
+        return std::vector<int>();
+    }
+    // std::vector<char> copy(m_data);
+    size_t edge = columns.size() ? columns.size() : m_cols;
+    std::vector<int> infoWindow;
+    infoWindow.reserve(edge);
+    for (size_t i = 0, j = 0; i < edge && j < m_rows; ++j) {
+        size_t k = i;
+        size_t c = columns.size() == 0 ? j : columns[j];
+        bool isZero = true;
+        for (; k < m_rows; k++) {
+            if (m_data[k * m_cols + c] == 1) {
+              isZero = false;
+              break;
+            }
+        }
+        if (!isZero) {
+            infoWindow.push_back(c);
+            if (i != k) {
+                for (uint32_t col = 0; col < m_cols; ++col) {
+                    m_data[i * m_cols + col] ^= m_data[k * m_cols + col];
+                }
+            }
+            size_t start = 0;
+            if (onlyForward) {
+                start = i + 1;
+            }
+            for (uint32_t t = start; t < m_rows; ++t) {
+                if (t != i && m_data[t * m_cols + c] == 1) {
+                    for (uint32_t col = 0; col < m_cols; ++col) {
+                        m_data[t * m_cols + col] ^= m_data[i * m_cols + col];
+                    }
+                }
+            }
+            ++i;
+        }
+    }
+    return infoWindow;
+}
+
+size_t Matrix::rank() {
+    Matrix copy(*this);
+    return copy.gaussElimination().size();
+}
+
+void Matrix::orthogonal() {
+    Matrix diag(*this);
+    std::vector<int> iw = diag.gaussElimination();
+    size_t r = m_cols - iw.size();
+    if (r == 0) {
+        m_data = std::vector<char>(m_cols);
+        m_rows = 1;
+    } else {
+        std::map<int, char> tmp;
+        for (size_t i = 0; i < iw.size(); ++i) {
+            tmp[iw[i]] = 0;
+        }
+        m_data = std::vector<char>(m_cols * r);
+        size_t id = 0;
+        size_t p = 0;
+        for (size_t i = 0; i < m_cols; ++i) {
+            if (tmp.find(i) != tmp.end()) { // i belongs to information window
+                for (size_t j = 0, l = 0; l < r; ++j) {
+                    if (tmp.find(j) == tmp.end()) {
+                        m_data[l * m_cols + i] = diag.at(p, j);
+                        ++l;
+                    }
+                }
+                ++p;
+            } else { // i does not belong to information window
+                m_data[id * m_cols + i] = 1;
+                ++id;
+            }
+        }
+        m_rows = r;
+    }
+}
+
 std::vector<char> Matrix::multiplyMatrixByVector(const std::vector<char> &vec) const {
     if (m_cols != vec.size()) {
         throw std::invalid_argument("Matrix and vector dimensions must match for multiplication.");
@@ -213,6 +311,7 @@ void Matrix::concatenateByColumns(const Matrix &second) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
     std::vector<char> v2 = second.matrixToVector();
+    std::cout << std::endl;
     m_data.insert(m_data.end(), v2.begin(), v2.end());
     m_rows += second.rows();
 }
@@ -227,6 +326,14 @@ Matrix generateRandomMatrix(size_t rows, size_t cols) {
         for (size_t j = 0; j < m.cols(); ++j) {
             m.at(i, j) = distrib(gen);
         }
+    }
+    return m;
+}
+
+Matrix generateRandomNonSingular(size_t rows, size_t cols) {
+    Matrix m = generateRandomMatrix(rows, cols);
+    while (m.rank() < std::min(rows, cols)) {
+        m = generateRandomMatrix(rows, cols);
     }
     return m;
 }

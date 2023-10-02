@@ -16,8 +16,11 @@ int main() {
     matrix::Matrix c = a + b;
     matrix::Matrix d = a * b;
 
-    matrix::Matrix randMatr = matrix::generateRandomMatrix(10, 40);
+    matrix::Matrix randMatr = matrix::generateRandomMatrix(5, 5);
     std::cout << "Random matrix:" << std::endl;
+    randMatr.printMatrix();
+    randMatr = matrix::generateRandomNonSingular(5, 5);
+    std::cout << "Random Non-Singular matrix:" << std::endl;
     randMatr.printMatrix();
 
 
@@ -59,6 +62,7 @@ int main() {
     mat.at(1, 1) = 1;
     mat.at(1, 2) = 0;
 
+
     std::vector<char> vec1 = {1, 0};
     std::vector<char> vec2 = {1, 1, 0};
 
@@ -83,8 +87,42 @@ int main() {
     matrix::Matrix matrix(str);
     std::cout << matrix.rows() << " " << matrix.cols() << std::endl;
     matrix.printMatrix();
+    
+    std::cout << "Transpose of this matrix:" << std::endl;
+    matrix.T();
+    std::cout << matrix.rows() << " " << matrix.cols() << std::endl;
+    matrix.printMatrix();
+    matrix.T();
+    std::cout << "Back to this matrix:" << std::endl;
+    matrix.printMatrix();
 
-    std::cout << "Permutation matrix of p perms and n size:" << std::endl;
+    matrix::Matrix copy(matrix);
+
+    matrix.concatenateByColumns(matrix);
+    matrix.printMatrix();
+    std::cout << "Gauss Elimination of this matrix:" << std::endl;
+    std::vector<int> v = copy.gaussElimination();
+    for (size_t i = 0 ; i < v.size(); ++i) {
+        std::cout << v[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "Rank of this matrix: " << matrix.rank() << std::endl;
+    std::cout << "Orthogonal of this matrix: " << std::endl;
+    matrix::Matrix ort(matrix);
+    ort.orthogonal();
+    std::cout << "mat:" << std::endl;
+    matrix.printMatrix();
+    std::cout << "ort:" << std::endl;
+    ort.printMatrix();
+    ort.T();
+    std::cout << "ort^T:" << std::endl;
+    ort.printMatrix();
+    std::cout << "mat * ort^T = 0:" << std::endl;
+    matrix *= ort;
+    matrix.printMatrix();
+
+
+    std::cout << "Permutation matrix of 2 perms and 5 size:" << std::endl;
     matrix::Matrix perm = matrix::generateRandomPermutation(5, 2);
     perm.printMatrix();
 

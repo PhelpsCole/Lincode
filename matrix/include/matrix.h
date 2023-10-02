@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iterator>
 #include <random>
+#include <map>
 
 namespace matrix {
 
@@ -30,11 +31,17 @@ public:
     Matrix operator*(const Matrix &other) const;
     void operator*=(const Matrix &other);
     void printMatrix();
+    size_t rank();
+
+    void T();
+    std::vector<int> gaussElimination(bool = false, std::vector<int> = {});
+    void orthogonal();
+
     void concatenateByRows(const Matrix &);
     void concatenateByColumns(const Matrix &);
-
     std::vector<char> multiplyMatrixByVector(const std::vector<char> &vec) const;
     std::vector<char> multiplyVectorByMatrix(const std::vector<char> &vec) const;
+
 
 
 private:
@@ -44,7 +51,7 @@ private:
 };
 
 Matrix generateRandomMatrix(size_t rows, size_t cols);
-
+Matrix generateRandomNonSingular(size_t rows, size_t cols);
 Matrix generateRandomPermutation(size_t n, size_t p);
 
 } // namespace matrix

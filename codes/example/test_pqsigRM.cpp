@@ -16,7 +16,7 @@ int main() {
         r = 3;
         m = 5;
     }
-    matrix::Matrix matr = codes::generatePqsigRMBasis(r, m);
+    matrix::Matrix matr = codes::pqsigRMGenerator(r, m);
     matr.printMatrix();
 
     return 0;
