@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
+#include <random>
 
 namespace matrix {
 
@@ -25,7 +26,9 @@ public:
     size_t cols() const;
     std::vector<char> matrixToVector() const;
     Matrix operator+(const Matrix &other) const;
+    void operator+=(const Matrix &other);
     Matrix operator*(const Matrix &other) const;
+    void operator*=(const Matrix &other);
     void printMatrix();
     void concatenateByRows(const Matrix &);
     void concatenateByColumns(const Matrix &);
@@ -40,5 +43,8 @@ private:
     std::vector<char> m_data;
 };
 
+Matrix generateRandomMatrix(size_t rows, size_t cols);
+
+Matrix generateRandomPermutation(size_t n, size_t p);
 
 } // namespace matrix

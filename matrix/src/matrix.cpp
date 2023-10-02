@@ -100,6 +100,16 @@ Matrix Matrix::operator+(const Matrix &other) const {
     return result;
 }
 
+void Matrix::operator+=(const Matrix &other) {
+    if (m_rows != other.m_rows || m_cols != other.m_cols) {
+        throw std::invalid_argument("Matrix dimensions must match for addition.");
+    }
+    Matrix result(m_rows, m_cols);
+    for (size_t i = 0; i < m_rows * m_cols; ++i) {
+        m_data[i] ^= other.m_data[i];
+    }
+}
+
 Matrix Matrix::operator*(const Matrix &other) const {
     if (m_cols != other.m_rows) {
         throw std::invalid_argument("Matrix dimensions must match for multiplication.");
@@ -115,6 +125,24 @@ Matrix Matrix::operator*(const Matrix &other) const {
         }
     }
     return result;
+}
+
+void Matrix::operator*=(const Matrix &other) {
+    if (m_cols != other.m_rows) {
+        throw std::invalid_argument("Matrix dimensions must match for multiplication.");
+    }
+    std::vector<char> result(m_rows * other.m_cols);
+    for (size_t i = 0; i < m_rows; ++i) {
+        for (size_t j = 0; j < other.m_cols; ++j) {
+            char sum = 0;
+            for (size_t k = 0; k < m_cols; ++k) {
+                sum ^= at(i, k) & other.at(k, j);
+            }
+            result[i * other.m_cols + j] = sum;
+        }
+    }
+    m_cols = other.m_cols;
+    m_data = result;
 }
 
 void Matrix::printMatrix() {
@@ -187,6 +215,49 @@ void Matrix::concatenateByColumns(const Matrix &second) {
     std::vector<char> v2 = second.matrixToVector();
     m_data.insert(m_data.end(), v2.begin(), v2.end());
     m_rows += second.rows();
+}
+
+Matrix generateRandomMatrix(size_t rows, size_t cols) {
+    Matrix m(rows, cols);
+
+    std::random_device rd;  // a seed source for the random number engine
+    std::mt19937 gen(rd()); // mersenne_twister_engine seeded with rd()
+    std::uniform_int_distribution<char> distrib(0, 1);
+    for (size_t i = 0; i < m.rows(); ++i) {
+        for (size_t j = 0; j < m.cols(); ++j) {
+            m.at(i, j) = distrib(gen);
+        }
+    }
+    return m;
+}
+
+// Ineffective algorithm of finding equiv perms
+Matrix generateRandomPermutation(size_t n, size_t p) {
+    std::vector<std::vector<char>> vv;
+    for (size_t i = 0; i < n; ++i) {
+        std::vector<char> tmp(n);
+        tmp[i] = 1;
+        vv.push_back(tmp);
+    }
+    std::random_device rd;  // a seed source for the random number engine
+    std::mt19937 gen(rd()); // mersenne_twister_engine seeded with rd()
+    std::uniform_int_distribution<char> distrib(0, n - 1);
+    int k, l;
+    std::vector<std::pair<int, int>> dups;
+    for (size_t i = 0; i < p; ++i) {
+
+        do {
+            k = distrib(gen);
+            do {
+                l = distrib(gen);
+            } while (k == l);
+        } while (std::find(dups.begin(), dups.end(), std::make_pair(k, l)) != dups.end());
+        dups.push_back(std::make_pair(k, l));
+        dups.push_back(std::make_pair(l, k));
+
+        iter_swap(vv.begin() + k, vv.begin() + l);
+    }
+    return Matrix(vv);
 }
 
 } // namespace matrix

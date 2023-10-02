@@ -16,12 +16,17 @@ int main() {
     matrix::Matrix c = a + b;
     matrix::Matrix d = a * b;
 
+    matrix::Matrix randMatr = matrix::generateRandomMatrix(10, 40);
+    std::cout << "Random matrix:" << std::endl;
+    randMatr.printMatrix();
+
+
+    std::cout << "Matrix from vector of vectors:" << std::endl;
     std::vector<std::vector<char>> code = {{1, 0, 0, 0},
                                            {1, 1, 0, 1},
                                            {1, 1, 1, 1},
                                            {0, 0, 1, 1}};
     matrix::Matrix mFromCode = matrix::Matrix(code);
-    std::cout << "Matrix from vector of vectors:" << std::endl;
     mFromCode.printMatrix();
 
     std::cout << "Matrix c (a + b):" << std::endl;
@@ -78,6 +83,10 @@ int main() {
     matrix::Matrix matrix(str);
     std::cout << matrix.rows() << " " << matrix.cols() << std::endl;
     matrix.printMatrix();
+
+    std::cout << "Permutation matrix of p perms and n size:" << std::endl;
+    matrix::Matrix perm = matrix::generateRandomPermutation(5, 2);
+    perm.printMatrix();
 
     return 0;
 }
