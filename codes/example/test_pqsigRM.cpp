@@ -18,6 +18,8 @@ int main() {
     }
     matrix::Matrix matr = codes::pqsigRMGenerator(r, m);
     matr.printMatrix();
+    std::cout << "Block view:" << std::endl;
+    matr.printMatrixInBlocks(matr.rows(), matr.cols() / 4);
 
     return 0;
 }

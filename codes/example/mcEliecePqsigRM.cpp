@@ -11,7 +11,9 @@ int main(void) {
     std::cin >> m;
     // r = 3;
     // m = 5;
+    std::cout << (1 << m) << std::endl;
     matrix::Matrix G = codes::pqsigRMGenerator(r, m);
+    std::cout << (1 << m) << std::endl;
     size_t n = G.cols();
     size_t k = G.rows();
 

@@ -13,6 +13,10 @@ public:
     RMCode(size_t, size_t);
     RMCode(size_t, size_t, std::vector<std::vector<char>> &);
 
+    size_t len();
+    size_t size();
+    size_t min_dist();
+
     std::vector<std::vector<char>> &getBasis();
 
     matrix::Matrix toMatrix() const;

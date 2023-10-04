@@ -16,8 +16,19 @@ std::vector<std::vector<char>> &RMCode::getBasis() {
     return basis;
 }
 
+size_t RMCode::len() {
+    return 1 << m;
+}
+size_t RMCode::size() {
+    return basis.size();
+}
+size_t RMCode::min_dist() {
+    return 1 << (m - r);
+}
+
 std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
-    std::vector<char> a(1 << m, 1);
+    size_t code_len = 1 << m;
+    std::vector<char> a(code_len, 1);
 
     std::list<std::pair<int, std::vector<char>>> rows;
     rows.emplace_back(-1, a);
@@ -25,9 +36,9 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
     if (r >= 1) {
         std::vector<std::vector<char>> monoms(m);
         for (unsigned int i = 0; i < m; ++i) {
-            int r = 0;
+            size_t r = 0;
             int b = 0;
-            for (int j = 0; j < (1 << m); ++j) {
+            for (size_t j = 0; j < code_len; ++j) {
                 if ((j >> (m - i - 1)) != r) {
                     ++r;
                     // Only contains 1 and 0
@@ -46,16 +57,16 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
         for (unsigned int i = 1; i < r; ++i) {
             for (auto e = std::next(lStart); e != lEnd; ++e) {
                 for (unsigned int j = e->first + 1; j < m; ++j) {
-                    std::vector<char> current_row(1 << m);
-                    for (int k = 0; k < (1 << m); ++k) {
+                    std::vector<char> current_row(code_len);
+                    for (size_t k = 0; k < code_len; ++k) {
                         current_row[k] = monoms[j][k] & e->second[k];
                     }
                     rows.emplace_back(j, current_row);
                 }
             }
             for (unsigned int j = lEnd->first + 1; j < m; ++j) {
-                std::vector<char> current_row(1 << m);
-                for (int k = 0; k < (1 << m); ++k) {
+                std::vector<char> current_row(code_len);
+                for (size_t k = 0; k < code_len; ++k) {
                     current_row[k] = monoms[j][k] & lEnd->second[k];
                 }
                 rows.emplace_back(j, current_row);

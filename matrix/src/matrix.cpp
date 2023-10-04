@@ -68,27 +68,6 @@ Matrix::Matrix(std::string &str, char sep) {
     m_data.resize(m_cols * m_rows);
 }
 
-char& Matrix::at(size_t row, size_t col) {
-    return m_data[row * m_cols + col];
-}
-
-const char& Matrix::at(size_t row, size_t col) const {
-    return m_data[row * m_cols + col];
-}
-
-size_t Matrix::rows() const {
-    return m_rows;
-}
-
-size_t Matrix::cols() const {
-    return m_cols;
-}
-
-
-std::vector<char> Matrix::matrixToVector() const {
-    return m_data;
-}
-
 
 Matrix Matrix::operator+(const Matrix &other) const {
     if (m_rows != other.m_rows || m_cols != other.m_cols) {
@@ -146,7 +125,55 @@ void Matrix::operator*=(const Matrix &other) {
     m_data = result;
 }
 
-void Matrix::printMatrix() {
+
+char& Matrix::at(size_t row, size_t col) {
+    return m_data[row * m_cols + col];
+}
+
+const char& Matrix::at(size_t row, size_t col) const {
+    return m_data[row * m_cols + col];
+}
+std::vector<char> Matrix::row(size_t i) const {
+    std::vector<char>::const_iterator first = m_data.begin() + i * m_cols;
+    std::vector<char>::const_iterator last = m_data.begin() + i * m_cols + m_cols;
+    return std::vector<char>(first, last);
+}
+std::vector<char> Matrix::col(size_t j) const {
+    std::vector<char> res(m_rows);
+    for (size_t i = 0; i < m_rows; ++i) {
+        res[i] = m_data[i * m_cols + j];
+    }
+    return res;
+}
+
+size_t Matrix::rows() const {
+    return m_rows;
+}
+
+size_t Matrix::cols() const {
+    return m_cols;
+}
+
+
+std::vector<char> Matrix::matrixToVector() const {
+    return m_data;
+}
+
+size_t Matrix::rank() const {
+    Matrix copy(*this);
+    return copy.gaussElimination().size();
+}
+
+std::vector<std::vector<char>> Matrix::toVectors() const {
+    std::vector<std::vector<char>> res(m_rows);
+    for (size_t i = 0; i < m_rows; ++i) {
+        res[i] = row(i);
+    }
+    return res;
+}
+
+
+void Matrix::printMatrix() const {
     for (size_t i = 0; i < m_rows; ++i) {
         for (size_t j = 0; j < m_cols; ++j) {
             std::cout << static_cast<int>(at(i, j)) << " ";
@@ -154,6 +181,24 @@ void Matrix::printMatrix() {
         std::cout << std::endl;
     }
 }
+
+void Matrix::printMatrixInBlocks(size_t row_step, size_t col_step) const {
+    for (size_t i = 0; i < m_rows; ++i) {
+        for (size_t j = 0; j < m_cols; ++j) {
+            std::cout << static_cast<int>(at(i, j));
+            if (j % col_step == col_step - 1) {
+                std::cout << " ";
+            }
+        }
+        if (i % row_step == row_step - 1) {
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+        
+    }
+}
+
+
 
 void Matrix::T() {
     std::vector<char> tmp(m_rows * m_cols);
@@ -168,19 +213,18 @@ void Matrix::T() {
     m_rows = temp;
 }
 
-// Do Gauss elimination to matrix
+// Do Gauss elimination on matrix
 // Returns positions of maximum rank submatrix
-// if len(columns) then apply only on submatrixes on these columns
-// NOTE: Correct only for n х n matrixes
-std::vector<int> Matrix::gaussElimination(bool onlyForward, std::vector<int> columns) {
+// if columns.size() != 0 then apply only on submatrixes on these columns
+// NOTE: Correct output only for n х n matrixes
+std::vector<size_t> Matrix::gaussElimination(bool onlyForward, std::vector<size_t> columns) {
     if (m_cols == 0 || m_rows == 0) {
-        return std::vector<int>();
+        return std::vector<size_t>();
     }
-    // std::vector<char> copy(m_data);
     size_t edge = columns.size() ? columns.size() : m_cols;
-    std::vector<int> infoWindow;
+    std::vector<size_t> infoWindow;
     infoWindow.reserve(edge);
-    for (size_t i = 0, j = 0; i < edge && j < m_rows; ++j) {
+    for (size_t i = 0, j = 0; i < m_rows && j < edge; ++j) {
         size_t k = i;
         size_t c = columns.size() == 0 ? j : columns[j];
         bool isZero = true;
@@ -214,14 +258,9 @@ std::vector<int> Matrix::gaussElimination(bool onlyForward, std::vector<int> col
     return infoWindow;
 }
 
-size_t Matrix::rank() {
-    Matrix copy(*this);
-    return copy.gaussElimination().size();
-}
-
 void Matrix::orthogonal() {
     Matrix diag(*this);
-    std::vector<int> iw = diag.gaussElimination();
+    std::vector<size_t> iw = diag.gaussElimination();
     size_t r = m_cols - iw.size();
     if (r == 0) {
         m_data = std::vector<char>(m_cols);
@@ -235,7 +274,7 @@ void Matrix::orthogonal() {
         size_t id = 0;
         size_t p = 0;
         for (size_t i = 0; i < m_cols; ++i) {
-            if (tmp.find(i) != tmp.end()) { // i belongs to information window
+            if (tmp.find(i) != tmp.end()) {
                 for (size_t j = 0, l = 0; l < r; ++j) {
                     if (tmp.find(j) == tmp.end()) {
                         m_data[l * m_cols + i] = diag.at(p, j);
@@ -243,13 +282,17 @@ void Matrix::orthogonal() {
                     }
                 }
                 ++p;
-            } else { // i does not belong to information window
+            } else {
                 m_data[id * m_cols + i] = 1;
                 ++id;
             }
         }
         m_rows = r;
     }
+}
+// Converts matrix to echelon form
+void Matrix::echelon(std::vector<size_t> columns) {
+    gaussElimination(true, columns);
 }
 
 std::vector<char> Matrix::multiplyMatrixByVector(const std::vector<char> &vec) const {
@@ -311,10 +354,11 @@ void Matrix::concatenateByColumns(const Matrix &second) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
     std::vector<char> v2 = second.matrixToVector();
-    std::cout << std::endl;
     m_data.insert(m_data.end(), v2.begin(), v2.end());
     m_rows += second.rows();
 }
+
+
 
 Matrix generateRandomMatrix(size_t rows, size_t cols) {
     Matrix m(rows, cols);
@@ -348,9 +392,9 @@ Matrix generateRandomPermutation(size_t n, size_t p) {
     }
     std::random_device rd;  // a seed source for the random number engine
     std::mt19937 gen(rd()); // mersenne_twister_engine seeded with rd()
-    std::uniform_int_distribution<char> distrib(0, n - 1);
-    int k, l;
-    std::vector<std::pair<int, int>> dups;
+    std::uniform_int_distribution<size_t> distrib(0, n - 1);
+    size_t k, l;
+    std::vector<std::pair<size_t, size_t>> dups;
     for (size_t i = 0; i < p; ++i) {
 
         do {
