@@ -92,6 +92,12 @@ std::vector<size_t> Lincode::spectrum() const {
     return spect;
 }
 
+Lincode Lincode::punctured(std::vector<size_t> &columns) const {
+    Lincode copy(*this);
+    copy.puncture(columns);
+    return copy;
+}
+
 std::vector<char> Lincode::encode(std::vector<char> &v) {
     if (v.size() != k) {
         throw std::invalid_argument("Incorrect size of message vector.");
@@ -136,26 +142,6 @@ bool incorrect_basis(std::vector<std::vector<char>> &basis) {
     return k > n || m.rank() != k;
 }
 
-Lincode sum(const Lincode &first, const Lincode &second) {
-    matrix::Matrix a(first.toMatrix());
-    matrix::Matrix b(second.toMatrix());
-    a.concatenateByColumns(b);
-    a.convertToBasis();
-    return Lincode(a);
-}
-
-Lincode intersect(Lincode &first, Lincode &second) {
-    first.dual();
-    second.dual();
-    matrix::Matrix a(first.toMatrix());
-    matrix::Matrix b(second.toMatrix());
-    a.concatenateByColumns(b);
-    a.convertToBasis();
-    first = Lincode(a);
-    first.dual();
-    return first;
-}
-
 void addToBinVector(std::vector<char> &v, size_t n) {
     for (size_t i = 0; i < v.size() && n != 0; ++i) {
         v[i] += n % 2;
@@ -179,5 +165,27 @@ void addToBinVector(std::vector<char> &v, size_t n) {
         }
     }
 }
+
+Lincode sum(const Lincode &first, const Lincode &second) {
+    matrix::Matrix a(first.toMatrix());
+    matrix::Matrix b(second.toMatrix());
+    a.concatenateByColumns(b);
+    a.convertToBasis();
+    return Lincode(a);
+}
+
+Lincode intersect(Lincode &first, Lincode &second) {
+    first.dual();
+    second.dual();
+    matrix::Matrix a(first.toMatrix());
+    matrix::Matrix b(second.toMatrix());
+    a.concatenateByColumns(b);
+    a.convertToBasis();
+    first = Lincode(a);
+    first.dual();
+    return first;
+}
+
+//matrix::Matrix SSA(const Lincode &c1, const Lincode &c2);
 
 } // namespace codes

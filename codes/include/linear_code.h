@@ -5,8 +5,8 @@ namespace codes {
 
 class Lincode {
 public:
-    //to delete
-    Lincode(size_t, size_t);
+    //used as default and for zero codes
+    Lincode(size_t = 0, size_t = 0);
     Lincode(const std::vector<std::vector<char>> &, bool check_basis = false);
     Lincode(const Lincode &, bool check_basis = false);
     Lincode(const matrix::Matrix &, bool check_basis = false);
@@ -18,6 +18,7 @@ public:
     const std::vector<std::vector<char>> &getBasis() const;
     Lincode hull() const;
     std::vector<size_t> spectrum() const;
+    Lincode punctured(std::vector<size_t> &columns) const; //to test
 
     std::vector<char> encode(std::vector<char> &);
 
@@ -33,10 +34,12 @@ private:
 };
 
 bool incorrect_basis(std::vector<std::vector<char>> &);
+void addToBinVector(std::vector<char> &, size_t);
 
 Lincode sum(const Lincode &, const Lincode &);
 Lincode intersect(Lincode &, Lincode &);
 
-void addToBinVector(std::vector<char> &, size_t);
+//matrix::Matrix SSA(const Lincode &, const Lincode &);
+
 
 } // namespace codes
