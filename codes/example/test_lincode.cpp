@@ -25,7 +25,7 @@ void testLincodeConstructorsAndSizes(std::vector<std::vector<char>> basis) {
     code.printCode();
 }
 
-void testLincodeConverters(codes::Lincode &code) {
+void testLincodeConverters(codes::Lincode code) {
     std::cout << "STARTS testLincodeConverters" << std::endl;
     std::cout << "Inputted code C:" << std::endl;
     code.printCode();
@@ -62,7 +62,7 @@ void testAddToVectors() {
     std::cout << std::endl;
 }
 
-void testEncode(codes::Lincode &c) {
+void testEncode(codes::Lincode c) {
     std::cout << "STARTS testEncode" << std::endl;
     std::cout << "Inputted code:" << std::endl;
     c.printCode();
@@ -78,7 +78,7 @@ void testEncode(codes::Lincode &c) {
     }
 }
 
-void testPuncturing(codes::Lincode &c, std::vector<size_t> columns) {
+void testPuncturing(codes::Lincode c, std::vector<size_t> columns) {
     std::cout << "STARTS testPuncturing" << std::endl;
     std::cout << "Inputted code:" << std::endl;
     c.printCode();
@@ -92,6 +92,13 @@ void testPuncturing(codes::Lincode &c, std::vector<size_t> columns) {
     c.printCode();
 }
 
+void testBasisView(codes::Lincode &c) {
+    std::cout << "STARTS testBasisView" << std::endl;
+    std::cout << "Inputted code:" << std::endl;
+    c.printCode();
+    c.basisView();
+    c.printCode();
+}
 int main(void) {
     std::vector<std::vector<char>> basis = {{1, 0, 0, 0, 1, 0, 1},
                                             {0, 1, 0, 0, 1, 1, 1},
@@ -117,5 +124,6 @@ int main(void) {
     codes::Lincode code3(basis4);
     testEncode(code3);
     testPuncturing(code3, {1, 3, 6});
+    testBasisView(code3);
     return 0;
 }

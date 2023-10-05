@@ -18,10 +18,12 @@ public:
     const std::vector<std::vector<char>> &getBasis() const;
     Lincode hull() const;
     std::vector<size_t> spectrum() const;
+    std::vector<size_t> spectrum_basis() const;
     Lincode punctured(std::vector<size_t> &columns) const; //to test
 
     std::vector<char> encode(std::vector<char> &);
 
+    void basisView();
     void dual();
     void puncture(std::vector<size_t> &columns);
 

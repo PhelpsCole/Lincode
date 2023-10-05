@@ -12,7 +12,7 @@ matrix::Matrix RMCode::toMatrix() const {
     return matrix::Matrix(basis);
 }
 
-std::vector<std::vector<char>> &RMCode::getBasis() {
+const std::vector<std::vector<char>> &RMCode::getBasis() {
     return basis;
 }
 

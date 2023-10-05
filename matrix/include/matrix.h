@@ -1,3 +1,6 @@
+#ifndef MINE_MATRIX
+#define MINE_MATRIX
+
 #include <vector>
 #include <stdexcept>
 #include <sstream>
@@ -66,3 +69,5 @@ Matrix solution_transposed(Matrix &a, Matrix &b);
 Matrix solution(Matrix &a, Matrix &b);
 
 } // namespace matrix
+
+#endif // MINE_MATRIX

@@ -17,7 +17,7 @@ public:
     size_t size();
     size_t min_dist();
 
-    std::vector<std::vector<char>> &getBasis();
+    const std::vector<std::vector<char>> &getBasis();
 
     matrix::Matrix toMatrix() const;
 

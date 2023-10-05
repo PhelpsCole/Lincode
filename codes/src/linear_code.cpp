@@ -87,7 +87,21 @@ std::vector<size_t> Lincode::spectrum() const {
     for (size_t i = 0; i < static_cast<size_t>((1 << v.size()) - 1); ++i) {
         addToBinVector(v, 1);
         std::vector<char> res = code_matr.multiplyVectorByMatrix(v);
-        ++spect[algorithms::hammingWeight(res) - 1];
+        size_t weight = algorithms::hammingWeight(res);
+        if (weight != 0) {
+            ++spect[weight - 1];
+        }
+    }
+    return spect;
+}
+
+std::vector<size_t> Lincode::spectrum_basis() const {
+    std::vector<size_t> spect(n);
+    for (size_t i = 0; i < k; ++i) {
+        size_t weight = algorithms::hammingWeight(basis[i]);
+        if (weight != 0) {
+            ++spect[weight - 1];
+        }
     }
     return spect;
 }
@@ -105,6 +119,14 @@ std::vector<char> Lincode::encode(std::vector<char> &v) {
     matrix::Matrix code_matr = toMatrix();
     std::vector<char> res = code_matr.multiplyVectorByMatrix(v);
     return res;
+}
+
+void Lincode::basisView() {
+    matrix::Matrix matr = toMatrix();
+    matr.convertToBasis();
+    k = matr.rows();
+    n = matr.cols();
+    basis = matr.toVectors();
 }
 
 void Lincode::dual() {
