@@ -45,13 +45,12 @@ size_t Lincode::size() const {
 }
 
 size_t Lincode::min_dist() const {
-    std::vector<char> v(k);
+    matrix::Matrix code_matr(basis);
+    code_matr.gaussElimination();
     size_t min_weight = n;
-    matrix::Matrix code_matr = toMatrix();
-    for (size_t i = 0; i < static_cast<size_t>((1 << v.size()) - 1); ++i) {
-        addToBinVector(v, 1);
-        std::vector<char> res = code_matr.multiplyVectorByMatrix(v);
-        size_t weight = algorithms::hammingWeight(res);
+    for (size_t i = 0; i < code_matr.rows(); ++i) {
+        std::vector<char> v = code_matr.row(i);
+        size_t weight = algorithms::hammingWeight(v);
         if (weight < min_weight) {
             min_weight = weight;
         }
