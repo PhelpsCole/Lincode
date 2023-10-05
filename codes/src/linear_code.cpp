@@ -92,13 +92,13 @@ std::vector<size_t> Lincode::spectrum() const {
     return spect;
 }
 
-std::vector<char> Lincode::encode(std::vector<char> &c) {
-    if (c.size() != k) {
+std::vector<char> Lincode::encode(std::vector<char> &v) {
+    if (v.size() != k) {
         throw std::invalid_argument("Incorrect size of message vector.");
     }
-    std::vector<char> v(n);
     matrix::Matrix code_matr = toMatrix();
-    return code_matr.multiplyVectorByMatrix(v);
+    std::vector<char> res = code_matr.multiplyVectorByMatrix(v);
+    return res;
 }
 
 void Lincode::dual() {
@@ -107,6 +107,16 @@ void Lincode::dual() {
     k = m.rows();
     n = m.cols();
     basis = m.toVectors();
+}
+
+void Lincode::puncture(std::vector<size_t> &columns) {
+    std::vector<size_t> mask(n);
+    for (size_t row = 0; row < k; ++row) {
+        std::vector<char> &v = basis[row];
+        for (size_t i = 0; i < columns.size(); ++i) {
+            v[columns[i]] = 0;
+        }
+    }
 }
 
 void Lincode::printCode() const {
@@ -162,7 +172,6 @@ void addToBinVector(std::vector<char> &v, size_t n) {
             ++cnt;
             tmp >>= 1;
         }
-        std::cout << cnt << std::endl;
         v.resize(prev_size + cnt);
         for (size_t i = 0; i < v.size() - prev_size; ++i) {
             v[prev_size + i] = n % 2;

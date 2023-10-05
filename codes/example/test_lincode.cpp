@@ -62,6 +62,36 @@ void testAddToVectors() {
     std::cout << std::endl;
 }
 
+void testEncode(codes::Lincode &c) {
+    std::cout << "STARTS testEncode" << std::endl;
+    std::cout << "Inputted code:" << std::endl;
+    c.printCode();
+    std::cout << "All words of this code:" << std::endl;
+    std::vector<char> v(c.size());
+    for (size_t i = 0; i < static_cast<size_t>((1 << v.size()) - 1); ++i) {
+        codes::addToBinVector(v, 1);
+        std::vector<char> res = c.encode(v);
+        for (size_t i = 0; i < v.size(); ++i) {
+            std::cout << static_cast<int>(v[i]) << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void testPuncturing(codes::Lincode &c, std::vector<size_t> columns) {
+    std::cout << "STARTS testPuncturing" << std::endl;
+    std::cout << "Inputted code:" << std::endl;
+    c.printCode();
+    std::cout << "Puncture columns:" << std::endl;
+    for (size_t i = 0; i < columns.size(); ++i) {
+        std::cout << columns[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "Punctured code:" << std::endl;
+    c.puncture(columns);
+    c.printCode();
+}
+
 int main(void) {
     std::vector<std::vector<char>> basis = {{1, 0, 0, 0, 1, 0, 1},
                                             {0, 1, 0, 0, 1, 1, 1},
@@ -80,5 +110,12 @@ int main(void) {
     testChecker(basis);
     testChecker(basis2);
     testAddToVectors();
+    std::vector<std::vector<char>> basis4 = {{1, 0, 0, 0, 1, 0, 1},
+                                            {0, 1, 0, 0, 1, 0, 1},
+                                            {0, 1, 1, 0, 1, 0, 1},
+                                            {0, 1, 0, 0, 1, 0, 1},};
+    codes::Lincode code3(basis4);
+    testEncode(code3);
+    testPuncturing(code3, {1, 3, 6});
     return 0;
 }

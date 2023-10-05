@@ -22,6 +22,7 @@ public:
     std::vector<char> encode(std::vector<char> &);
 
     void dual();
+    void puncture(std::vector<size_t> &columns);
 
     void printCode() const;
 
