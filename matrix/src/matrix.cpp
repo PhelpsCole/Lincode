@@ -146,6 +146,10 @@ std::vector<char> Matrix::col(size_t j) const {
     return res;
 }
 
+std::vector<char> &Matrix::getBasis() {
+    return m_data;
+}
+
 size_t Matrix::rows() const {
     return m_rows;
 }
@@ -216,7 +220,6 @@ void Matrix::T() {
 // Do Gauss elimination on matrix
 // Returns positions of maximum rank submatrix
 // if columns.size() != 0 then apply only on submatrixes on these columns
-// NOTE: Correct output only for n х n matrixes
 std::vector<size_t> Matrix::gaussElimination(bool onlyForward, std::vector<size_t> columns) {
     if (m_cols == 0 || m_rows == 0) {
         return std::vector<size_t>();
@@ -320,7 +323,7 @@ std::vector<char> Matrix::multiplyVectorByMatrix(const std::vector<char> &vec) c
     for (size_t j = 0; j < m_cols; ++j) {
         char sum = 0;
         for (size_t i = 0; i < m_rows; ++i) {
-            sum += vec[i] * m_data[i * m_cols + j];
+            sum ^= vec[i] & m_data[i * m_cols + j];
         }
         result[j] = sum;
     }
@@ -358,7 +361,11 @@ void Matrix::concatenateByColumns(const Matrix &second) {
     m_rows += second.rows();
 }
 
-
+void Matrix::convertToBasis() {
+    std::vector<size_t> iw = gaussElimination(true);
+    m_rows = iw.size();
+    m_data.resize(m_rows * m_cols);
+}
 
 Matrix generateRandomMatrix(size_t rows, size_t cols) {
     Matrix m(rows, cols);
@@ -409,6 +416,19 @@ Matrix generateRandomPermutation(size_t n, size_t p) {
         iter_swap(vv.begin() + k, vv.begin() + l);
     }
     return Matrix(vv);
+}
+
+// Colculates Ax=B by Gauss-Jordan method
+Matrix solution(Matrix &a, Matrix &b) {
+    Matrix c(a);
+    c.concatenateByRows(b);
+    c.gaussElimination();
+    c.T();
+    std::vector<char> basis = c.matrixToVector();
+    size_t size = c.cols() * c.cols();
+    std::vector<char> inter_basis(basis.size() - size);
+    inter_basis.insert(inter_basis.begin(), basis.begin() + size, basis.end());
+    return matrix::Matrix(c.rows() - c.cols(), c.cols(), inter_basis);
 }
 
 } // namespace matrix

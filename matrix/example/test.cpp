@@ -148,8 +148,12 @@ void testComplexOperations(matrix::Matrix &matrix) {
     std::cout << "Inputed matrix:" << std::endl;
     matrix::Matrix copy(matrix);
     matrix.printMatrix();
+    std::cout << "Echelon of this matrix:" << std::endl;
+    copy.echelon();
+    copy.printMatrix();
+    copy = matrix;
     std::cout << "Gauss Elimination of this matrix:" << std::endl;
-    std::vector<size_t> v = copy.gaussElimination(true);
+    std::vector<size_t> v = copy.gaussElimination();
     copy.printMatrix();
     std::cout << "Count of Gauss Elimination:" << std::endl;
     for (size_t i = 0 ; i < v.size(); ++i) {
@@ -168,10 +172,21 @@ void testComplexOperations(matrix::Matrix &matrix) {
     std::cout << "mat * ort^T = 0:" << std::endl;
     matrix *= ort;
     matrix.printMatrix();
+}
 
-    std::vector<size_t> gaussElimination(bool = false, std::vector<size_t> = {});
-    void echelon(std::vector<size_t> = {});
-    void orthogonal();
+void testSolution() {
+    std::vector<std::vector<char>> code = {{1, 0, 0, 0},
+                                           {1, 1, 0, 1},
+                                           {1, 1, 1, 1},
+                                           {0, 0, 1, 1}},
+                                   code2 = {{1, 0, 1, 1},
+                                            {0, 1, 1, 0}};
+    matrix::Matrix a(code);
+    matrix::Matrix b(code2);
+    b.T();
+    matrix::Matrix c = matrix::solution(a, b);
+    std::cout << "Solution of Ax = B:" << std::endl;
+    c.printMatrix();
 }
 
 
@@ -197,5 +212,6 @@ int main() {
     testGenerators(5, 5, 5, 2);
     testMultiplyByVector(m3, vec2);
     testComplexOperations(m2);
+    testSolution();
     return 0;
 }

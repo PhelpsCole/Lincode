@@ -29,6 +29,7 @@ public:
 
     char &at(size_t row, size_t col);
     const char &at(size_t row, size_t col) const;
+    std::vector<char> &getBasis();
     std::vector<char> col(size_t) const;
     std::vector<char> row(size_t) const;
     size_t rows() const;
@@ -46,6 +47,7 @@ public:
     void orthogonal();
     void concatenateByRows(const Matrix &);
     void concatenateByColumns(const Matrix &);
+    void convertToBasis();
 
     std::vector<char> multiplyMatrixByVector(const std::vector<char> &vec) const;
     std::vector<char> multiplyVectorByMatrix(const std::vector<char> &vec) const;
@@ -59,5 +61,8 @@ private:
 Matrix generateRandomMatrix(size_t rows, size_t cols);
 Matrix generateRandomNonSingular(size_t rows, size_t cols);
 Matrix generateRandomPermutation(size_t n, size_t p);
+
+Matrix solution_transposed(Matrix &a, Matrix &b);
+Matrix solution(Matrix &a, Matrix &b);
 
 } // namespace matrix
