@@ -67,31 +67,25 @@ void printD(const std::map<std::string, std::vector<std::pair<size_t, size_t>>> 
     }
 }
 
-void testSSA(const codes::Lincode &c1, const codes::Lincode &c2) {
-    std::cout << "Inputed codes:" << std::endl;
-    c1.printCode();
-    c2.printCode();
-    std::cout << std::endl;
-    std::vector<codes::Lincode> punct_once1(c1.len());
-    std::vector<std::vector<size_t>> spectPunct1(c1.len());
-    std::vector<codes::Lincode> punct_once2(c2.len());
-    std::vector<std::vector<size_t>> spectPunct2(c2.len());
-    std::vector<size_t> columns(1);
-    for (size_t i = 0; i < punct_once1.size(); ++i) {
-        columns[0] = i;
-        punct_once1[i] = c1.punctured(columns);
-        spectPunct1[i] = punct_once1[i].spectrum_basis();
-        punct_once2[i] = c2.punctured(columns);
-        spectPunct2[i] = punct_once2[i].spectrum_basis();
+void printDD(const std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> &d) {
+    for(auto iter = d.begin(); iter != d.end(); ++iter) {
+        std::cout << "[" << iter->first << "]: {";
+        for (auto iter2 = iter->second.first.begin();
+             iter2 != iter->second.first.end(); ++iter2) {
+            std::cout << *iter2 << " ";
+        }
+        std::cout << "}, {";
+        for (auto iter2 = iter->second.second.begin();
+             iter2 != iter->second.second.end(); ++iter2) {
+            std::cout << *iter2 << " ";
+        }
+        std::cout << "}" << std::endl;
     }
-    printCC(punct_once1);
-    printCC(punct_once2);
-    printVV(spectPunct1);
-    printVV(spectPunct2);
 }
 
-void SSA(const codes::Lincode &c1, const codes::Lincode &c2) {
-    std::map<std::string, std::vector<std::pair<size_t, size_t>>> equiv_classes;
+void SSA(const codes::Lincode &c1, const codes::Lincode &c2,
+         std::function<std::string(const codes::Lincode &)> invariant) {
+    std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> equiv_classes;
     std::cout << "Inputed codes:" << std::endl;
     c1.printCode();
     c2.printCode();
@@ -102,48 +96,28 @@ void SSA(const codes::Lincode &c1, const codes::Lincode &c2) {
     for (size_t i = 0; i < c1.len(); ++i) {
         columns[0] = i;
         codes::Lincode punct = c1.punctured(columns);
-        spectPunct1[i] = invariant_weight(punct);
+        spectPunct1[i] = invariant(punct);
         punct = c2.punctured(columns);
-        spectPunct2[i] = invariant_weight(punct);
+        spectPunct2[i] = invariant(punct);
     }
     for (size_t i = 0; i < spectPunct1.size(); ++i) {
         for (size_t j = 0; j < spectPunct2.size(); ++j) {
             if (spectPunct1[i] == spectPunct2[j]) {
                 if (equiv_classes.find(spectPunct1[i]) == equiv_classes.end()) {
-                    equiv_classes[spectPunct1[i]] = std::vector<std::pair<size_t, size_t>>();
+                    std::set<size_t> s1{i};
+                    std::set<size_t> s2{j};
+                    equiv_classes[spectPunct1[i]] = std::make_pair(s1, s2);
+                } else {
+                    equiv_classes[spectPunct1[i]].first.insert(i);
+                    equiv_classes[spectPunct1[i]].second.insert(j);
                 }
-                equiv_classes[spectPunct1[i]].push_back(std::make_pair(i, j));
             }
         }
     }
     printV<std::string>(spectPunct1);
     std::cout << std::endl;
     printV<std::string>(spectPunct2);
-    printD(equiv_classes);
-}
-
-void SSAOnHull(const codes::Lincode &c1, const codes::Lincode &c2) {
-    std::cout << "Inputed codes:" << std::endl;
-    c1.printCode();
-    c2.printCode();
-    std::cout << std::endl;
-    std::vector<size_t> dimsPunct1(c1.len());
-    std::vector<size_t> dimsPunct2(c2.len());
-    std::vector<size_t> columns(1);
-    for (size_t i = 0; i < c1.len(); ++i) {
-        columns[0] = i;
-        codes::Lincode punct = c1.punctured(columns);
-        punct = punct.hull();
-        punct.printCode();
-        dimsPunct1[i] = punct.size();
-        punct = c2.punctured(columns);
-        punct = punct.hull();
-        punct.printCode();
-        dimsPunct2[i] = punct.size();
-    }
-    printV<size_t>(dimsPunct1);
-    std::cout << std::endl;
-    printV<size_t>(dimsPunct1);
+    printDD(equiv_classes);
 }
 
 int main() {
@@ -169,14 +143,13 @@ int main() {
                           {1, 0, 0, 1, 1},
                           {1, 1, 1, 0, 0},
                           {1, 1, 0, 1, 1},});
-    //testSSA(code2, code3);
-    //testSSA(code4, code5);
     //SSA(code2, code3);
-    //SSAOnHull(code4, code5);
+    //SSA(code4, code5);
     codes::RMCode rm(5, 3);
     codes::RMCode rm2(5, 3);
     codes::Lincode rm_code(rm.getBasis());
     codes::Lincode rm_code2(rm2.getBasis());
-    //SSAOnHull(rm_code, rm_code2);
-    SSA(rm_code, rm_code2);
+    SSA(rm_code, rm_code2, invariant_weight);
+    //SSA(rm_code, rm_code2, invariant_size);
+    SSA(code5, code4, invariant_weight);
 }
