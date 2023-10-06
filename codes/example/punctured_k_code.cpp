@@ -8,6 +8,12 @@ struct SSAData {
     std::vector<size_t> used2;
 };
 
+struct SpectVectData {
+    std::string spectr;
+    std::vector<size_t> used;
+    size_t dif;
+};
+
 bool inSSDataFirst(const SSAData &d, size_t elem) {
     return std::find(d.dif1.begin(), d.dif1.end(), elem) != d.dif1.end() ||
            (d.used1.size() && std::find(d.used1.begin(), d.used1.end(), elem) != d.used1.end());
@@ -18,19 +24,24 @@ bool inSSDataSecond(const SSAData &d, size_t elem) {
            (d.used2.size() && std::find(d.used2.begin(), d.used2.end(), elem) != d.used2.end());
 }
 
-std::vector<std::string> spectPunctVector(const codes::Lincode &c,
-                                          std::vector<size_t> &v, size_t i,
-                                          std::vector<size_t> &v2, size_t spectsize, size_t set_size,
-                                          std::function<std::string(const codes::Lincode &)> invariant) {
+std::vector<SpectVectData>
+spectPunctVector(const codes::Lincode &c,
+                 std::vector<size_t> &used, size_t i,
+                 std::vector<size_t> &dif, size_t set_size,
+                 std::function<std::string(const codes::Lincode &)> invariant) {
     std::vector<size_t> columns;
-    std::vector<std::string> res = std::vector<std::string>(spectsize);
+    std::vector<SpectVectData> res;
     //iterates by punct codes in eq class
     for (size_t j = 0; j < set_size; ++j) {
-        columns.insert(columns.end(), v.begin(), v.end());
+        columns.insert(columns.end(), used.begin(), used.end());
         columns.push_back(i);
-        columns.push_back(v2[j]);
+        columns.push_back(dif[j]);
         codes::Lincode punct = c.punctured(columns);
-        res[v2[j]] = invariant(punct);
+        SpectVectData new_data;
+        new_data.spectr = invariant(punct);
+        new_data.used = used;
+        new_data.dif = dif[j];
+        res.push_back(new_data);
     }
     return res;
 }
@@ -70,7 +81,7 @@ std::string invariant_size(const codes::Lincode &code) {
 }
 
 template<typename T>
-void printV(std::vector<T> &v) {
+void printV(const std::vector<T> &v) {
     for (size_t j = 0; j < v.size(); ++j) {
         std::cout << v[j] << " ";
     }
@@ -96,15 +107,14 @@ void printVPV(std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> &
     std::cout << std::endl;
 }
 
-void printMVS(const std::map<size_t, std::vector<std::string>> &map) {
-    std::cout << "printMVS" << std::endl;
-    for(auto iter = map.begin(); iter != map.end(); ++iter) {
+void printMSVD(const std::map<size_t, std::vector<SpectVectData>> &map) {
+    std::cout << "printMSVD" << std::endl;
+    for (auto iter = map.begin(); iter != map.end(); ++iter) {
         //std::cout << vv[i].size() << std::endl;
         for (size_t j = 0; j < iter->second.size(); ++j) {
-            if (iter->second[j] != "") {
-                std::cout << "[" << iter->first << ", " << j << "]: ";
-                std::cout << "{" << iter->second[j] << "} ";
-            }
+            std::cout << "[" << iter->first << ", " << iter->second[j].dif << "]: ";
+            std::cout << "spectr: {" << iter->second[j].spectr << "}, used_columns: ";
+            printV(iter->second[j].used);
         }
         std::cout << std::endl;
     }
@@ -117,7 +127,7 @@ void printCC(std::vector<codes::Lincode> &cc) {
 }
 
 void printD(const std::map<std::string, std::vector<std::pair<size_t, size_t>>> &d) {
-    for(auto iter = d.begin(); iter != d.end(); ++iter) {
+    for (auto iter = d.begin(); iter != d.end(); ++iter) {
         std::cout << "[" << iter->first << "]: ";
         for (size_t i = 0; i < iter->second.size(); ++i) {
             std::cout << "(" << iter->second[i].first << ", " << iter->second[i].second << ") ";
@@ -127,7 +137,7 @@ void printD(const std::map<std::string, std::vector<std::pair<size_t, size_t>>> 
 }
 
 void printDD(const std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> &d) {
-    for(auto iter = d.begin(); iter != d.end(); ++iter) {
+    for (auto iter = d.begin(); iter != d.end(); ++iter) {
         std::cout << "[" << iter->first << "]: {";
         for (auto iter2 = iter->second.first.begin();
              iter2 != iter->second.first.end(); ++iter2) {
@@ -225,24 +235,24 @@ std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
         //Iterates by eq classes
         for (size_t p = 0; p < size; ++p) {
             size_t set_size = equiv_classes_vec[p].dif1.size();
-            std::map<size_t, std::vector<std::string>> spectPunctVV1;
-            std::map<size_t, std::vector<std::string>> spectPunctVV2;
+            std::map<size_t, std::vector<SpectVectData>> spectPunctVV1;
+            std::map<size_t, std::vector<SpectVectData>> spectPunctVV2;
             //iterates by cols to find not punctured
             for (size_t i = 0; i < len; ++i) {
                 if (!inSSDataFirst(equiv_classes_vec[p], i)) {
                     spectPunctVV1[i] = spectPunctVector(c1, equiv_classes_vec[p].used1,
-                                                               i, equiv_classes_vec[p].dif1,
-                                                               len, set_size, invariant);
+                                                        i, equiv_classes_vec[p].dif1,
+                                                        set_size, invariant);
                 }
                 if (!inSSDataSecond(equiv_classes_vec[p], i)) {
                     spectPunctVV2[i] = spectPunctVector(c2, equiv_classes_vec[p].used2,
-                                                               i, equiv_classes_vec[p].dif2,
-                                                               len, set_size, invariant);
+                                                        i, equiv_classes_vec[p].dif2,
+                                                        set_size, invariant);
                 }
             }
-            printMVS(spectPunctVV1);
+            printMSVD(spectPunctVV1);
             std::cout << std::endl;
-            printMVS(spectPunctVV2);
+            printMSVD(spectPunctVV2);
         }
         break;
     }
