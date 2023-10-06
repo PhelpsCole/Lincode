@@ -10,8 +10,15 @@ struct SSAData {
 
 struct SpectVectData {
     std::string spectr;
-    std::vector<size_t> used;
+    //std::vector<size_t> used;
     size_t dif;
+};
+
+struct ComplEqClData {
+    std::set<size_t> dif_set1;
+    std::set<size_t> dif_set2;
+    size_t new_used1;
+    size_t new_used2;
 };
 
 bool inSSDataFirst(const SSAData &d, size_t elem) {
@@ -39,7 +46,7 @@ spectPunctVector(const codes::Lincode &c,
         codes::Lincode punct = c.punctured(columns);
         SpectVectData new_data;
         new_data.spectr = invariant(punct);
-        new_data.used = used;
+        //new_data.used = used;
         new_data.dif = dif[j];
         res.push_back(new_data);
     }
@@ -114,7 +121,7 @@ void printMSVD(const std::map<size_t, std::vector<SpectVectData>> &map) {
         for (size_t j = 0; j < iter->second.size(); ++j) {
             std::cout << "[" << iter->first << ", " << iter->second[j].dif << "]: ";
             std::cout << "spectr: {" << iter->second[j].spectr << "}, used_columns: ";
-            printV(iter->second[j].used);
+            //printV(iter->second[j].used);
         }
         std::cout << std::endl;
     }
@@ -163,6 +170,23 @@ void printVSSAData(std::vector<SSAData> &v) {
     }
 }
 
+void printMCECD(std::map<std::string, ComplEqClData> &d) {
+    std::cout << "printMCECD" << std::endl;
+    for (auto iter = d.begin(); iter != d.end(); ++iter) {
+        std::cout << "[" << iter->first << "]: dif_set1: {";
+        for (auto iter2 = iter->second.dif_set1.begin();
+             iter2 != iter->second.dif_set1.end(); ++iter2) {
+            std::cout << *iter2 << " ";
+        }
+        std::cout << "}, new_used1: [" << iter->second.new_used1 << "], dif_set2: {";
+        for (auto iter2 = iter->second.dif_set2.begin();
+             iter2 != iter->second.dif_set2.end(); ++iter2) {
+            std::cout << *iter2 << " ";
+        }
+        std::cout << "}, new_used2: [" << iter->second.new_used2 << "]" << std::endl;
+    }
+}
+
 // Returns vector v(i) = j
 std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
                            std::function<std::string(const codes::Lincode &)> invariant) {
@@ -205,7 +229,7 @@ std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
         }
     }
     printDD(equiv_classes);
-    //parse classes and creates recurtion
+    //parse classes and creates n-terative algorithm
     std::vector<size_t> ans(len);
     std::vector<SSAData> equiv_classes_vec;
     for (auto const &elem: equiv_classes) {
@@ -230,31 +254,64 @@ std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
     }
     printVSSAData(equiv_classes_vec);
     // Iterates till vector ends
-    while (equiv_classes_vec.size() != 0) {
-        size_t size = equiv_classes_vec.size();
-        //Iterates by eq classes
-        for (size_t p = 0; p < size; ++p) {
-            size_t set_size = equiv_classes_vec[p].dif1.size();
-            std::map<size_t, std::vector<SpectVectData>> spectPunctVV1;
-            std::map<size_t, std::vector<SpectVectData>> spectPunctVV2;
-            //iterates by cols to find not punctured
-            for (size_t i = 0; i < len; ++i) {
-                if (!inSSDataFirst(equiv_classes_vec[p], i)) {
-                    spectPunctVV1[i] = spectPunctVector(c1, equiv_classes_vec[p].used1,
-                                                        i, equiv_classes_vec[p].dif1,
-                                                        set_size, invariant);
+    //Iterates by eq classes while they will not ends
+    for (size_t p = 0; p < equiv_classes_vec.size(); ++p) {
+        size_t set_size = equiv_classes_vec[p].dif1.size();
+        std::map<size_t, std::vector<SpectVectData>> spectPunctVV1;
+        std::map<size_t, std::vector<SpectVectData>> spectPunctVV2;
+        //iterates by cols to find not punctured
+        for (size_t i = 0; i < len; ++i) {
+            if (!inSSDataFirst(equiv_classes_vec[p], i)) {
+                spectPunctVV1[i] = spectPunctVector(c1, equiv_classes_vec[p].used1,
+                                                    i, equiv_classes_vec[p].dif1,
+                                                    set_size, invariant);
+            }
+            if (!inSSDataSecond(equiv_classes_vec[p], i)) {
+                spectPunctVV2[i] = spectPunctVector(c2, equiv_classes_vec[p].used2,
+                                                    i, equiv_classes_vec[p].dif2,
+                                                    set_size, invariant);
+            }
+        }
+        printMSVD(spectPunctVV1);
+        std::cout << std::endl;
+        printMSVD(spectPunctVV2);
+        for (auto iter = spectPunctVV1.begin(); iter != spectPunctVV1.end(); ++iter) {
+            for (auto iter2 = spectPunctVV2.begin(); iter2 != spectPunctVV2.end(); ++iter2) {
+                std::map<std::string, ComplEqClData> complexEquivClasses;
+                bool found;
+                for (size_t i = 0; i < iter->second.size(); ++i) {
+                    found = false;
+                    for (size_t j = 0; j < iter2->second.size(); ++j) {
+                        if (iter->second[i].spectr == iter2->second[j].spectr) {
+                            found = true;
+                            if (complexEquivClasses.find(iter->second[i].spectr)
+                                == complexEquivClasses.end()) {
+                                ComplEqClData tmp;
+                                std::set<size_t> tmpSet{iter->second[i].dif};
+                                tmp.dif_set1 = tmpSet;
+                                std::set<size_t> tmpSet2{iter2->second[i].dif};
+                                tmp.dif_set2 = tmpSet2;
+                                tmp.new_used1 = iter->first;
+                                tmp.new_used2 = iter2->first;
+                                complexEquivClasses[iter->second[i].spectr] = tmp;
+                            } else {
+                                complexEquivClasses[iter->second[i].spectr].dif_set1.insert(iter->second[i].dif);
+                                complexEquivClasses[iter2->second[i].spectr].dif_set2.insert(iter2->second[i].dif);
+                            }
+                        }
+                    }
+                    if (!found) {
+                        break;
+                    }
                 }
-                if (!inSSDataSecond(equiv_classes_vec[p], i)) {
-                    spectPunctVV2[i] = spectPunctVector(c2, equiv_classes_vec[p].used2,
-                                                        i, equiv_classes_vec[p].dif2,
-                                                        set_size, invariant);
+                if (found) {
+                    std::cout << iter->first << " " << iter2->first << std::endl;
+                    printMCECD(complexEquivClasses);
+                    std::cout << std::endl;
+                    complexEquivClasses.clear();
                 }
             }
-            printMSVD(spectPunctVV1);
-            std::cout << std::endl;
-            printMSVD(spectPunctVV2);
         }
-        break;
     }
     return ans;
 }
