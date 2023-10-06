@@ -1,6 +1,40 @@
 #include "linear_code.h"
 #include "rm_code.h"
 
+struct SSAData {
+    std::vector<size_t> dif1;
+    std::vector<size_t> used1;
+    std::vector<size_t> dif2;
+    std::vector<size_t> used2;
+};
+
+bool inSSDataFirst(const SSAData &d, size_t elem) {
+    return std::find(d.dif1.begin(), d.dif1.end(), elem) != d.dif1.end() ||
+           (d.used1.size() && std::find(d.used1.begin(), d.used1.end(), elem) != d.used1.end());
+}
+
+bool inSSDataSecond(const SSAData &d, size_t elem) {
+    return std::find(d.dif2.begin(), d.dif2.end(), elem) != d.dif2.end() ||
+           (d.used2.size() && std::find(d.used2.begin(), d.used2.end(), elem) != d.used2.end());
+}
+
+std::vector<std::string> spectPunctVector(const codes::Lincode &c,
+                                          std::vector<size_t> &v, size_t i,
+                                          std::vector<size_t> &v2, size_t spectsize, size_t set_size,
+                                          std::function<std::string(const codes::Lincode &)> invariant) {
+    std::vector<size_t> columns;
+    std::vector<std::string> res = std::vector<std::string>(spectsize);
+    //iterates by punct codes in eq class
+    for (size_t j = 0; j < set_size; ++j) {
+        columns.insert(columns.end(), v.begin(), v.end());
+        columns.push_back(i);
+        columns.push_back(v2[j]);
+        codes::Lincode punct = c.punctured(columns);
+        res[v2[j]] = invariant(punct);
+    }
+    return res;
+}
+
 // Returns all punctured codes in num columns
 std::vector<codes::Lincode> punctCodes(codes::Lincode &code, size_t num) {
     std::vector<codes::Lincode> res;
@@ -51,6 +85,31 @@ void printVV(std::vector<std::vector<size_t>> &vv) {
     }
 }
 
+void printVPV(std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> &v) {
+    for (size_t j = 0; j < v.size(); ++j) {
+        std::cout << j + 1 << " sets:" << std::endl;
+        std::cout << "[1] ";
+        printV(v[j].first);
+        std::cout << "[2] ";
+        printV(v[j].second);
+    }
+    std::cout << std::endl;
+}
+
+void printMVS(const std::map<size_t, std::vector<std::string>> &map) {
+    std::cout << "printMVS" << std::endl;
+    for(auto iter = map.begin(); iter != map.end(); ++iter) {
+        //std::cout << vv[i].size() << std::endl;
+        for (size_t j = 0; j < iter->second.size(); ++j) {
+            if (iter->second[j] != "") {
+                std::cout << "[" << iter->first << ", " << j << "]: ";
+                std::cout << "{" << iter->second[j] << "} ";
+            }
+        }
+        std::cout << std::endl;
+    }
+}
+
 void printCC(std::vector<codes::Lincode> &cc) {
     for (size_t i = 0; i < cc.size(); ++i) {
         cc[i].printCode();
@@ -83,25 +142,46 @@ void printDD(const std::map<std::string, std::pair<std::set<size_t>, std::set<si
     }
 }
 
-void SSA(const codes::Lincode &c1, const codes::Lincode &c2,
-         std::function<std::string(const codes::Lincode &)> invariant) {
+void printVSSAData(std::vector<SSAData> &v) {
+    for (size_t i = 0; i < v.size(); ++i) {
+        std::cout << i << "'s data of SSData:" << std::endl;
+        printV(v[i].dif1);
+        printV(v[i].dif2);
+        printV(v[i].used1);
+        printV(v[i].used2);
+        std::cout << std::endl;
+    }
+}
+
+// Returns vector v(i) = j
+std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
+                           std::function<std::string(const codes::Lincode &)> invariant) {
+    if (c1.len() != c2.len()) {
+        throw std::invalid_argument("Lenghts of code should be the same");
+    }
+    size_t len = c1.len();
     std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> equiv_classes;
     std::cout << "Inputed codes:" << std::endl;
     c1.printCode();
     c2.printCode();
     std::cout << std::endl;
-    std::vector<std::string> spectPunct1(c1.len());
-    std::vector<std::string> spectPunct2(c2.len());
+    std::vector<std::string> spectPunct1(len);
+    std::vector<std::string> spectPunct2(len);
     std::vector<size_t> columns(1);
-    for (size_t i = 0; i < c1.len(); ++i) {
+    // Creates invariants of punctured codes
+    for (size_t i = 0; i < len; ++i) {
         columns[0] = i;
         codes::Lincode punct = c1.punctured(columns);
         spectPunct1[i] = invariant(punct);
         punct = c2.punctured(columns);
         spectPunct2[i] = invariant(punct);
     }
-    for (size_t i = 0; i < spectPunct1.size(); ++i) {
-        for (size_t j = 0; j < spectPunct2.size(); ++j) {
+    printV<std::string>(spectPunct1);
+    std::cout << std::endl;
+    printV<std::string>(spectPunct2);
+    // Creates equivalation classes
+    for (size_t i = 0; i < len; ++i) {
+        for (size_t j = 0; j < len; ++j) {
             if (spectPunct1[i] == spectPunct2[j]) {
                 if (equiv_classes.find(spectPunct1[i]) == equiv_classes.end()) {
                     std::set<size_t> s1{i};
@@ -114,10 +194,59 @@ void SSA(const codes::Lincode &c1, const codes::Lincode &c2,
             }
         }
     }
-    printV<std::string>(spectPunct1);
-    std::cout << std::endl;
-    printV<std::string>(spectPunct2);
     printDD(equiv_classes);
+    //parse classes and creates recurtion
+    std::vector<size_t> ans(len);
+    std::vector<SSAData> equiv_classes_vec;
+    for (auto const &elem: equiv_classes) {
+        if (elem.second.first.size() != elem.second.second.size()) {
+            return std::vector<size_t>(0);
+        } else {
+            std::vector<size_t> v1(elem.second.first.begin(), elem.second.first.end());
+            std::vector<size_t> v2(elem.second.second.begin(), elem.second.second.end());
+            if (v1.size() == 1) {
+                ans[v1[0]] = v2[0];
+            } else {
+                sort(v1.begin(), v1.end());
+                sort(v2.begin(), v2.end());
+                SSAData new_data;
+                new_data.dif1 = v1;
+                new_data.used1 = {};
+                new_data.dif2 = v1;
+                new_data.used2 = {};
+                equiv_classes_vec.push_back(new_data);
+            }
+        }
+    }
+    printVSSAData(equiv_classes_vec);
+    // Iterates till vector ends
+    while (equiv_classes_vec.size() != 0) {
+        size_t size = equiv_classes_vec.size();
+        //Iterates by eq classes
+        for (size_t p = 0; p < size; ++p) {
+            size_t set_size = equiv_classes_vec[p].dif1.size();
+            std::map<size_t, std::vector<std::string>> spectPunctVV1;
+            std::map<size_t, std::vector<std::string>> spectPunctVV2;
+            //iterates by cols to find not punctured
+            for (size_t i = 0; i < len; ++i) {
+                if (!inSSDataFirst(equiv_classes_vec[p], i)) {
+                    spectPunctVV1[i] = spectPunctVector(c1, equiv_classes_vec[p].used1,
+                                                               i, equiv_classes_vec[p].dif1,
+                                                               len, set_size, invariant);
+                }
+                if (!inSSDataSecond(equiv_classes_vec[p], i)) {
+                    spectPunctVV2[i] = spectPunctVector(c2, equiv_classes_vec[p].used2,
+                                                               i, equiv_classes_vec[p].dif2,
+                                                               len, set_size, invariant);
+                }
+            }
+            printMVS(spectPunctVV1);
+            std::cout << std::endl;
+            printMVS(spectPunctVV2);
+        }
+        break;
+    }
+    return ans;
 }
 
 int main() {
@@ -145,11 +274,12 @@ int main() {
                           {1, 1, 0, 1, 1},});
     //SSA(code2, code3);
     //SSA(code4, code5);
-    codes::RMCode rm(5, 3);
-    codes::RMCode rm2(5, 3);
+    codes::RMCode rm(2, 3);
+    codes::RMCode rm2(2, 3);
     codes::Lincode rm_code(rm.getBasis());
     codes::Lincode rm_code2(rm2.getBasis());
-    SSA(rm_code, rm_code2, invariant_weight);
+    //SSA(rm_code, rm_code2, invariant_weight);
     //SSA(rm_code, rm_code2, invariant_size);
-    SSA(code5, code4, invariant_weight);
+    //SSA(code5, code4, invariant_weight);
+    SSA(rm_code, rm_code2, invariant_weight);
 }
