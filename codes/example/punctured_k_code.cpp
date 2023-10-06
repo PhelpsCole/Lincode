@@ -21,6 +21,11 @@ struct ComplEqClData {
     size_t new_used2;
 };
 
+struct AnsParamSet {
+    std::vector<size_t> ans;
+    std::vector<SSAData> newEquivClasses;
+};
+
 bool inSSDataFirst(const SSAData &d, size_t elem) {
     return std::find(d.dif1.begin(), d.dif1.end(), elem) != d.dif1.end() ||
            (d.used1.size() && std::find(d.used1.begin(), d.used1.end(), elem) != d.used1.end());
@@ -36,10 +41,10 @@ spectPunctVector(const codes::Lincode &c,
                  std::vector<size_t> &used, size_t i,
                  std::vector<size_t> &dif, size_t set_size,
                  std::function<std::string(const codes::Lincode &)> invariant) {
-    std::vector<size_t> columns;
     std::vector<SpectVectData> res;
     //iterates by punct codes in eq class
     for (size_t j = 0; j < set_size; ++j) {
+        std::vector<size_t> columns;
         columns.insert(columns.end(), used.begin(), used.end());
         columns.push_back(i);
         columns.push_back(dif[j]);
@@ -114,14 +119,15 @@ void printVPV(std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> &
     std::cout << std::endl;
 }
 
-void printMSVD(const std::map<size_t, std::vector<SpectVectData>> &map) {
+void printMSVD(const std::map<size_t, std::vector<SpectVectData>> &map,
+               std::vector<size_t> used) {
     std::cout << "printMSVD" << std::endl;
     for (auto iter = map.begin(); iter != map.end(); ++iter) {
         //std::cout << vv[i].size() << std::endl;
         for (size_t j = 0; j < iter->second.size(); ++j) {
             std::cout << "[" << iter->first << ", " << iter->second[j].dif << "]: ";
             std::cout << "spectr: {" << iter->second[j].spectr << "}, used_columns: ";
-            //printV(iter->second[j].used);
+            printV(used);
         }
         std::cout << std::endl;
     }
@@ -229,7 +235,7 @@ std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
         }
     }
     printDD(equiv_classes);
-    //parse classes and creates n-terative algorithm
+    //parse classes to vector to start n-terative algorithm
     std::vector<size_t> ans(len);
     std::vector<SSAData> equiv_classes_vec;
     for (auto const &elem: equiv_classes) {
@@ -239,14 +245,14 @@ std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
             std::vector<size_t> v1(elem.second.first.begin(), elem.second.first.end());
             std::vector<size_t> v2(elem.second.second.begin(), elem.second.second.end());
             if (v1.size() == 1) {
-                ans[v1[0]] = v2[0];
+                ans[v1[0]] = v2[0] + 1;
             } else {
                 sort(v1.begin(), v1.end());
                 sort(v2.begin(), v2.end());
                 SSAData new_data;
                 new_data.dif1 = v1;
                 new_data.used1 = {};
-                new_data.dif2 = v1;
+                new_data.dif2 = v2;
                 new_data.used2 = {};
                 equiv_classes_vec.push_back(new_data);
             }
@@ -272,11 +278,17 @@ std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
                                                     set_size, invariant);
             }
         }
-        printMSVD(spectPunctVV1);
+        printMSVD(spectPunctVV1, equiv_classes_vec[p].used1);
         std::cout << std::endl;
-        printMSVD(spectPunctVV2);
-        for (auto iter = spectPunctVV1.begin(); iter != spectPunctVV1.end(); ++iter) {
-            for (auto iter2 = spectPunctVV2.begin(); iter2 != spectPunctVV2.end(); ++iter2) {
+        printMSVD(spectPunctVV2, equiv_classes_vec[p].used2);
+        bool candidateEmpty = true;
+        bool found_minimal = false;
+        AnsParamSet candidateAns;
+        for (auto iter = spectPunctVV1.begin(); !found_minimal && iter != spectPunctVV1.end(); ++iter) {
+            AnsParamSet newCandidateAns;
+            newCandidateAns.ans = ans;
+            newCandidateAns.newEquivClasses = std::vector<SSAData>();
+            for (auto iter2 = spectPunctVV2.begin(); !found_minimal && iter2 != spectPunctVV2.end(); ++iter2) {
                 std::map<std::string, ComplEqClData> complexEquivClasses;
                 bool found;
                 for (size_t i = 0; i < iter->second.size(); ++i) {
@@ -289,14 +301,14 @@ std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
                                 ComplEqClData tmp;
                                 std::set<size_t> tmpSet{iter->second[i].dif};
                                 tmp.dif_set1 = tmpSet;
-                                std::set<size_t> tmpSet2{iter2->second[i].dif};
+                                std::set<size_t> tmpSet2{iter2->second[j].dif};
                                 tmp.dif_set2 = tmpSet2;
                                 tmp.new_used1 = iter->first;
                                 tmp.new_used2 = iter2->first;
                                 complexEquivClasses[iter->second[i].spectr] = tmp;
                             } else {
                                 complexEquivClasses[iter->second[i].spectr].dif_set1.insert(iter->second[i].dif);
-                                complexEquivClasses[iter2->second[i].spectr].dif_set2.insert(iter2->second[i].dif);
+                                complexEquivClasses[iter2->second[i].spectr].dif_set2.insert(iter2->second[j].dif);
                             }
                         }
                     }
@@ -308,9 +320,54 @@ std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
                     std::cout << iter->first << " " << iter2->first << std::endl;
                     printMCECD(complexEquivClasses);
                     std::cout << std::endl;
-                    complexEquivClasses.clear();
                 }
+                if (found) {
+                    for (auto const &elem: complexEquivClasses) {
+                        std::vector<size_t> v1(elem.second.dif_set1.begin(), elem.second.dif_set1.end());
+                        std::vector<size_t> v2(elem.second.dif_set2.begin(), elem.second.dif_set2.end());
+                        std::vector<size_t> copy_ans(ans);
+                        if (v1.size() == 1) {
+                            //maybe mistake here
+                            newCandidateAns.ans[v1[0]] = v2[0] + 1;
+                        } else {
+                            sort(v1.begin(), v1.end());
+                            sort(v2.begin(), v2.end());
+                            SSAData new_data;
+                            new_data.dif1 = v1;
+                            new_data.used1 = {};
+                            new_data.used1.insert(new_data.used1.end(),
+                                                  equiv_classes_vec[p].used1.begin(),
+                                                  equiv_classes_vec[p].used1.end());
+                            new_data.dif2 = v2;
+                            new_data.used2 = {};
+                            new_data.used2.insert(new_data.used2.end(),
+                                                  equiv_classes_vec[p].used2.begin(),
+                                                  equiv_classes_vec[p].used2.end());
+                            newCandidateAns.newEquivClasses.push_back(new_data);
+                        }
+                    }
+                    if (newCandidateAns.newEquivClasses.size() == 0) {
+                        candidateAns = newCandidateAns;
+                        found_minimal = true;
+                    } else if (candidateEmpty || newCandidateAns.newEquivClasses.size() <
+                                                 candidateAns.newEquivClasses.size()) {
+                        candidateAns = newCandidateAns;
+                        candidateEmpty = false;
+                    }
+                }
+                complexEquivClasses.clear();
+            printV(ans);
             }
+        }
+        printV(candidateAns.ans);
+        if (candidateEmpty) {
+            return std::vector<size_t>(0);
+        }
+        ans = candidateAns.ans;
+        if (candidateAns.newEquivClasses.size()) {
+            equiv_classes_vec.insert(equiv_classes_vec.end(),
+                                     candidateAns.newEquivClasses.begin(),
+                                     candidateAns.newEquivClasses.end());
         }
     }
     return ans;
@@ -347,6 +404,6 @@ int main() {
     codes::Lincode rm_code2(rm2.getBasis());
     //SSA(rm_code, rm_code2, invariant_weight);
     //SSA(rm_code, rm_code2, invariant_size);
-    //SSA(code5, code4, invariant_weight);
+    //SSA(code4, code5, invariant_weight);
     SSA(rm_code, rm_code2, invariant_weight);
 }
