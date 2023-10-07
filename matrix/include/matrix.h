@@ -1,5 +1,5 @@
-#ifndef MINE_MATRIX
-#define MINE_MATRIX
+#ifndef MINE_MATRIX_H
+#define MINE_MATRIX_H
 
 #include <vector>
 #include <stdexcept>
@@ -70,4 +70,4 @@ Matrix solution(Matrix &a, Matrix &b);
 
 } // namespace matrix
 
-#endif // MINE_MATRIX
+#endif // MINE_MATRIX_H

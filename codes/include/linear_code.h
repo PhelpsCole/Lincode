@@ -1,5 +1,3 @@
-#include <functional>
-#include <set>
 #include "matrix.h"
 #include "algorithms.h"
 

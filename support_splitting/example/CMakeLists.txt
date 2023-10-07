@@ -1,0 +1,2 @@
+link_libraries(support_splitting)
+add_executable(test_ssa test_ssa.cpp)
