@@ -12,19 +12,21 @@ void printV(const std::vector<T> &v) {
     }
     std::cout << std::endl;
 }
-void printVV(std::vector<std::vector<size_t>> &vv);
-void printVPV(std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> &v);
+void printVV(const std::vector<std::vector<size_t>> &vv);
+void printVPV(const std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> &v);
 
 void printMSVD(const std::map<size_t, std::vector<SpectVectData>> &map, std::vector<size_t> used);
-void printCC(std::vector<codes::Lincode> &cc);
+
+void printCC(const std::vector<codes::Lincode> &cc);
 
 void printD(const std::map<std::string, std::vector<std::pair<size_t, size_t>>> &d);
-
 void printDD(const std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> &d);
 
-void printVSSAData(std::vector<SSAData> &v);
+void printVSSAData(const std::vector<SSAData> &v);
 
-void printMCECD(std::map<std::string, ComplEqClData> &d);
+void printMCECD(const std::map<std::string, ComplEqClData> &d);
+
+void printAnsCandidate(const AnsParamSet &);
 
 } //namespace test_printers
 } //namespace codes

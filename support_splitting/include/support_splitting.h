@@ -32,11 +32,14 @@ struct ComplEqClData {
 
 struct AnsParamSet {
     std::vector<size_t> ans;
+    size_t cntFound;
     std::vector<SSAData> newEquivClasses;
 };
 
 bool inSSDataFirst(const SSAData &d, size_t elem);
 bool inSSDataSecond(const SSAData &d, size_t elem);
+
+bool isBetterCandidate(const AnsParamSet &, const AnsParamSet &);
 
 std::vector<SpectVectData>
 spectPunctVector(const codes::Lincode &c, std::vector<size_t> &used,
@@ -52,8 +55,9 @@ std::string invariant_size(const codes::Lincode &code);
 
 } //namespace invariants
 
-std::vector<size_t> SSA(const codes::Lincode &c1, const codes::Lincode &c2,
-                        std::function<std::string(const codes::Lincode &)> invariant);
+std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lincode &c2,
+                                      std::function<std::string(const codes::Lincode &)>
+                                      invariant);
 
 } //namespace codes
 

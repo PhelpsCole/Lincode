@@ -4,7 +4,7 @@ namespace codes {
 namespace test_printers {
 using namespace codes::support_ssa;
 
-void printVV(std::vector<std::vector<size_t>> &vv) {
+void printVV(const std::vector<std::vector<size_t>> &vv) {
     for (size_t i = 0; i < vv.size(); ++i) {
         //std::cout << vv[i].size() << std::endl;
         std::cout << "[" << i << "] ";
@@ -12,7 +12,7 @@ void printVV(std::vector<std::vector<size_t>> &vv) {
     }
 }
 
-void printVPV(std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> &v) {
+void printVPV(const std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> &v) {
     for (size_t j = 0; j < v.size(); ++j) {
         std::cout << j + 1 << " sets:" << std::endl;
         std::cout << "[1] ";
@@ -37,7 +37,7 @@ void printMSVD(const std::map<size_t, std::vector<SpectVectData>> &map,
     }
 }
 
-void printCC(std::vector<codes::Lincode> &cc) {
+void printCC(const std::vector<codes::Lincode> &cc) {
     for (size_t i = 0; i < cc.size(); ++i) {
         cc[i].printCode();
     }
@@ -69,18 +69,22 @@ void printDD(const std::map<std::string, std::pair<std::set<size_t>, std::set<si
     }
 }
 
-void printVSSAData(std::vector<SSAData> &v) {
+void printVSSAData(const std::vector<SSAData> &v) {
     for (size_t i = 0; i < v.size(); ++i) {
         std::cout << i << "'s data of SSData:" << std::endl;
+        std::cout << "Differences of 1: ";
         printV(v[i].dif1);
+        std::cout << "Differences of 2: ";
         printV(v[i].dif2);
+        std::cout << "Used of 1: ";
         printV(v[i].used1);
+        std::cout << "Used of 2: ";
         printV(v[i].used2);
         std::cout << std::endl;
     }
 }
 
-void printMCECD(std::map<std::string, ComplEqClData> &d) {
+void printMCECD(const std::map<std::string, ComplEqClData> &d) {
     std::cout << "printMCECD" << std::endl;
     for (auto iter = d.begin(); iter != d.end(); ++iter) {
         std::cout << "[" << iter->first << "]: dif_set1: {";
@@ -95,6 +99,14 @@ void printMCECD(std::map<std::string, ComplEqClData> &d) {
         }
         std::cout << "}, new_used2: [" << iter->second.new_used2 << "]" << std::endl;
     }
+}
+
+void printAnsCandidate(const AnsParamSet &ans) {
+    std::cout << "Ans vector: ";
+    printV(ans.ans);
+    std::cout << "Found new coords: " << ans.cntFound << std::endl;
+    std::cout << "Vector of datas:" << std::endl;
+    printVSSAData(ans.newEquivClasses);
 }
 
 } //namespace test_printers
