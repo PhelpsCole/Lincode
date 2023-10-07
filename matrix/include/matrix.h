@@ -9,6 +9,7 @@
 #include <iterator>
 #include <random>
 #include <map>
+#include <fstream>
 
 
 namespace matrix {
@@ -20,7 +21,7 @@ public:
     Matrix(const std::vector<std::vector<char>> &vec);
     Matrix(std::vector<char> &vec, bool isTransposed = false);
     Matrix(size_t rows, size_t cols, std::string &str);
-    Matrix(std::string &str, char sep='\n');
+    Matrix(std::string &str, char tabs = '\0', char sep='\n');
     Matrix(const Matrix &) = default;
     ~Matrix() = default;
 
@@ -67,6 +68,8 @@ Matrix generateRandomPermutation(size_t n, size_t p);
 
 Matrix solution_transposed(Matrix &a, Matrix &b);
 Matrix solution(Matrix &a, Matrix &b);
+
+Matrix matrFromFile(const std::string &filename, char col_sep = ' ', char row_sep = '\n');
 
 } // namespace matrix
 

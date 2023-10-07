@@ -70,6 +70,7 @@ void printDD(const std::map<std::string, std::pair<std::set<size_t>, std::set<si
 }
 
 void printVSSAData(const std::vector<SSAData> &v) {
+    std::cout << "printVSSAData" << std::endl;
     for (size_t i = 0; i < v.size(); ++i) {
         std::cout << i << "'s data of SSData:" << std::endl;
         std::cout << "Differences of 1: ";

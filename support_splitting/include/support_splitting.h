@@ -50,8 +50,9 @@ spectPunctVector(const codes::Lincode &c, std::vector<size_t> &used,
 
 namespace invariants {
 
-std::string invariant_weight(const codes::Lincode &code);
-std::string invariant_size(const codes::Lincode &code);
+std::string invariantWeightBasis(const codes::Lincode &code);
+std::string invariantWeightHull(const codes::Lincode &code);
+std::string invariantHullSize(const codes::Lincode &code);
 
 } //namespace invariants
 

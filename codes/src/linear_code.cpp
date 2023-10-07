@@ -36,6 +36,16 @@ Lincode::Lincode(const matrix::Matrix &matr, bool check)
     }
 }
 
+Lincode::Lincode(std::string &str,  char tabs, char sep, bool check) {
+    matrix::Matrix matr(str, tabs, sep);
+    k = matr.rows();
+    n = matr.cols();
+    basis = matr.toVectors();
+    if (check && incorrect_basis(basis)) {
+        throw std::invalid_argument("Incorrect inputted basis.");
+    }
+}
+
 size_t Lincode::len() const {
     return n;
 }
@@ -207,7 +217,5 @@ Lincode intersect(Lincode &first, Lincode &second) {
     first.dual();
     return first;
 }
-
-//matrix::Matrix SSA(const Lincode &c1, const Lincode &c2);
 
 } // namespace codes

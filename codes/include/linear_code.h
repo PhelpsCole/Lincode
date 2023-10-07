@@ -10,6 +10,7 @@ public:
     Lincode(const std::vector<std::vector<char>> &, bool check_basis = false);
     Lincode(const Lincode &, bool check_basis = false);
     Lincode(const matrix::Matrix &, bool check_basis = false);
+    Lincode(std::string &,  char tabs = '\0', char sep = '\n', bool check_basis = false);
 
     size_t size() const;
     size_t len() const;
@@ -40,8 +41,5 @@ void addToBinVector(std::vector<char> &, size_t);
 
 Lincode sum(const Lincode &, const Lincode &);
 Lincode intersect(Lincode &, Lincode &);
-
-//matrix::Matrix SSA(const Lincode &, const Lincode &);
-
 
 } // namespace codes

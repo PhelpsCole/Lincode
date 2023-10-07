@@ -210,12 +210,12 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
                             sort(v2.begin(), v2.end());
                             SSAData new_data;
                             new_data.dif1 = v1;
-                            new_data.used1 = {};
+                            new_data.used1 = {elem.second.new_used1};
                             new_data.used1.insert(new_data.used1.end(),
                                                   equiv_classes_vec[p].used1.begin(),
                                                   equiv_classes_vec[p].used1.end());
                             new_data.dif2 = v2;
-                            new_data.used2 = {};
+                            new_data.used2 = {elem.second.new_used2};
                             new_data.used2.insert(new_data.used2.end(),
                                                   equiv_classes_vec[p].used2.begin(),
                                                   equiv_classes_vec[p].used2.end());
@@ -231,7 +231,7 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
                         std::cout << "Prev candidate:" << std::endl;
                         printAnsCandidate(candidateAns);
                         std::cout << "New candidate:" << std::endl;
-                        printAnsCandidate(candidateAns);
+                        printAnsCandidate(newCandidateAns);
                         if (newCandidateAns.newEquivClasses.size() == 0) {
                             candidateAns = newCandidateAns;
                             found_minimal = true;
