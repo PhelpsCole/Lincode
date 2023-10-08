@@ -1,93 +1,17 @@
 #include "support_splitting.h"
+#include "ssa_supports.h"
+
 
 namespace codes {
-
-namespace support_ssa {
-
-bool inSSDataFirst(const SSAData &d, size_t elem) {
-    return std::find(d.dif1.begin(), d.dif1.end(), elem) != d.dif1.end() ||
-           (d.used1.size() && std::find(d.used1.begin(), d.used1.end(), elem) != d.used1.end());
-}
-
-bool inSSDataSecond(const SSAData &d, size_t elem) {
-    return std::find(d.dif2.begin(), d.dif2.end(), elem) != d.dif2.end() ||
-           (d.used2.size() && std::find(d.used2.begin(), d.used2.end(), elem) != d.used2.end());
-}
-
-std::vector<SpectVectData>
-spectPunctVector(const codes::Lincode &c,
-                 std::vector<size_t> &used, size_t i,
-                 std::vector<size_t> &dif, size_t set_size,
-                 std::function<std::string(const codes::Lincode &)> invariant) {
-    std::vector<SpectVectData> res;
-    // Iterates by punct codes in eq class
-    for (size_t j = 0; j < set_size; ++j) {
-        std::vector<size_t> columns;
-        columns.insert(columns.end(), used.begin(), used.end());
-        columns.push_back(i);
-        columns.push_back(dif[j]);
-        codes::Lincode punct = c.punctured(columns);
-        SpectVectData new_data;
-        new_data.spectr = invariant(punct);
-        new_data.dif = dif[j];
-        res.push_back(new_data);
-    }
-    return res;
-}
-
-bool isBetterCandidate(const AnsParamSet &newCand, const AnsParamSet &cand) {
-    if (newCand.cntFound > cand.cntFound) {
-        return true;
-    }
-    return newCand.newEquivClasses.size() > cand.newEquivClasses.size();
-}
-
-} //namespace support_ssa
-
-namespace invariants {
-
-std::string invariant_weight(const codes::Lincode &code) {
-    std::vector<size_t> spectr = code.spectrum_basis();
-    std::ostringstream ss;
-    for (size_t i = 0; i < spectr.size(); ++i) {
-        ss << std::to_string(spectr[i]) << ";";
-    }
-    return ss.str();
-}
-
-std::string invariant_size(const codes::Lincode &code) {
-    codes::Lincode hull = code.hull();
-    //hull.printCode();
-    return std::to_string(hull.size());
-}
-
-} //namespace invariants
-
 using namespace codes::support_ssa;
 using namespace codes::invariants;
 
-// Returns vector v(i) = j
-std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lincode &c2,
-                                      std::function<std::string(const codes::Lincode &)>
-                                      invariant) {
-    if (c1.len() != c2.len()) {
-        // Lenghts of code should be the same
-        return std::vector<size_t>(0);
-    }
-    size_t len = c1.len();
+// Init vector of classes with updating answer
+std::vector<SSAData> initEquivClassesVector(const std::vector<std::string> &spectPunct1,
+                                            const std::vector<std::string> &spectPunct2,
+                                            size_t len, std::vector<size_t> &ans) {
+    // Creates equivalation classes {invariant : <set, set>}
     std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> equiv_classes;
-    std::vector<std::string> spectPunct1(len);
-    std::vector<std::string> spectPunct2(len);
-    std::vector<size_t> columns(1);
-    // Creates invariants of punctured codes
-    for (size_t i = 0; i < len; ++i) {
-        columns[0] = i;
-        codes::Lincode punct = c1.punctured(columns);
-        spectPunct1[i] = invariant(punct);
-        punct = c2.punctured(columns);
-        spectPunct2[i] = invariant(punct);
-    }
-    // Creates equivalation classes
     for (size_t i = 0; i < len; ++i) {
         for (size_t j = 0; j < len; ++j) {
             if (spectPunct1[i] == spectPunct2[j]) {
@@ -102,20 +26,18 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
             }
         }
     }
-    // Parse classes to vector to start n-terative algorithm
-    std::vector<size_t> ans(len);
     std::vector<SSAData> equiv_classes_vec;
+    // Parse classes to vector to start n-terative algorithm
     for (auto const &elem: equiv_classes) {
         if (elem.second.first.size() != elem.second.second.size()) {
-            return std::vector<size_t>(0);
+            ans = std::vector<size_t>(0);
+            return equiv_classes_vec;
         } else {
             std::vector<size_t> v1(elem.second.first.begin(), elem.second.first.end());
             std::vector<size_t> v2(elem.second.second.begin(), elem.second.second.end());
             if (v1.size() == 1) {
                 ans[v1[0]] = v2[0] + 1;
             } else {
-                sort(v1.begin(), v1.end());
-                sort(v2.begin(), v2.end());
                 SSAData new_data;
                 new_data.dif1 = v1;
                 new_data.used1 = {};
@@ -125,7 +47,68 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
             }
         }
     }
-    // Iterates till vector ends
+    return equiv_classes_vec;
+}
+
+// Finds candidate for parsing
+AnsParamSet candidateFinder(const std::map<std::string, ComplEqClData> &complexEquivClasses,
+                            const std::vector<size_t> &ans, bool &found,
+                            const std::vector<size_t> &used1, const std::vector<size_t> &used2) {
+    AnsParamSet newCandidateAns;
+    newCandidateAns.ans = ans;
+    newCandidateAns.cntFound = 0;
+    newCandidateAns.newEquivClasses = std::vector<SSAData>();
+    for (auto const &elem: complexEquivClasses) {
+        std::vector<size_t> v1(elem.second.dif_set1.begin(), elem.second.dif_set1.end());
+        std::vector<size_t> v2(elem.second.dif_set2.begin(), elem.second.dif_set2.end());
+        std::vector<size_t> copy_ans(ans);
+        if (v1.size() != v2.size()) {
+            // Bad candidate, |difs1| != |difs2|
+            found = false;
+            break;
+        } else if (v1.size() == 1) {
+            newCandidateAns.ans[v1[0]] = v2[0] + 1;
+            ++newCandidateAns.cntFound;
+        } else {
+            SSAData new_data;
+            new_data.dif1 = v1;
+            new_data.used1 = {elem.second.new_used1};
+            new_data.used1.insert(new_data.used1.end(), used1.begin(), used1.end());
+            new_data.dif2 = v2;
+            new_data.used2 = {elem.second.new_used2};
+            new_data.used2.insert(new_data.used2.end(), used2.begin(), used2.end());
+            newCandidateAns.newEquivClasses.push_back(new_data);
+        }
+    }
+    return newCandidateAns;
+}
+
+// Returns vector v(i) = j
+std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lincode &c2,
+                                      std::function<std::string(const codes::Lincode &)>
+                                      invariant) {
+    if (c1.len() != c2.len()) {
+        // Lenghts of code should be the same
+        return std::vector<size_t>(0);
+    }
+    size_t len = c1.len();
+    std::vector<std::string> spectPunct1(len);
+    std::vector<std::string> spectPunct2(len);
+    std::vector<size_t> columns(1);
+    // Create invariants of punctured codes
+    for (size_t i = 0; i < len; ++i) {
+        columns[0] = i;
+        codes::Lincode punct = c1.punctured(columns);
+        spectPunct1[i] = invariant(punct);
+        punct = c2.punctured(columns);
+        spectPunct2[i] = invariant(punct);
+    }
+    std::vector<size_t> ans(len);
+    std::vector<SSAData> equiv_classes_vec = initEquivClassesVector(spectPunct1, spectPunct2, len, ans);
+    if (ans.size() == 0) {
+        // Parsed classes sizes not equal
+        return std::vector<size_t>(0);
+    }
     // Iterates by eq classes while they will not ends
     for (size_t p = 0; p < equiv_classes_vec.size(); ++p) {
         size_t set_size = equiv_classes_vec[p].dif1.size();
@@ -147,14 +130,12 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
         bool found_minimal = false;
         AnsParamSet candidateAns;
         bool candidateEmpty = true;
+        // Iterates by sets of new punctured codes
         for (auto iter = spectPunctVV1.begin(); !found_minimal && iter != spectPunctVV1.end(); ++iter) {
-            AnsParamSet newCandidateAns;
-            newCandidateAns.ans = ans;
-            newCandidateAns.cntFound = 0;
-            newCandidateAns.newEquivClasses = std::vector<SSAData>();
             for (auto iter2 = spectPunctVV2.begin(); !found_minimal && iter2 != spectPunctVV2.end(); ++iter2) {
                 std::map<std::string, ComplEqClData> complexEquivClasses;
                 bool found;
+                // Creates new equiv classes
                 for (size_t i = 0; i < iter->second.size(); ++i) {
                     found = false;
                     for (size_t j = 0; j < iter2->second.size(); ++j) {
@@ -181,34 +162,10 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
                     }
                 }
                 if (found) {
-                    for (auto const &elem: complexEquivClasses) {
-                        std::vector<size_t> v1(elem.second.dif_set1.begin(), elem.second.dif_set1.end());
-                        std::vector<size_t> v2(elem.second.dif_set2.begin(), elem.second.dif_set2.end());
-                        std::vector<size_t> copy_ans(ans);
-                        if (v1.size() != v2.size()) {
-                            // Bad candidate, |difs1| != |difs2|
-                            found = false;
-                            break;
-                        } else if (v1.size() == 1) {
-                            newCandidateAns.ans[v1[0]] = v2[0] + 1;
-                            ++newCandidateAns.cntFound;
-                        } else {
-                            sort(v1.begin(), v1.end());
-                            sort(v2.begin(), v2.end());
-                            SSAData new_data;
-                            new_data.dif1 = v1;
-                            new_data.used1 = {elem.second.new_used1};
-                            new_data.used1.insert(new_data.used1.end(),
-                                                  equiv_classes_vec[p].used1.begin(),
-                                                  equiv_classes_vec[p].used1.end());
-                            new_data.dif2 = v2;
-                            new_data.used2 = {elem.second.new_used2};
-                            new_data.used2.insert(new_data.used2.end(),
-                                                  equiv_classes_vec[p].used2.begin(),
-                                                  equiv_classes_vec[p].used2.end());
-                            newCandidateAns.newEquivClasses.push_back(new_data);
-                        }
-                    }
+                    // Finds candidate and updates found
+                    AnsParamSet newCandidateAns = candidateFinder(complexEquivClasses, ans, found,
+                                                                  equiv_classes_vec[p].used1,
+                                                                  equiv_classes_vec[p].used2);
                     if (found) {
                         if (newCandidateAns.newEquivClasses.size() == 0) {
                             candidateAns = newCandidateAns;
@@ -233,6 +190,9 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
                                      candidateAns.newEquivClasses.begin(),
                                      candidateAns.newEquivClasses.end());
         }
+    }
+    if (ansHaveZeroes(ans)) {
+        return std::vector<size_t>(0);
     }
     return ans;
 }

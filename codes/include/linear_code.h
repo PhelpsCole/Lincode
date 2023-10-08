@@ -42,4 +42,6 @@ void addToBinVector(std::vector<char> &, size_t);
 Lincode sum(const Lincode &, const Lincode &);
 Lincode intersect(Lincode &, Lincode &);
 
+Lincode mcEliece(const Lincode &);
+
 } // namespace codes

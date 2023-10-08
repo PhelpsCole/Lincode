@@ -1,4 +1,5 @@
 #include "support_splitting.h"
+#include "ssa_supports.h"
 
 namespace codes {
 namespace support_ssa {
@@ -39,6 +40,15 @@ bool isBetterCandidate(const AnsParamSet &newCand, const AnsParamSet &cand) {
         return true;
     }
     return newCand.newEquivClasses.size() > cand.newEquivClasses.size();
+}
+
+bool ansHaveZeroes(const std::vector<size_t> &ans) {
+    for (size_t i = 0; i < ans.size(); ++i) {
+        if (ans[i] == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } //namespace support_ssa

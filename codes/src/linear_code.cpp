@@ -122,41 +122,6 @@ Lincode Lincode::punctured(std::vector<size_t> &columns) const {
     return copy;
 }
 
-std::vector<char> Lincode::encode(std::vector<char> &v) {
-    if (v.size() != k) {
-        throw std::invalid_argument("Incorrect size of message vector.");
-    }
-    matrix::Matrix code_matr = toMatrix();
-    std::vector<char> res = code_matr.multiplyVectorByMatrix(v);
-    return res;
-}
-
-void Lincode::basisView() {
-    matrix::Matrix matr = toMatrix();
-    matr.convertToBasis();
-    k = matr.rows();
-    n = matr.cols();
-    basis = matr.toVectors();
-}
-
-void Lincode::dual() {
-    matrix::Matrix m(basis);
-    m.orthogonal();
-    k = m.rows();
-    n = m.cols();
-    basis = m.toVectors();
-}
-
-void Lincode::puncture(std::vector<size_t> &columns) {
-    std::vector<size_t> mask(n);
-    for (size_t row = 0; row < k; ++row) {
-        std::vector<char> &v = basis[row];
-        for (size_t i = 0; i < columns.size(); ++i) {
-            v[columns[i]] = 0;
-        }
-    }
-}
-
 void Lincode::printCode() const {
     std::cout << "k = " << k << ", n = " << n << std::endl;
     for (size_t i = 0; i < k; ++i) {
@@ -196,26 +161,6 @@ void addToBinVector(std::vector<char> &v, size_t n) {
             n >>= 1;
         }
     }
-}
-
-Lincode sum(const Lincode &first, const Lincode &second) {
-    matrix::Matrix a(first.toMatrix());
-    matrix::Matrix b(second.toMatrix());
-    a.concatenateByColumns(b);
-    a.convertToBasis();
-    return Lincode(a);
-}
-
-Lincode intersect(Lincode &first, Lincode &second) {
-    first.dual();
-    second.dual();
-    matrix::Matrix a(first.toMatrix());
-    matrix::Matrix b(second.toMatrix());
-    a.concatenateByColumns(b);
-    a.convertToBasis();
-    first = Lincode(a);
-    first.dual();
-    return first;
 }
 
 } // namespace codes
