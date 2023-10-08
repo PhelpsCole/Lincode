@@ -80,4 +80,16 @@ Matrix matrFromFile(const std::string& filename, char col_sep, char row_sep) {
     }
 }
 
+// {1, 2, 3, 4} -> {1, 2, 3, 4}, p*M
+// Sets 0 if not found
+Matrix permFromVector(const std::vector<size_t> &v) {
+    Matrix perm(v.size(), v.size());
+    for (size_t i = 0; i < v.size(); ++i) {
+        if (v[i] != 0) {
+            perm.at(i, v[i] - 1) = 1;
+        }
+    }
+    return perm;
+}
+
 } // namespace matrix

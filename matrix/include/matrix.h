@@ -49,6 +49,7 @@ public:
     std::vector<size_t> gaussElimination(bool = false, std::vector<size_t> = {});
     void echelon(std::vector<size_t> = {});
     void orthogonal();
+    void hadamardProduct(const Matrix &);
     void concatenateByRows(const Matrix &);
     void concatenateByColumns(const Matrix &);
     void convertToBasis();
@@ -65,6 +66,8 @@ private:
 Matrix generateRandomMatrix(size_t rows, size_t cols);
 Matrix generateRandomNonSingular(size_t rows, size_t cols);
 Matrix generateRandomPermutation(size_t n, size_t p);
+Matrix permFromVector(const std::vector<size_t> &);
+
 
 Matrix solution_transposed(Matrix &a, Matrix &b);
 Matrix solution(Matrix &a, Matrix &b);

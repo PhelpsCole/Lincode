@@ -12,7 +12,10 @@ namespace invariants {
 
 std::string invariantWeightBasis(const codes::Lincode &code);
 std::string invariantWeightHull(const codes::Lincode &code);
+std::string invariantWeightHullBasis(const codes::Lincode &code);
 std::string invariantHullSize(const codes::Lincode &code);
+std::string invariantHullHadSquareSize(const codes::Lincode &code);
+std::string invariantWeightHullHadSquare(const codes::Lincode &code);
 
 } //namespace invariants
 

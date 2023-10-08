@@ -1,12 +1,12 @@
 #[[]]
 add_library(support_splitting STATIC ssa.cpp
-                                     ssa_invariants.cpp
-                                     ssa_supports.cpp)
+                                     ssa_supports.cpp
+                                     invariants.cpp)
 #[[]]
 #[[
 add_library(support_splitting STATIC ssaTestVersion.cpp
-                                     ssa_invariants.cpp
                                      ssa_supports.cpp
+                                     invariants.cpp
                                      test_printers.cpp)
 ]]
 

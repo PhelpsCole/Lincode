@@ -1,41 +1,8 @@
 #include "matrix.h"
 
-void testMatrixVectorConstructors(size_t rows, size_t cols, std::vector<char> &basis,
-                            std::vector<std::vector<char>> &vec) {
-    std::cout << "STARTS testMatrixVectorConstructors" << std::endl;
-    std::cout << "Default constructor of " << rows << " x " << cols << " matrix:" << std::endl;
-    matrix::Matrix m(rows, cols);
-    m.printMatrix();
-    std::cout << "Constructor with vector of values:" << std::endl;
-    m = matrix::Matrix(rows, cols, basis);
-    m.printMatrix();
-    std::cout << "Constructor by vector of vectors:" << std::endl;
-    m = matrix::Matrix(vec);
-    m.printMatrix();
-    std::cout << "Constructor by isTransposed vector:" << std::endl;
-    m = matrix::Matrix(basis, true);
-    m.printMatrix();
-}
-
-void testMatrixStringConstructorSeparators(std::string &str, const char tab = '\0',
-                                           const char sep = '\n') {
-    std::cout << "Constructor by string with separators:" << std::endl;
-    matrix::Matrix m = matrix::Matrix(str, tab, sep);
-    m.printMatrix();
-}
-
-void testMatrixStringConstructors(size_t rows, size_t cols, std::string &str,
-                                  std::string &str2, const char tab = '\0', const char sep = '\n') {
-    std::cout << "STARTS testMatrixStringConstructors" << std::endl;
-    std::cout << "Constructor by string with matrix sizes:" << std::endl;
-    matrix::Matrix m(rows, cols, str);
-    m.printMatrix();
-    testMatrixStringConstructorSeparators(str2, tab, sep);
-}
-
 void testMatrixComputationsAndTranspose(matrix::Matrix &a, matrix::Matrix &b) {
     std::cout << "STARTS testMatrixComputationsAndTranspose" << std::endl;
-    std::cout << "Test operations on matrix a and b";
+    std::cout << "Test operations on matrix a and b" << std::endl;
     std::cout << "a:" << std::endl;
     a.printMatrix();
     std::cout << "b:" << std::endl;
@@ -49,6 +16,10 @@ void testMatrixComputationsAndTranspose(matrix::Matrix &a, matrix::Matrix &b) {
     c.printMatrix();
     std::cout << "a * b" << std::endl;
     c = a * b;
+    c.printMatrix();
+    std::cout << "a . b (Hadamard Product)" << std::endl;
+    c = a;
+    c.hadamardProduct(b);
     c.printMatrix();
 
     matrix::Matrix d = c;
@@ -134,7 +105,8 @@ void testMultiplyByVector(matrix::Matrix &m, std::vector<char> &v) {
     }
 }
 
-void testGenerators(size_t rows, size_t cols, size_t n, size_t p) {
+void testGenerators(size_t rows, size_t cols, size_t n, size_t p,
+                    std::vector<size_t> v) {
     std::cout << "STARTS testGenerators" << std::endl;
     matrix::Matrix m = matrix::generateRandomMatrix(rows, cols);
     std::cout << "Random matrix:" << std::endl;
@@ -145,6 +117,13 @@ void testGenerators(size_t rows, size_t cols, size_t n, size_t p) {
     std::cout << "Permutation matrix of " << p << " perms and "
               << n << " size:" << std::endl;
     m = matrix::generateRandomPermutation(n, p);
+    m.printMatrix();
+    std::cout << "Permutation from vector {";
+    for (size_t i = 0; i < v.size(); ++i) {
+        std::cout << v[i] << ", ";
+    }
+    std::cout << "}" << std::endl;
+    m = matrix::permFromVector(v);
     m.printMatrix();
 }
 
@@ -194,16 +173,6 @@ void testSolution() {
     c.printMatrix();
 }
 
-//void testMatrixFromFile(std::string &filename, char c = ' ', char r = '\n') {
-//    std::cout << "STARTS testMatrixFromFile" << std::endl;
-//    //std::cout << "Matrix from " << filename << std::endl;
-//    std::cout << "Input full path to your file with matrix:" << std::endl;
-//    std::cin >> filename;
-//    std::cout << filename << std::endl;
-//    matrix::Matrix m = matrix::matrFromFile(filename, c, r);
-//    m.printMatrix();
-//}
-
 
 int main() {
     std::string str = "010100\n101010\n000011";
@@ -213,24 +182,17 @@ int main() {
                                            {0, 0, 1, 1}},
                                    code2 = {{1, 0, 1},
                                             {0, 1, 1}};
-    std::vector<char> vec = {1, 0, 0, 1}, vec2 = {1, 0};
-    //testMatrixVectorConstructors(2, 2, vec, code);
-    std::string str2 = "010100101010000011";
-    std::string str3 = "0 1 0 1 0 0\n1 0 1 0 1 0\n0 0 0 0 1 1";
-    //testMatrixStringConstructors(3, 6, str2, str, '\n');
-    //testMatrixStringConstructorSeparators(str3, ' ', '\n');
+    std::vector<char> vec = {1, 0, 0, 1}, vec2 = {1, 0};=
     matrix::Matrix a({{1, 0}, {0, 1}});
     matrix::Matrix b({{1, 1}, {1, 1}});
-    //testMatrixComputationsAndTranspose(a, b);
+    testMatrixComputationsAndTranspose(a, b);
     matrix::Matrix m1(code);
     matrix::Matrix m2(str);
     matrix::Matrix m3(code2);
-    //testMatrixSimpleOperations(m1, 2, 3);
-    //testGenerators(5, 5, 5, 2);
-    //testMultiplyByVector(m3, vec2);
-    //testComplexOperations(m2);
-    //testSolution();
-    ////std::string filename = "./matr_1.txt";
-    ////testMatrixFromFile(filename);
+    testMatrixSimpleOperations(m1, 2, 3);
+    testGenerators(5, 5, 5, 2, {1, 7, 4, 2, 5, 6, 3});
+    testMultiplyByVector(m3, vec2);
+    testComplexOperations(m2);
+    testSolution();
     return 0;
 }

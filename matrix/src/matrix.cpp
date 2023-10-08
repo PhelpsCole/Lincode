@@ -42,6 +42,7 @@ Matrix Matrix::operator*(const Matrix &other) const {
 
 void Matrix::operator*=(const Matrix &other) {
     if (m_cols != other.m_rows) {
+        std::cout << m_cols << " " << other.m_rows << std::endl;
         throw std::invalid_argument("Matrix dimensions must match for multiplication.");
     }
     std::vector<char> result(m_rows * other.m_cols);

@@ -1,2 +1,3 @@
 link_libraries(support_splitting)
-add_executable(test_ssa test_ssa.cpp)
+add_executable(hardcored hardcored_tests.cpp)
+add_executable(generated generated_tests.cpp)

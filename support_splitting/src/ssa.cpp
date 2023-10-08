@@ -167,7 +167,8 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
     std::vector<SSAData> equiv_classes_vec = initEquivClassesVector(spectPunct1, spectPunct2, len, ans);
     if (ans.size() == 0) {
         // Parsed classes sizes not equal
-        return std::vector<size_t>(0);
+        //return std::vector<size_t>(0);
+        return ans;
     }
     // Iterates by eq classes while they will not ends
     for (size_t p = 0; p < equiv_classes_vec.size(); ++p) {
@@ -192,7 +193,8 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
                                                       spectPunctVV1, spectPunctVV2,
                                                       equiv_classes_vec[p]);
         if (candidateEmpty) {
-            return std::vector<size_t>(0);
+            //return std::vector<size_t>(0);
+            return ans;
         }
         ans = candidateAns.ans;
         if (candidateAns.newEquivClasses.size()) {
@@ -201,9 +203,9 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
                                      candidateAns.newEquivClasses.end());
         }
     }
-    if (ansHaveZeroes(ans)) {
-        return std::vector<size_t>(0);
-    }
+    //if (ansHaveZeroes(ans)) {
+    //    return std::vector<size_t>(0);
+    //}
     return ans;
 }
 

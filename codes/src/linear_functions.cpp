@@ -58,12 +58,12 @@ Lincode intersect(Lincode &first, Lincode &second) {
 }
 
 Lincode mcEliece(const Lincode &gCode) {
-	std::random_device rd;
+    std::random_device rd;
     std::mt19937 gen(rd());
     
-	size_t k = gCode.size();
-	size_t n = gCode.len();
-	matrix::Matrix m(gCode.toMatrix());
+    size_t k = gCode.size();
+    size_t n = gCode.len();
+    matrix::Matrix m(gCode.toMatrix());
     matrix::Matrix M = matrix::generateRandomNonSingular(k, k);
 
     std::uniform_int_distribution<int> distrib(1, n);

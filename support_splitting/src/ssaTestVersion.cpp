@@ -9,9 +9,9 @@ using namespace codes::invariants;
 using namespace codes::test_printers;
 
 // Init vector of classes with updating answer
-std::vector<SSAData> initEquivClassesVector(const std::vector<std::string> &spectPunct1,
-                                            const std::vector<std::string> &spectPunct2,
-                                            size_t len, std::vector<size_t> &ans) {
+std::vector<SSAData> initEquivClassesVector(std::vector<size_t> &ans, size_t len,
+                                            const std::vector<std::string> &spectPunct1,
+                                            const std::vector<std::string> &spectPunct2) {
     // Creates equivalation classes {invariant : <set, set>}
     std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> equiv_classes;
     for (size_t i = 0; i < len; ++i) {
@@ -183,11 +183,12 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
     std::cout << std::endl;
     printV(spectPunct2);
     std::vector<size_t> ans(len);
-    std::vector<SSAData> equiv_classes_vec = initEquivClassesVector(spectPunct1, spectPunct2, len, ans);
+    std::vector<SSAData> equiv_classes_vec = initEquivClassesVector(ans, len, spectPunct1, spectPunct2);
     printVSSAData(equiv_classes_vec);
     if (ans.size() == 0) {
         // Parsed classes sizes not equal
-        return std::vector<size_t>(0);
+        return ans;
+        //return std::vector<size_t>(0);
     }
     // Iterates by eq classes while they will not ends
     for (size_t p = 0; p < equiv_classes_vec.size(); ++p) {
@@ -216,7 +217,8 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
                                                       equiv_classes_vec[p]);
         printV(ans);
         if (candidateEmpty) {
-            return std::vector<size_t>(0);
+            //return std::vector<size_t>(0);
+            return ans;
         }
         ans = candidateAns.ans;
         if (candidateAns.newEquivClasses.size()) {
@@ -226,9 +228,9 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
         }
         printV(ans);
     }
-    if (ansHaveZeroes(ans)) {
-        return std::vector<size_t>(0);
-    }
+    //if (ansHaveZeroes(ans)) {
+    //    return std::vector<size_t>(0);
+    //}
     return ans;
 }
 
