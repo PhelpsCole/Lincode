@@ -1,3 +1,6 @@
+#ifndef SSA_SUPPORTS_H
+#define SSA_SUPPORTS_H
+
 #include "support_splitting.h"
 
 namespace codes {
@@ -41,3 +44,5 @@ spectPunctVector(const codes::Lincode &c, std::vector<size_t> &used,
 
 } //namespace support_ssa
 } //namespace codes
+
+#endif // SSA_SUPPORTS_H

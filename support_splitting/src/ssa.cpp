@@ -83,6 +83,66 @@ AnsParamSet candidateFinder(const std::map<std::string, ComplEqClData> &complexE
     return newCandidateAns;
 }
 
+//Finds best candidate and say if it's empty
+AnsParamSet foundBestCandidate(bool &candidateEmpty, const std::vector<size_t> &ans,
+                               const std::map<size_t, std::vector<SpectVectData>> &spectPunctVV1,
+                               const std::map<size_t, std::vector<SpectVectData>> &spectPunctVV2,
+                               const SSAData &equiv_class) {
+    bool found_minimal = false;
+    AnsParamSet candidateAns;
+    // Iterates by sets of new punctured codes
+    for (auto iter = spectPunctVV1.begin(); !found_minimal && iter != spectPunctVV1.end(); ++iter) {
+        for (auto iter2 = spectPunctVV2.begin(); !found_minimal && iter2 != spectPunctVV2.end(); ++iter2) {
+            std::map<std::string, ComplEqClData> complexEquivClasses;
+            bool found;
+            // Creates new equiv classes
+            for (size_t i = 0; i < iter->second.size(); ++i) {
+                found = false;
+                for (size_t j = 0; j < iter2->second.size(); ++j) {
+                    if (iter->second[i].spectr == iter2->second[j].spectr) {
+                        found = true;
+                        if (complexEquivClasses.find(iter->second[i].spectr)
+                            == complexEquivClasses.end()) {
+                            ComplEqClData tmp;
+                            std::set<size_t> tmpSet{iter->second[i].dif};
+                            tmp.dif_set1 = tmpSet;
+                            std::set<size_t> tmpSet2{iter2->second[j].dif};
+                            tmp.dif_set2 = tmpSet2;
+                            tmp.new_used1 = iter->first;
+                            tmp.new_used2 = iter2->first;
+                            complexEquivClasses[iter->second[i].spectr] = tmp;
+                        } else {
+                            complexEquivClasses[iter->second[i].spectr].dif_set1.insert(iter->second[i].dif);
+                            complexEquivClasses[iter2->second[i].spectr].dif_set2.insert(iter2->second[j].dif);
+                        }
+                    }
+                }
+                if (!found) {
+                    break;
+                }
+            }
+            if (found) {
+                // Finds candidate and updates found
+                AnsParamSet newCandidateAns = candidateFinder(complexEquivClasses, ans, found,
+                                                              equiv_class.used1, equiv_class.used2);
+                if (found) {
+                    if (newCandidateAns.newEquivClasses.size() == 0) {
+                        candidateAns = newCandidateAns;
+                        found_minimal = true;
+                        candidateEmpty = false;
+                    } else if (candidateEmpty ||
+                               isBetterCandidate(newCandidateAns, candidateAns)) {
+                        candidateAns = newCandidateAns;
+                        candidateEmpty = false;
+                    }
+                }
+            }
+            complexEquivClasses.clear();
+        }
+    }
+    return candidateAns;
+}
+
 // Returns vector v(i) = j
 std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lincode &c2,
                                       std::function<std::string(const codes::Lincode &)>
@@ -127,60 +187,10 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
                                                     set_size, invariant);
             }
         }
-        bool found_minimal = false;
-        AnsParamSet candidateAns;
         bool candidateEmpty = true;
-        // Iterates by sets of new punctured codes
-        for (auto iter = spectPunctVV1.begin(); !found_minimal && iter != spectPunctVV1.end(); ++iter) {
-            for (auto iter2 = spectPunctVV2.begin(); !found_minimal && iter2 != spectPunctVV2.end(); ++iter2) {
-                std::map<std::string, ComplEqClData> complexEquivClasses;
-                bool found;
-                // Creates new equiv classes
-                for (size_t i = 0; i < iter->second.size(); ++i) {
-                    found = false;
-                    for (size_t j = 0; j < iter2->second.size(); ++j) {
-                        if (iter->second[i].spectr == iter2->second[j].spectr) {
-                            found = true;
-                            if (complexEquivClasses.find(iter->second[i].spectr)
-                                == complexEquivClasses.end()) {
-                                ComplEqClData tmp;
-                                std::set<size_t> tmpSet{iter->second[i].dif};
-                                tmp.dif_set1 = tmpSet;
-                                std::set<size_t> tmpSet2{iter2->second[j].dif};
-                                tmp.dif_set2 = tmpSet2;
-                                tmp.new_used1 = iter->first;
-                                tmp.new_used2 = iter2->first;
-                                complexEquivClasses[iter->second[i].spectr] = tmp;
-                            } else {
-                                complexEquivClasses[iter->second[i].spectr].dif_set1.insert(iter->second[i].dif);
-                                complexEquivClasses[iter2->second[i].spectr].dif_set2.insert(iter2->second[j].dif);
-                            }
-                        }
-                    }
-                    if (!found) {
-                        break;
-                    }
-                }
-                if (found) {
-                    // Finds candidate and updates found
-                    AnsParamSet newCandidateAns = candidateFinder(complexEquivClasses, ans, found,
-                                                                  equiv_classes_vec[p].used1,
-                                                                  equiv_classes_vec[p].used2);
-                    if (found) {
-                        if (newCandidateAns.newEquivClasses.size() == 0) {
-                            candidateAns = newCandidateAns;
-                            found_minimal = true;
-                            candidateEmpty = false;
-                        } else if (candidateEmpty ||
-                                   isBetterCandidate(newCandidateAns, candidateAns)) {
-                            candidateAns = newCandidateAns;
-                            candidateEmpty = false;
-                        }
-                    }
-                }
-                complexEquivClasses.clear();
-            }
-        }
+        AnsParamSet candidateAns = foundBestCandidate(candidateEmpty, ans,
+                                                      spectPunctVV1, spectPunctVV2,
+                                                      equiv_classes_vec[p]);
         if (candidateEmpty) {
             return std::vector<size_t>(0);
         }

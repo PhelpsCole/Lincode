@@ -14,6 +14,7 @@ bool inSSDataSecond(const SSAData &d, size_t elem) {
            (d.used2.size() && std::find(d.used2.begin(), d.used2.end(), elem) != d.used2.end());
 }
 
+// Returns vector of spectrum data in punctured codes
 std::vector<SpectVectData>
 spectPunctVector(const codes::Lincode &c,
                  std::vector<size_t> &used, size_t i,

@@ -67,5 +67,5 @@ int main() {
     //Not equal, zero steps
     SSArunner(code8, code9, codes::invariants::invariantWeightBasis);
     //Mcliece Random result
-//    SSArunner(rm_code, codes::mcEliece(rm_code), codes::invariants::invariantWeightBasis);
+    SSArunner(rm_code, codes::mcEliece(rm_code), codes::invariants::invariantWeightBasis);
 }
