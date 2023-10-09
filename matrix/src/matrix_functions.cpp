@@ -53,6 +53,14 @@ Matrix generateRandomPermutation(size_t n, size_t p) {
     return Matrix(vv);
 }
 
+Matrix diag(size_t n, char elem) {
+    Matrix D(n, n);
+    for (size_t i = 0; i < n; ++i) {
+        D.at(i, i) = elem;
+    }
+    return D;
+}
+
 // Colculates Ax=B by Gauss-Jordan method
 Matrix solution(Matrix &a, Matrix &b) {
     Matrix c(a);
@@ -90,6 +98,19 @@ Matrix permFromVector(const std::vector<size_t> &v) {
         }
     }
     return perm;
+}
+bool isEqual(const Matrix &m1, const Matrix &m2) {
+    if (m1.cols() != m2.cols() || m1.rows() != m2.rows()) {
+        return false;
+    }
+    for (size_t i = 0; i < m1.rows(); ++i) {
+        for (size_t j = 0; j < m1.cols(); ++j) {
+            if (m1.at(i, j) != m2.at(i, j)) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 } // namespace matrix

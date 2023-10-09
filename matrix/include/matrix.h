@@ -41,6 +41,7 @@ public:
     std::vector<char> matrixToVector() const;
     size_t rank() const;
     std::vector<std::vector<char>> toVectors() const;
+    Matrix submatrix(const std::vector<size_t> &, const std::vector<size_t> &) const;
 
     void printMatrix() const;
     void printMatrixInBlocks(size_t row_num = 1, size_t col_num = 1) const;
@@ -67,12 +68,14 @@ Matrix generateRandomMatrix(size_t rows, size_t cols);
 Matrix generateRandomNonSingular(size_t rows, size_t cols);
 Matrix generateRandomPermutation(size_t n, size_t p);
 Matrix permFromVector(const std::vector<size_t> &);
+Matrix diag(size_t n, char elem);
 
 
 Matrix solution_transposed(Matrix &a, Matrix &b);
 Matrix solution(Matrix &a, Matrix &b);
 
 Matrix matrFromFile(const std::string &filename, char col_sep = ' ', char row_sep = '\n');
+bool isEqual(const Matrix &, const Matrix &);
 
 } // namespace matrix
 

@@ -4,16 +4,19 @@
 #include <functional>
 #include <set>
 #include "matrix.h"
-#include "linear_code.h"
-#include "rm_code.h"
+#include "codes.h"
 
 namespace codes {
 namespace invariants {
 
 std::string invariantWeightBasis(const codes::Lincode &code);
+//Bad for RM
 std::string invariantWeightHull(const codes::Lincode &code);
+//Bad
 std::string invariantWeightHullBasis(const codes::Lincode &code);
+//Bad
 std::string invariantHullSize(const codes::Lincode &code);
+//Bad
 std::string invariantHullHadSquareSize(const codes::Lincode &code);
 std::string invariantWeightHullHadSquare(const codes::Lincode &code);
 

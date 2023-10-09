@@ -12,6 +12,7 @@ std::string invariantWeightBasis(const codes::Lincode &code) {
     return ss.str();
 }
 
+// Bad for RM
 std::string invariantWeightHull(const codes::Lincode &code) {
     codes::Lincode hull = code.hull();
     //hull.printCode();
@@ -34,12 +35,14 @@ std::string invariantWeightHullBasis(const codes::Lincode &code) {
     return ss.str();
 }
 
+//Bad invariant
 std::string invariantHullSize(const codes::Lincode &code) {
     codes::Lincode hull = code.hull();
     //hull.printCode();
     return std::to_string(hull.size());
 }
 
+//Bad invariant
 std::string invariantHullHadSquareSize(const codes::Lincode &code) {
     matrix::Matrix hmatr(code.toMatrix());
     hmatr.hadamardProduct(hmatr);
@@ -55,7 +58,7 @@ std::string invariantWeightHullHadSquare(const codes::Lincode &code) {
     hmatr.hadamardProduct(hmatr);
     hull = codes::Lincode(hmatr);
     //hull.printCode();
-    std::vector<size_t> spectr = hull.spectrum();
+    std::vector<size_t> spectr = hull.spectrum_basis();
     std::ostringstream ss;
     for (size_t i = 0; i < spectr.size(); ++i) {
         ss << std::to_string(spectr[i]) << ";";

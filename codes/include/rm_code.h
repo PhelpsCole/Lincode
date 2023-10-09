@@ -1,3 +1,6 @@
+#ifndef RM_CODE_H
+#define RM_CODE_H
+
 #include <iostream>
 #include <vector>
 #include <list>
@@ -29,3 +32,5 @@ private:
 
 
 } // namespace codes
+
+#endif // RM_CODE_H

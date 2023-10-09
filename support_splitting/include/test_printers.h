@@ -13,6 +13,15 @@ void printV(const std::vector<T> &v) {
     }
     std::cout << std::endl;
 }
+
+template<typename T>
+void printVInd(const std::vector<T> &v) {
+    for (size_t j = 0; j < v.size(); ++j) {
+        std::cout << "(" << j + 1 << ", " << v[j] << ") ";
+    }
+    std::cout << std::endl;
+}
+
 void printVV(const std::vector<std::vector<size_t>> &vv);
 void printVPV(const std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> &v);
 

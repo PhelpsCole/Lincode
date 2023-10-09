@@ -33,7 +33,7 @@ std::vector<SSAData> initEquivClassesVector(std::vector<size_t> &ans, size_t len
     // Parse classes to vector to start n-terative algorithm
     for (auto const &elem: equiv_classes) {
         if (elem.second.first.size() != elem.second.second.size()) {
-            ans = std::vector<size_t>(0);
+            //ans = std::vector<size_t>(0);
             return equiv_classes_vec;
         } else {
             std::vector<size_t> v1(elem.second.first.begin(), elem.second.first.end());

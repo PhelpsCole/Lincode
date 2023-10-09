@@ -12,32 +12,37 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m) {
     size_t size = A.cols();
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<size_t> distrib(1, size);
+    std::uniform_int_distribution<size_t> distrib(1, size / 4 - 1);
     size_t p1 = distrib(gen);
     size_t p2 = distrib(gen);
     A *= matrix::generateRandomPermutation(size, p1);
     C *= matrix::generateRandomPermutation(size, p2);
     matrix::Matrix part1 = A;
     part1.concatenateByRows(A);
-    part1.concatenateByRows(part1);
+    part1.concatenateByRows(part1); // G^s|G^s|G^s|G^s
 
     matrix::Matrix part2 = matrix::Matrix(B.rows(), B.cols());
     part2.concatenateByRows(B);
-    part2.concatenateByRows(part2);
+    part2.concatenateByRows(part2); // 0|B|0|B
 
     matrix::Matrix part3_1 = matrix::Matrix(B.rows(), 2 * B.cols());
     matrix::Matrix part3_2 = B;
     part3_2.concatenateByRows(B);
-    part3_1.concatenateByRows(part3_2);
+    part3_1.concatenateByRows(part3_2); // 0|0|B|B
 
     matrix::Matrix part4 = matrix::Matrix(C.rows(), 3 * C.cols());
-    part4.concatenateByRows(C);
+    part4.concatenateByRows(C); // 0|0|0|C^s2
 
     part1.concatenateByColumns(part2);
     part1.concatenateByColumns(part3_1);
     part1.concatenateByColumns(part4);
 
     return part1;
+}
+
+matrix::Matrix pqsigRMMcEliece(size_t r, size_t m) {
+    matrix::Matrix G = pqsigRMGenerator(r, m);
+    return matrix::generateRandomNonSingular(G.rows(), G.rows()) * G;
 }
 
 } //namespace codes

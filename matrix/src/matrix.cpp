@@ -42,7 +42,6 @@ Matrix Matrix::operator*(const Matrix &other) const {
 
 void Matrix::operator*=(const Matrix &other) {
     if (m_cols != other.m_rows) {
-        std::cout << m_cols << " " << other.m_rows << std::endl;
         throw std::invalid_argument("Matrix dimensions must match for multiplication.");
     }
     std::vector<char> result(m_rows * other.m_cols);
@@ -106,6 +105,16 @@ std::vector<std::vector<char>> Matrix::toVectors() const {
     std::vector<std::vector<char>> res(m_rows);
     for (size_t i = 0; i < m_rows; ++i) {
         res[i] = row(i);
+    }
+    return res;
+}
+
+Matrix Matrix::submatrix(const std::vector<size_t> &rows, const std::vector<size_t> &cols) const {
+    Matrix res(rows.size(), cols.size());
+    for (size_t i = 0; i < rows.size(); ++i) {
+        for (size_t j = 0; j < cols.size(); ++j) {
+            res.at(i, j) = at(rows[i], cols[j]);
+        }
     }
     return res;
 }
