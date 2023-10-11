@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include "algorithms.h"
+#include <algorithm>
 
 namespace codes {
 
@@ -20,13 +21,17 @@ public:
     Lincode hull() const;
     std::vector<size_t> spectrum() const;
     std::vector<size_t> spectrum_basis() const;
-    Lincode punctured(std::vector<size_t> &columns) const; //to test
+    Lincode punctured(std::vector<size_t> &columns) const;
+    Lincode punctured(size_t column) const;
+    Lincode truncated(std::vector<size_t> &columns) const;
 
     std::vector<char> encode(std::vector<char> &);
 
     void basisView();
     void dual();
-    void puncture(std::vector<size_t> &columns);
+    void puncture(const std::vector<size_t> &columns);
+    void puncture(size_t column);
+    void truncate(std::vector<size_t> columns);
 
     void printCode() const;
 

@@ -27,14 +27,38 @@ void Lincode::dual() {
     basis = m.toVectors();
 }
 
-void Lincode::puncture(std::vector<size_t> &columns) {
-    std::vector<size_t> mask(n);
+void Lincode::puncture(const std::vector<size_t> &columns) {
     for (size_t row = 0; row < k; ++row) {
         std::vector<char> &v = basis[row];
         for (size_t i = 0; i < columns.size(); ++i) {
             v[columns[i]] = 0;
         }
     }
+}
+
+void Lincode::puncture(size_t column) {
+    for (size_t row = 0; row < k; ++row) {
+        basis[row][column] = 0;
+    }
+}
+
+void Lincode::truncate(std::vector<size_t> columns) {
+    std::sort(columns.begin(), columns.end());
+    std::vector<std::vector<char>> new_basis(k);
+    for (size_t row = 0; row < k; ++row) {
+        size_t ind = 0;
+        std::vector<char> v(n - columns.size());
+        for (size_t i = 0; i < n; ++i) {
+            if (i != columns[ind]) {
+                v[i - ind] = basis[row][i];
+            } else {
+                ++ind;
+            }
+        }
+        new_basis[row] = v;
+    }
+    n -= columns.size();
+    basis = new_basis;
 }
 
 Lincode sum(const Lincode &first, const Lincode &second) {

@@ -42,6 +42,14 @@ void testLincodeConverters(codes::Lincode code) {
     std::cout << "Intersection of C and C':" << std::endl;
     res = codes::intersect(code, dual);
     res.printCode();
+    std::cout << "Puncture of code C in {1, 2} columns:" << std::endl;
+    std::vector<size_t> v = {0, 1};
+    res = code.punctured(v);
+    res.printCode();
+    std::cout << "Truncated code of C in {1} column:" << std::endl;
+    v = {0};
+    res = code.truncated(v);
+    res.printCode();
 }
 
 void testChecker(std::vector<std::vector<char>> &basis) {

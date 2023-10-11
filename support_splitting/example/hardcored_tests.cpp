@@ -2,13 +2,14 @@
 #include "test_printers.h"
 
 void SSArunner(const codes::Lincode &c1, const codes::Lincode &c2,
-               std::function<std::string(const codes::Lincode &)> invariant) {
+               std::function<std::string(codes::Lincode,
+                                         const std::vector<size_t> &)> invariant) {
     std::cout << "STARTS SSArunner" << std::endl;
     //std::cout << "Inputted codes:" << std::endl;
     //c1.printCode();
     //c2.printCode();
     //std::cout << std::endl;
-    std::vector<size_t> perm = codes::support_splitting(c1, c2, invariant);
+    std::vector<size_t> perm = codes::indeep::support_splitting(c1, c2, invariant);
     if  (perm.size()) {
         std::cout << "Permutation vector:" << std::endl;
         codes::test_printers::printV(perm);
@@ -18,7 +19,8 @@ void SSArunner(const codes::Lincode &c1, const codes::Lincode &c2,
     std::cout << std::endl;
 }
 
-void hardcoredTests(std::function<std::string(const codes::Lincode &)> invariant) {
+void hardcoredTests(std::function<std::string(codes::Lincode,
+                                              const std::vector<size_t> &)> invariant) {
     codes::Lincode code({{1, 0, 0, 0, 1, 0, 1},
                          {0, 1, 0, 0, 1, 1, 1},
                          {0, 0, 1, 0, 1, 1, 0},
@@ -52,28 +54,28 @@ void hardcoredTests(std::function<std::string(const codes::Lincode &)> invariant
     codes::Lincode code8(str3, ' ');
     codes::Lincode code9(str4, ' ');
     //Equiv; 1 step; spectr, {3 1 4 2}
-    SSArunner(code2, code3, invariant);
+//    SSArunner(code2, code3, invariant);
     //Not equal
-    SSArunner(code2, code4, invariant);
+//    SSArunner(code2, code4, invariant);
     //Equiv; 2 steps {1 2 } <-> {0 4 }; spectr, {2 5 1 4 3}
-    SSArunner(code4, code5, invariant);
+//    SSArunner(code4, code5, invariant);
     //Equiv; 2 steps {0 4 } <-> {1 2 }; spectr, {3 1 5 4 2}
-    SSArunner(code5, code4, invariant);
+//    SSArunner(code5, code4, invariant);
     //Same; 3 steps {3 5 6 } <-> {3 5 6 } && {1 2 4 } <->;
     //{3 5 } <-> {3 5 } && {1 2 } <-> {1 2 }
-    SSArunner(rm_code, rm_code2, invariant);
+//    SSArunner(rm_code, rm_code2, invariant);
     //Eq; 2 steps; spectr, {1 2 3 4 5 6 7} BUT it's incorrect (Hamming code) ans: {1 2 3 4 7 6 5}
     SSArunner(code6, code7, invariant);
     //Not equal, zero steps
-    SSArunner(code8, code9, invariant);
+//    SSArunner(code8, code9, invariant);
     //Mcliece Random result
-    SSArunner(rm_code, codes::mcEliece(rm_code), invariant);
+//    SSArunner(rm_code, codes::mcEliece(rm_code), invariant);
 }
 
 
 int main(void) {
-    hardcoredTests(codes::invariants::invariantWeightBasis);
-    //hardcoredTests(codes::invariants::invariantWeightHull);
-    //hardcoredTests(codes::invariants::invariantHullSize);
+    hardcoredTests(codes::indeep::invariants::invariantWeightBasis);
+    //hardcoredTests(codes::indeep::invariants::invariantWeightHull);
+    //hardcoredTests(codes::indeep::invariants::invariantHullSize);
     return 0;
 }

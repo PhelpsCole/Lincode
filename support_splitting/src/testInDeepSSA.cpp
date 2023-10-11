@@ -1,11 +1,10 @@
-#include "support_splitting.h"
-#include "ssa_supports.h"
+#include "inDeepSSA.h"
 #include "test_printers.h"
 
 
 namespace codes {
-using namespace codes::support_ssa;
-using namespace codes::invariants;
+namespace indeep {
+using namespace codes::indeep::invariants;
 using namespace codes::test_printers;
 
 // Init vector of classes with updating answer
@@ -234,4 +233,5 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
     return ans;
 }
 
+} //namespace indeep
 } //namespace codes

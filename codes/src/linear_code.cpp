@@ -122,6 +122,18 @@ Lincode Lincode::punctured(std::vector<size_t> &columns) const {
     return copy;
 }
 
+Lincode Lincode::punctured(size_t column) const {
+    Lincode copy(*this);
+    copy.puncture(column);
+    return copy;
+}
+
+Lincode Lincode::truncated(std::vector<size_t> &columns) const {
+    Lincode copy(*this);
+    copy.truncate(columns);
+    return copy;
+}
+
 void Lincode::printCode() const {
     std::cout << "k = " << k << ", n = " << n << std::endl;
     for (size_t i = 0; i < k; ++i) {

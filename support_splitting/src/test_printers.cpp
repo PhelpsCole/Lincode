@@ -2,7 +2,6 @@
 
 namespace codes {
 namespace test_printers {
-using namespace codes::support_ssa;
 
 void printVV(const std::vector<std::vector<size_t>> &vv) {
     for (size_t i = 0; i < vv.size(); ++i) {
@@ -23,7 +22,7 @@ void printVPV(const std::vector<std::pair<std::vector<size_t>, std::vector<size_
     std::cout << std::endl;
 }
 
-void printMSVD(const std::map<size_t, std::vector<SpectVectData>> &map,
+void printMSVD(const std::map<size_t, std::vector<codes::indeep::SpectVectData>> &map,
                std::vector<size_t> used) {
     std::cout << "printMSVD" << std::endl;
     for (auto iter = map.begin(); iter != map.end(); ++iter) {
@@ -69,7 +68,7 @@ void printDD(const std::map<std::string, std::pair<std::set<size_t>, std::set<si
     }
 }
 
-void printVSSAData(const std::vector<SSAData> &v) {
+void printVSSAData(const std::vector<codes::indeep::SSAData> &v) {
     std::cout << "printVSSAData" << std::endl;
     for (size_t i = 0; i < v.size(); ++i) {
         std::cout << i << "'s data of SSData:" << std::endl;
@@ -85,7 +84,7 @@ void printVSSAData(const std::vector<SSAData> &v) {
     }
 }
 
-void printMCECD(const std::map<std::string, ComplEqClData> &d) {
+void printMCECD(const std::map<std::string, codes::indeep::ComplEqClData> &d) {
     std::cout << "printMCECD" << std::endl;
     for (auto iter = d.begin(); iter != d.end(); ++iter) {
         std::cout << "[" << iter->first << "]: dif_set1: {";
@@ -102,7 +101,7 @@ void printMCECD(const std::map<std::string, ComplEqClData> &d) {
     }
 }
 
-void printAnsCandidate(const AnsParamSet &ans) {
+void printAnsCandidate(const codes::indeep::AnsParamSet &ans) {
     std::cout << "Ans vector: ";
     printV(ans.ans);
     std::cout << "Found new coords: " << ans.cntFound << std::endl;

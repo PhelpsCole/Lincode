@@ -12,7 +12,7 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m) {
     size_t size = A.cols();
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<size_t> distrib(1, size / 4 - 1);
+    std::uniform_int_distribution<size_t> distrib(1, size);
     size_t p1 = distrib(gen);
     size_t p2 = distrib(gen);
     A *= matrix::generateRandomPermutation(size, p1);

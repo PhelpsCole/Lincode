@@ -189,14 +189,14 @@ int main() {
     std::vector<char> vec = {1, 0, 0, 1}, vec2 = {1, 0};
     matrix::Matrix a({{1, 0}, {0, 1}});
     matrix::Matrix b({{1, 1}, {1, 1}});
-    //testMatrixComputationsAndTranspose(a, b);
+    testMatrixComputationsAndTranspose(a, b);
     matrix::Matrix m1(code);
     matrix::Matrix m2(str);
     matrix::Matrix m3(code2);
     testMatrixSimpleOperations(m1, 2, 3);
-    //testGenerators(5, 5, 5, 2, {1, 7, 4, 2, 5, 6, 3});
-    //testMultiplyByVector(m3, vec2);
-    //testComplexOperations(m2);
-    //testSolution();
+    testGenerators(5, 5, 5, 2, {1, 7, 4, 2, 5, 6, 3});
+    testMultiplyByVector(m3, vec2);
+    testComplexOperations(m2);
+    testSolution();
     return 0;
 }
