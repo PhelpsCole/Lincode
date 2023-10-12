@@ -17,6 +17,21 @@ std::string invariantWeightHullSupporter(const codes::Lincode &code) {
     return ss.str();
 }
 
+std::string invariantWeightHullHadSquareSupporter(const codes::Lincode &code) {
+    codes::Lincode punct = code.hull();
+    punct = codes::hadamardProduct(punct, punct);
+    std::vector<size_t> spectr = punct.spectrum_basis();
+    std::ostringstream ss;
+    ss << "{";
+    for (size_t i = 0; i < spectr.size(); ++i) {
+        if (spectr[i]) {
+            ss << "[" << i + 1 << ":" << std::to_string(spectr[i]) << "];";    
+        }
+    }
+    ss << "}";
+    return ss.str();
+}
+
 std::string invariantWeightBasisSupporter(const codes::Lincode &code) {
     //codes::Lincode punct = code.hull();
     std::vector<size_t> spectr = code.spectrum_basis();
@@ -83,5 +98,11 @@ std::string invariantWeightBasis(const codes::Lincode &code,
                               codes::invariants::support::invariantWeightBasisSupporter);
 }
 
+std::string invariantWeightHullHadSquare(const codes::Lincode &code,
+                                 const std::vector<size_t> &columns) {
+    return codes::invariants::support::
+           invariantConvecter(code, columns,
+                              codes::invariants::support::invariantWeightHullHadSquareSupporter);
+}
 } //namespace invariants
 } //namespace codes

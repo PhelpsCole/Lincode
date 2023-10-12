@@ -19,7 +19,7 @@ void testMatrixComputationsAndTranspose(matrix::Matrix &a, matrix::Matrix &b) {
     c.printMatrix();
     std::cout << "a . b (Hadamard Product)" << std::endl;
     c = a;
-    c.hadamardProduct(b);
+    c = hadamardProduct(c, b);
     c.printMatrix();
 
     matrix::Matrix d = c;

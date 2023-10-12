@@ -71,7 +71,7 @@ Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
     for (size_t i = 0; i < k1; ++i) {
         for (size_t j = 0; j < k2; ++j) {
             for (size_t p = 0; p < k12; ++p) {
-                basis[(i * k1 + j) * k2 + p] = A.at(i, p) & B.at(j, p);
+                basis[i * k1 + j * k2 + p] = A.at(i, p) & B.at(j, p);
             }
         }
     }
