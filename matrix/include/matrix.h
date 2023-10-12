@@ -69,6 +69,7 @@ Matrix generateRandomNonSingular(size_t rows, size_t cols);
 Matrix generateRandomPermutation(size_t n, size_t p);
 Matrix permFromVector(const std::vector<size_t> &);
 Matrix diag(size_t n, char elem);
+Matrix hadamardProduct(const Matrix &, const Matrix &);
 
 
 Matrix solution_transposed(Matrix &a, Matrix &b);

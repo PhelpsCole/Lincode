@@ -148,7 +148,7 @@ int main() {
     //std::cout << "invariantWeightHull RM simple" << std::endl;
     //randomTestSiclesRM(2, 4, 1, codes::invariants::invariantWeightHull, simplePerm);
     std::cout << "invariantWeightHull" << std::endl;
-    randomTestSiclesRM(2, 4, 1, codes::invariants::invariantWeightHull, mcEliece);
+    randomTestSiclesRM(3, 6, 1, codes::invariants::invariantWeightHull, mcEliece);
     //std::cout << "invariantWeightHullBasis for RM" << std::endl;
     //randomTestSiclesRM(2, 5, 20, codes::invariants::indeep::invariantWeightHullBasis, simplePerm);
 

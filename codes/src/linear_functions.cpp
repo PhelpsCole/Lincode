@@ -81,6 +81,12 @@ Lincode intersect(Lincode &first, Lincode &second) {
     return first;
 }
 
+Lincode hadamardProduct(const Lincode &first, const Lincode &second) {
+    matrix::Matrix a(first.toMatrix());
+    matrix::Matrix b(second.toMatrix());
+    return Lincode(matrix::hadamardProduct(a, b));
+}
+
 Lincode mcEliece(const Lincode &gCode) {
     std::random_device rd;
     std::mt19937 gen(rd());

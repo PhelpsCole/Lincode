@@ -34,18 +34,6 @@ struct AnsParamSet {
     std::vector<SSAData> newEquivClasses;
 };
 
-bool inSSDataFirst(const SSAData &d, size_t elem);
-bool inSSDataSecond(const SSAData &d, size_t elem);
-
-bool isBetterCandidate(const AnsParamSet &, const AnsParamSet &);
-bool ansHaveZeroes(const std::vector<size_t> &ans);
-
-std::vector<SpectVectData>
-spectPunctVector(const codes::Lincode &c, std::vector<size_t> &used,
-                 size_t i, std::vector<size_t> &dif, size_t set_size,
-                 std::function<std::string(const codes::Lincode &,
-                                           const std::vector<size_t> &)> invariant);
-
 std::vector<size_t> support_splitting(const codes::Lincode &, const codes::Lincode &,
                                       std::function<std::string(const codes::Lincode &,
                                                                 const std::vector<size_t> &)>);

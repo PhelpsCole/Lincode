@@ -46,6 +46,7 @@ void addToBinVector(std::vector<char> &, size_t);
 
 Lincode sum(const Lincode &, const Lincode &);
 Lincode intersect(Lincode &, Lincode &);
+Lincode hadamardProduct(const Lincode &, const Lincode &);
 
 Lincode mcEliece(const Lincode &);
 
