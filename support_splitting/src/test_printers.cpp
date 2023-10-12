@@ -111,9 +111,13 @@ void printAnsCandidate(const codes::indeep::AnsParamSet &ans) {
 
 void printSSAData(const codes::SSAData &elem) {
     std::cout << "SSA Data:" << std::endl;
+    std::cout << "found1: ";
     printV(elem.found1);
+    std::cout << "to_find1: ";
     printV(elem.to_find1);
+    std::cout << "found2: ";
     printV(elem.found2);
+    std::cout << "to_find2: ";
     printV(elem.to_find2);
 }
 

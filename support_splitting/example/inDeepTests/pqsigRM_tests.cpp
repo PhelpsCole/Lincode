@@ -9,7 +9,7 @@ void testPqsigRM(size_t r, size_t m,
     codes::Lincode c(rm);
     matrix::Matrix pqsigRM = genFunc(r, m);
     codes::Lincode c_perm(pqsigRM);
-    std::vector<size_t> v = codes::indeep::support_splitting(c, c_perm, invariant);
+    std::vector<size_t> v = codes::support_splitting(c, c_perm, invariant);
     if (v.size()) {
         //std::cout << "Permutation vector:" << std::endl;
         //if (!check_permutation(matrix::permFromVector(v), p)) {
@@ -36,7 +36,7 @@ std::vector<size_t> generateNumVector(size_t start, size_t end) {
 void runSSA(const codes::Lincode &c1, const codes::Lincode &c2,
             std::function<std::string(const codes::Lincode &,
                                       const std::vector<size_t> &)> invariant) {
-    std::vector<size_t> v = codes::indeep::support_splitting(c1, c2, invariant);
+    std::vector<size_t> v = codes::support_splitting(c1, c2, invariant);
     if (v.size()) {
         //std::cout << "Permutation vector:" << std::endl;
         //if (!check_permutation(matrix::permFromVector(v), p)) {
@@ -125,19 +125,19 @@ void randomTestSiclesPqsigRMSub41(size_t r, size_t m, size_t iterations,
 int main() {
 
     //std::cout << "invariantWeightBasis pqsigRM" << std::endl;
-    //randomTestSiclesPqsigRM(3, 7, 20, codes::invariants::indeep::invariantWeightBasis, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRM(3, 7, 20, codes::invariants::invariantWeightBasis, codes::pqsigRMMcEliece);
     std::cout << "invariantWeightHull pqsigRM on submatr" << std::endl;
-    randomTestSiclesPqsigRMSub(3, 7, 1, codes::invariants::indeep::invariantWeightHull, codes::pqsigRMGenerator);
+    randomTestSiclesPqsigRMSub(3, 7, 1, codes::invariants::invariantWeightHull, codes::pqsigRMGenerator);
     //std::cout << "invariantWeightBasis pqsigRM with McEliece on submatr" << std::endl;
-    //randomTestSiclesPqsigRMSub(3, 7, 1, codes::invariants::indeep::invariantWeightBasis, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRMSub(3, 7, 1, codes::invariants::invariantWeightBasis, codes::pqsigRMMcEliece);
     std::cout << "invariantWeightHull pqsigRM on submatr41" << std::endl;
-    randomTestSiclesPqsigRMSub41(3, 7, 1, codes::invariants::indeep::invariantWeightHull, codes::pqsigRMGenerator);
+    randomTestSiclesPqsigRMSub41(3, 7, 1, codes::invariants::invariantWeightHull, codes::pqsigRMGenerator);
     //std::cout << "invariantWeightBasis pqsigRM on submatr41" << std::endl;
-    //randomTestSiclesPqsigRMSub41(3, 7, 1, codes::invariants::indeep::invariantWeightBasis, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRMSub41(3, 7, 1, codes::invariants::invariantWeightBasis, codes::pqsigRMMcEliece);
 
     //std::cout << "invariantWeightHullHadSquare pqsigRM" << std::endl;
-    //randomTestSiclesPqsigRM(3, 7, 10, codes::invariants::indeep::invariantWeightHullHadSquare);
+    //randomTestSiclesPqsigRM(3, 7, 10, codes::invariants::invariantWeightHullHadSquare);
     //std::cout << "invariantWeightHullHadSquare pqsigRM on submatr" << std::endl;
-    //randomTestSiclesPqsigRMSub(3, 7, 20, codes::invariants::indeep::invariantWeightHullHadSquare, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRMSub(3, 7, 20, codes::invariants::invariantWeightHullHadSquare, codes::pqsigRMMcEliece);
     return 0;
 }

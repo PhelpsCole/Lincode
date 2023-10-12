@@ -46,7 +46,7 @@ void randomPermTest(const matrix::Matrix &matrCode, fInvar invariant,
     codes::Lincode c(matrCode);
     matrix::Matrix p(matrCode.cols(), matrCode.cols());
     codes::Lincode c_perm = permFunc(matrCode, p);
-    std::vector<size_t> v = support_splitting(c, c_perm, invariant);
+    std::vector<size_t> v = codes::support_splitting(c, c_perm, invariant);
     //std::vector<size_t> v = codes::indeep::support_splitting(c, c_perm, invariant);
     if (v.size()) {
         //std::cout << "Permutation vector:" << std::endl;
@@ -64,7 +64,7 @@ void testPqsigRM(size_t r, size_t m, fInvar invariant) {
     codes::Lincode c(rm);
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode c_perm(pqsigRM);
-    std::vector<size_t> v = support_splitting(c, c_perm, invariant);
+    std::vector<size_t> v = codes::support_splitting(c, c_perm, invariant);
     //std::vector<size_t> v = codes::indeep::support_splitting(c, c_perm, invariant);
     if (v.size()) {
         //std::cout << "Permutation vector:" << std::endl;
@@ -117,7 +117,7 @@ void randomTestSiclesPqsigRM(size_t r, size_t m, size_t iterations, fInvar invar
 
 int main() {
     //std::cout << "invariantHullSize" << std::endl;
-    //randomTestSicles(10, 20, 20, codes::invariants::indeep::invariantHullSize, simplePerm);
+    //randomTestSicles(10, 20, 20, codes::invariants::invariantHullSize, simplePerm);
     //std::cout << "invariantHullSize for RM" << std::endl;
     //randomTestSiclesRM(2, 4, 20, codes::invariants::indeep::invariantHullSize, simplePerm);
 
@@ -141,10 +141,14 @@ int main() {
     //std::cout << "invariantWeightHullHadSquare for RM" << std::endl;
     //randomTestSiclesRM(2, 5, 1, codes::invariants::indeep::invariantWeightHullHadSquare, mcEliece);
 
+    //std::cout << "invariantWeightHull" << std::endl;
+    //randomTestSicles(10, 20, 20, codes::invariants::invariantWeightHull, simplePerm);
+    //std::cout << "invariantWeightHull" << std::endl;
+    //randomTestSicles(10, 20, 20, codes::invariants::invariantWeightHull, mcEliece);
+    //std::cout << "invariantWeightHull RM simple" << std::endl;
+    //randomTestSiclesRM(2, 4, 1, codes::invariants::invariantWeightHull, simplePerm);
     std::cout << "invariantWeightHull" << std::endl;
-    randomTestSicles(10, 20, 20, codes::invariants::invariantWeightHull, simplePerm);
-    std::cout << "invariantWeightHull RM simple" << std::endl;
-    randomTestSiclesRM(3, 6, 1, codes::invariants::invariantWeightHull, simplePerm);
+    randomTestSiclesRM(2, 4, 1, codes::invariants::invariantWeightHull, mcEliece);
     //std::cout << "invariantWeightHullBasis for RM" << std::endl;
     //randomTestSiclesRM(2, 5, 20, codes::invariants::indeep::invariantWeightHullBasis, simplePerm);
 

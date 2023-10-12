@@ -60,84 +60,6 @@ std::string invariantConvecter(const codes::Lincode &code,
 }
 
 } // namespace support
-namespace indeep {
-
-std::string invariantWeightBasis(const codes::Lincode &code,
-                                 const std::vector<size_t> &columns) {
-    codes::Lincode punct = code.punctured(columns);
-    std::vector<size_t> spectr = punct.spectrum_basis();
-    std::ostringstream ss;
-    for (size_t i = 0; i < spectr.size(); ++i) {
-        ss << std::to_string(spectr[i]) << ";";
-    }
-    return ss.str();
-}
-
-// Bad for RM
-std::string invariantWeightHull(const codes::Lincode &code,
-                                const std::vector<size_t> &columns) {
-    codes::Lincode punct = code.punctured(columns);
-    codes::Lincode hull = punct.hull();
-    //hull.printCode();
-    std::vector<size_t> spectr = hull.spectrum();
-    std::ostringstream ss;
-    for (size_t i = 0; i < spectr.size(); ++i) {
-        ss << std::to_string(spectr[i]) << ";";
-    }
-    return ss.str();
-}
-
-std::string invariantWeightHullBasis(const codes::Lincode &code,
-                                     const std::vector<size_t> &columns) {
-    codes::Lincode punct = code.punctured(columns);
-    codes::Lincode hull = punct.hull();
-    //hull.printCode();
-    std::vector<size_t> spectr = hull.spectrum_basis();
-    std::ostringstream ss;
-    for (size_t i = 0; i < spectr.size(); ++i) {
-        ss << std::to_string(spectr[i]) << ";";
-    }
-    return ss.str();
-}
-
-//Bad invariant
-std::string invariantHullSize(const codes::Lincode &code,
-                              const std::vector<size_t> &columns) {
-    codes::Lincode punct = code.punctured(columns);
-    codes::Lincode hull = punct.hull();
-    //hull.printCode();
-    return std::to_string(hull.size());
-}
-
-//Bad invariant
-std::string invariantHullHadSquareSize(const codes::Lincode &code,
-                                       const std::vector<size_t> &columns) {
-    codes::Lincode punct = code.punctured(columns);
-    matrix::Matrix hmatr(punct.toMatrix());
-    hmatr.hadamardProduct(hmatr);
-    codes::Lincode hull = codes::Lincode(hmatr);
-    hull = hull.hull();
-    //hull.printCode();
-    return std::to_string(hull.size());
-}
-
-std::string invariantWeightHullHadSquare(const codes::Lincode &code,
-                                         const std::vector<size_t> &columns) {
-    codes::Lincode punct = code.punctured(columns);
-    codes::Lincode hull = punct.hull();
-    matrix::Matrix hmatr(hull.toMatrix());
-    hmatr.hadamardProduct(hmatr);
-    hull = codes::Lincode(hmatr);
-    //hull.printCode();
-    std::vector<size_t> spectr = hull.spectrum_basis();
-    std::ostringstream ss;
-    for (size_t i = 0; i < spectr.size(); ++i) {
-        ss << std::to_string(spectr[i]) << ";";
-    }
-    return ss.str();
-}
-} //namespace indeep
-
 
 std::string invariantWeightHull(const codes::Lincode &code,
                                 const std::vector<size_t> &columns) {
@@ -155,7 +77,7 @@ std::string invariantHullSize(const codes::Lincode &code,
 }
 
 std::string invariantWeightBasis(const codes::Lincode &code,
-                                const std::vector<size_t> &columns) {
+                                 const std::vector<size_t> &columns) {
     return codes::invariants::support::
            invariantConvecter(code, columns,
                               codes::invariants::support::invariantWeightBasisSupporter);

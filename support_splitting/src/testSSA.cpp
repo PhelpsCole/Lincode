@@ -25,24 +25,34 @@ bool updateTransformStack(SSAData &transformStack, std::vector<size_t> &ans,
         }
     }
     printDD(equiv_classes);
+    std::vector<size_t> tmp(ans);
+    std::vector<size_t> tmpToFind1;
+    std::vector<size_t> tmpToFind2;
     // Parse classes to vector to start n-terative algorithm
+    bool bad_try = false;
     for (auto const &elem: equiv_classes) {
         if (elem.second.first.size() != elem.second.second.size()) {
             // Classes with different sizes
-            return false;
+            //return false;
+            bad_try = true;
         } else {
             std::vector<size_t> v1(elem.second.first.begin(), elem.second.first.end());
             std::vector<size_t> v2(elem.second.second.begin(), elem.second.second.end());
             if (v1.size() == 1) {
                 // v(i) = j
-                ans[v1[0]] = v2[0] + 1;
+                tmp[v1[0]] = v2[0] + 1;
                 transformStack.found1.push_back(v1[0]);
                 transformStack.found2.push_back(v2[0]);
             } else {
-                transformStack.to_find1.insert(transformStack.to_find1.begin(), v1.begin(), v1.end());
-                transformStack.to_find2.insert(transformStack.to_find2.begin(), v2.begin(), v2.end());
+                tmpToFind1.insert(tmpToFind1.begin(), v1.begin(), v1.end());
+                tmpToFind2.insert(tmpToFind2.begin(), v2.begin(), v2.end());
             }
         }
+    }
+    if (!bad_try) {
+        ans = tmp;
+        transformStack.to_find1 = tmpToFind1;
+        transformStack.to_find2 = tmpToFind2;
     }
     return true;
 }
@@ -65,6 +75,7 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
     std::vector<size_t> columns(1);
     // Create invariants of punctured codes
     for (size_t i = 0; i < len; ++i) {
+        //std::cout << "HERE" << std::endl;
         columns[0] = i;
         spectPunct1[i] = invariant(c1, columns);
         spectPunct2[i] = invariant(c2, columns);
@@ -84,7 +95,7 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
     }
     printSSAData(transformStack);
     // Iterates by eq classes while they will not ends
-    for (size_t p = 0; p < transformStack.found1.size(); ++p) {
+    for (size_t p = 0; transformStack.to_find1.size() != 0 && p < transformStack.found1.size(); ++p) {
         std::pair<std::vector<size_t>, std::vector<size_t>> pair_cols;
         pair_cols.first = std::vector<size_t>(2);
         pair_cols.second = std::vector<size_t>(2);
@@ -94,7 +105,7 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
         spectPunct2.clear();
         for (size_t i = 0; i < transformStack.to_find1.size(); ++i) {
             pair_cols.first[1] = transformStack.to_find1[i];
-            pair_cols.second[1] = transformStack.to_find1[i];
+            pair_cols.second[1] = transformStack.to_find2[i];
             spectPunct1[transformStack.to_find1[i]] = invariant(c1, pair_cols.first);
             spectPunct2[transformStack.to_find2[i]] = invariant(c2, pair_cols.second);
         }
