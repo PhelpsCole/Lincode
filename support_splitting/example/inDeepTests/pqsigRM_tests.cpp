@@ -2,7 +2,7 @@
 #include "test_printers.h"
 
 void testPqsigRM(size_t r, size_t m,
-                 std::function<std::string(codes::Lincode,
+                 std::function<std::string(const codes::Lincode &,
                                            const std::vector<size_t> &)> invariant,
                  std::function<matrix::Matrix(size_t, size_t)> genFunc) {
     matrix::Matrix rm(codes::RMCode(r, m).toMatrix());
@@ -34,7 +34,7 @@ std::vector<size_t> generateNumVector(size_t start, size_t end) {
 }
 
 void runSSA(const codes::Lincode &c1, const codes::Lincode &c2,
-            std::function<std::string(codes::Lincode,
+            std::function<std::string(const codes::Lincode &,
                                       const std::vector<size_t> &)> invariant) {
     std::vector<size_t> v = codes::indeep::support_splitting(c1, c2, invariant);
     if (v.size()) {
@@ -50,7 +50,7 @@ void runSSA(const codes::Lincode &c1, const codes::Lincode &c2,
 }
 
 void testPqsigRMonSubmatr(size_t r, size_t m,
-                          std::function<std::string(codes::Lincode,
+                          std::function<std::string(const codes::Lincode &,
                                                     const std::vector<size_t> &)> invariant,
                           std::function<matrix::Matrix(size_t, size_t)> genFunc) {
     matrix::Matrix rm(codes::RMCode(r, m - 2).toMatrix());
@@ -80,7 +80,7 @@ void testPqsigRMonSubmatr(size_t r, size_t m,
 }
 
 void testPqsigRMonSubmatr41(size_t r, size_t m,
-                          std::function<std::string(codes::Lincode,
+                          std::function<std::string(const codes::Lincode &,
                                                     const std::vector<size_t> &)> invariant,
                           std::function<matrix::Matrix(size_t, size_t)> genFunc) {
     matrix::Matrix rm(codes::RMCode(r, m - 2).toMatrix());
@@ -96,7 +96,7 @@ void testPqsigRMonSubmatr41(size_t r, size_t m,
 }
 
 void randomTestSiclesPqsigRM(size_t r, size_t m, size_t iterations,
-                        std::function<std::string(codes::Lincode,
+                        std::function<std::string(const codes::Lincode &,
                                                   const std::vector<size_t> &)> invariant,
                         std::function<matrix::Matrix(size_t, size_t)> genFunc) {
     for (size_t i = 0; i < iterations; ++i) {
@@ -105,7 +105,7 @@ void randomTestSiclesPqsigRM(size_t r, size_t m, size_t iterations,
 }
 
 void randomTestSiclesPqsigRMSub(size_t r, size_t m, size_t iterations,
-                        std::function<std::string(codes::Lincode,
+                        std::function<std::string(const codes::Lincode &,
                                                   const std::vector<size_t> &)> invariant,
                         std::function<matrix::Matrix(size_t, size_t)> genFunc) {
     for (size_t i = 0; i < iterations; ++i) {
@@ -114,7 +114,7 @@ void randomTestSiclesPqsigRMSub(size_t r, size_t m, size_t iterations,
 }
 
 void randomTestSiclesPqsigRMSub41(size_t r, size_t m, size_t iterations,
-                        std::function<std::string(codes::Lincode,
+                        std::function<std::string(const codes::Lincode &,
                                                   const std::vector<size_t> &)> invariant,
                         std::function<matrix::Matrix(size_t, size_t)> genFunc) {
     for (size_t i = 0; i < iterations; ++i) {
@@ -125,19 +125,19 @@ void randomTestSiclesPqsigRMSub41(size_t r, size_t m, size_t iterations,
 int main() {
 
     //std::cout << "invariantWeightBasis pqsigRM" << std::endl;
-    //randomTestSiclesPqsigRM(3, 7, 20, codes::indeep::invariants::invariantWeightBasis, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRM(3, 7, 20, codes::invariants::indeep::invariantWeightBasis, codes::pqsigRMMcEliece);
     std::cout << "invariantWeightHull pqsigRM on submatr" << std::endl;
-    randomTestSiclesPqsigRMSub(3, 7, 1, codes::indeep::invariants::invariantWeightHull, codes::pqsigRMGenerator);
+    randomTestSiclesPqsigRMSub(3, 7, 1, codes::invariants::indeep::invariantWeightHull, codes::pqsigRMGenerator);
     //std::cout << "invariantWeightBasis pqsigRM with McEliece on submatr" << std::endl;
-    //randomTestSiclesPqsigRMSub(3, 7, 1, codes::indeep::invariants::invariantWeightBasis, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRMSub(3, 7, 1, codes::invariants::indeep::invariantWeightBasis, codes::pqsigRMMcEliece);
     std::cout << "invariantWeightHull pqsigRM on submatr41" << std::endl;
-    randomTestSiclesPqsigRMSub41(3, 7, 1, codes::indeep::invariants::invariantWeightHull, codes::pqsigRMGenerator);
+    randomTestSiclesPqsigRMSub41(3, 7, 1, codes::invariants::indeep::invariantWeightHull, codes::pqsigRMGenerator);
     //std::cout << "invariantWeightBasis pqsigRM on submatr41" << std::endl;
-    //randomTestSiclesPqsigRMSub41(3, 7, 1, codes::indeep::invariants::invariantWeightBasis, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRMSub41(3, 7, 1, codes::invariants::indeep::invariantWeightBasis, codes::pqsigRMMcEliece);
 
     //std::cout << "invariantWeightHullHadSquare pqsigRM" << std::endl;
-    //randomTestSiclesPqsigRM(3, 7, 10, codes::indeep::invariants::invariantWeightHullHadSquare);
+    //randomTestSiclesPqsigRM(3, 7, 10, codes::invariants::indeep::invariantWeightHullHadSquare);
     //std::cout << "invariantWeightHullHadSquare pqsigRM on submatr" << std::endl;
-    //randomTestSiclesPqsigRMSub(3, 7, 20, codes::indeep::invariants::invariantWeightHullHadSquare, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRMSub(3, 7, 20, codes::invariants::indeep::invariantWeightHullHadSquare, codes::pqsigRMMcEliece);
     return 0;
 }

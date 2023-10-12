@@ -4,8 +4,56 @@
 
 namespace codes {
 namespace indeep {
-using namespace codes::indeep::invariants;
 using namespace codes::test_printers;
+
+bool inSSDataFirst(const SSAData &d, size_t elem) {
+    return std::find(d.dif1.begin(), d.dif1.end(), elem) != d.dif1.end() ||
+           (d.used1.size() && std::find(d.used1.begin(), d.used1.end(), elem) != d.used1.end());
+}
+
+bool inSSDataSecond(const SSAData &d, size_t elem) {
+    return std::find(d.dif2.begin(), d.dif2.end(), elem) != d.dif2.end() ||
+           (d.used2.size() && std::find(d.used2.begin(), d.used2.end(), elem) != d.used2.end());
+}
+
+// Returns vector of spectrum data in punctured codes
+std::vector<SpectVectData>
+spectPunctVector(const codes::Lincode &c,
+                 std::vector<size_t> &used, size_t i,
+                 std::vector<size_t> &dif, size_t set_size,
+                 std::function<std::string(const codes::Lincode &,
+                                           const std::vector<size_t> &)> invariant) {
+    std::vector<SpectVectData> res;
+    // Iterates by punct codes in eq class
+    for (size_t j = 0; j < set_size; ++j) {
+        std::vector<size_t> columns;
+        columns.insert(columns.end(), used.begin(), used.end());
+        columns.push_back(i);
+        columns.push_back(dif[j]);
+        SpectVectData new_data;
+        new_data.spectr = invariant(c, columns);
+        new_data.dif = dif[j];
+        res.push_back(new_data);
+    }
+    return res;
+}
+
+bool isBetterCandidate(const AnsParamSet &newCand, const AnsParamSet &cand) {
+    if (newCand.cntFound > cand.cntFound) {
+        return true;
+    }
+    return newCand.newEquivClasses.size() > cand.newEquivClasses.size();
+}
+
+bool ansHaveZeroes(const std::vector<size_t> &ans) {
+    for (size_t i = 0; i < ans.size(); ++i) {
+        if (ans[i] == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 // Init vector of classes with updating answer
 std::vector<SSAData> initEquivClassesVector(std::vector<size_t> &ans, size_t len,
@@ -156,7 +204,8 @@ AnsParamSet foundBestCandidate(bool &candidateEmpty, const std::vector<size_t> &
 
 // Returns vector v(i) = j
 std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lincode &c2,
-                                      std::function<std::string(const codes::Lincode &)>
+                                      std::function<std::string(const codes::Lincode &,
+                                                                const std::vector<size_t> &)>
                                       invariant) {
     if (c1.len() != c2.len()) {
         // Lenghts of code should be the same
@@ -173,10 +222,8 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
     // Create invariants of punctured codes
     for (size_t i = 0; i < len; ++i) {
         columns[0] = i;
-        codes::Lincode punct = c1.punctured(columns);
-        spectPunct1[i] = invariant(punct);
-        punct = c2.punctured(columns);
-        spectPunct2[i] = invariant(punct);
+        spectPunct1[i] = invariant(c1, columns);
+        spectPunct2[i] = invariant(c2, columns);
     }
     printV(spectPunct1);
     std::cout << std::endl;

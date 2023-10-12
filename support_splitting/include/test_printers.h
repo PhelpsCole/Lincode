@@ -1,4 +1,8 @@
+#ifndef PRINTERS_SSA_H
+#define PRINTERS_SSA_H
+
 #include "inDeepSSA.h"
+#include "ssa.h"
 
 namespace codes {
 namespace test_printers {
@@ -30,6 +34,10 @@ void printMSVD(const std::map<size_t, std::vector<codes::indeep::SpectVectData>>
 void printMCECD(const std::map<std::string, codes::indeep::ComplEqClData> &d);
 void printVSSAData(const std::vector<codes::indeep::SSAData> &v);
 void printAnsCandidate(const codes::indeep::AnsParamSet &);
+void printSSAData(const codes::SSAData &);
+void printMI(const std::map<size_t, std::string> &);
 
 } //namespace test_printers
 } //namespace codes
+
+#endif // PRINTERS_SSA_H

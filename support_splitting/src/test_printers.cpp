@@ -109,5 +109,21 @@ void printAnsCandidate(const codes::indeep::AnsParamSet &ans) {
     printVSSAData(ans.newEquivClasses);
 }
 
+void printSSAData(const codes::SSAData &elem) {
+    std::cout << "SSA Data:" << std::endl;
+    printV(elem.found1);
+    printV(elem.to_find1);
+    printV(elem.found2);
+    printV(elem.to_find2);
+}
+
+void printMI(const std::map<size_t, std::string> &d) {
+    for (auto iter = d.begin(); iter != d.end(); ++iter) {
+        std::cout << "[" << iter->first << "]: ";
+        std::cout << "(" << iter->second << ") ";
+        std::cout << std::endl;
+    }
+}
+
 } //namespace test_printers
 } //namespace codes

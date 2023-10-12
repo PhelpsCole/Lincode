@@ -15,7 +15,7 @@ struct SSAData {
 };
 
 std::vector<size_t> support_splitting(const codes::Lincode &, const codes::Lincode &,
-                                      std::function<std::string(codes::Lincode,
+                                      std::function<std::string(const codes::Lincode &,
                                                                 const std::vector<size_t> &)>);
 } //namespace codes
 

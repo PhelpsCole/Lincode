@@ -21,7 +21,7 @@ public:
     Lincode hull() const;
     std::vector<size_t> spectrum() const;
     std::vector<size_t> spectrum_basis() const;
-    Lincode punctured(std::vector<size_t> &columns) const;
+    Lincode punctured(const std::vector<size_t> &columns) const;
     Lincode punctured(size_t column) const;
     Lincode truncated(std::vector<size_t> &columns) const;
 

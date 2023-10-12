@@ -191,7 +191,7 @@ AnsParamSet foundBestCandidate(bool &candidateEmpty, const std::vector<size_t> &
 
 // Returns vector v(i) = j
 std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lincode &c2,
-                                      std::function<std::string(codes::Lincode,
+                                      std::function<std::string(const codes::Lincode &,
                                                                 const std::vector<size_t> &)>
                                       invariant) {
     if (c1.len() != c2.len()) {

@@ -8,30 +8,6 @@
 
 namespace codes {
 namespace indeep {
-namespace invariants {
-
-std::string invariantWeightBasis(codes::Lincode code,
-                                 const std::vector<size_t> &columns);
-
-// Bad for RM
-std::string invariantWeightHull(codes::Lincode code,
-                                const std::vector<size_t> &columns);
-
-std::string invariantWeightHullBasis(codes::Lincode code,
-                              const std::vector<size_t> &columns);
-
-//Bad invariant
-std::string invariantHullSize(codes::Lincode code,
-                              const std::vector<size_t> &columns);
-
-//Bad invariant
-std::string invariantHullHadSquareSize(codes::Lincode code,
-                                       const std::vector<size_t> &columns);
-
-std::string invariantWeightHullHadSquare(codes::Lincode code,
-                                         const std::vector<size_t> &columns);
-
-} //namespace invariants
 
 struct SSAData {
     std::vector<size_t> dif1;
@@ -67,12 +43,12 @@ bool ansHaveZeroes(const std::vector<size_t> &ans);
 std::vector<SpectVectData>
 spectPunctVector(const codes::Lincode &c, std::vector<size_t> &used,
                  size_t i, std::vector<size_t> &dif, size_t set_size,
-                 std::function<std::string(const codes::Lincode &)> invariant);
+                 std::function<std::string(const codes::Lincode &,
+                                           const std::vector<size_t> &)> invariant);
 
-std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lincode &c2,
-                                      std::function<std::string(codes::Lincode,
-                                                                const std::vector<size_t> &)>
-                                      invariant);
+std::vector<size_t> support_splitting(const codes::Lincode &, const codes::Lincode &,
+                                      std::function<std::string(const codes::Lincode &,
+                                                                const std::vector<size_t> &)>);
 
 } //namespace indeep
 } //namespace codes

@@ -116,7 +116,7 @@ std::vector<size_t> Lincode::spectrum_basis() const {
     return spect;
 }
 
-Lincode Lincode::punctured(std::vector<size_t> &columns) const {
+Lincode Lincode::punctured(const std::vector<size_t> &columns) const {
     Lincode copy(*this);
     copy.puncture(columns);
     return copy;

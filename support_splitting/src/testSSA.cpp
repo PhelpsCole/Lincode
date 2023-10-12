@@ -1,6 +1,8 @@
 #include "ssa.h"
+#include "test_printers.h"
 
 namespace codes {
+using namespace codes::test_printers;
 
 // Init vector of classes with updating answer
 bool updateTransformStack(SSAData &transformStack, std::vector<size_t> &ans,
@@ -22,6 +24,7 @@ bool updateTransformStack(SSAData &transformStack, std::vector<size_t> &ans,
             }
         }
     }
+    printDD(equiv_classes);
     // Parse classes to vector to start n-terative algorithm
     for (auto const &elem: equiv_classes) {
         if (elem.second.first.size() != elem.second.second.size()) {
@@ -53,6 +56,10 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
         return std::vector<size_t>(0);
     }
     size_t len = c1.len();
+    std::cout << "Inputed codes:" << std::endl;
+    c1.printCode();
+    c2.printCode();
+    std::cout << std::endl;
     std::map<size_t, std::string> spectPunct1;
     std::map<size_t, std::string> spectPunct2;
     std::vector<size_t> columns(1);
@@ -62,6 +69,9 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
         spectPunct1[i] = invariant(c1, columns);
         spectPunct2[i] = invariant(c2, columns);
     }
+    printMI(spectPunct1);
+    std::cout << std::endl;
+    printMI(spectPunct2);
     std::vector<size_t> ans(len);
     SSAData transformStack;
     transformStack.found1 = std::vector<size_t>();
@@ -72,6 +82,7 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
     if (!updateTransformStack(transformStack, ans, spectPunct1, spectPunct2)) {
         return std::vector<size_t>(0);
     }
+    printSSAData(transformStack);
     // Iterates by eq classes while they will not ends
     for (size_t p = 0; p < transformStack.found1.size(); ++p) {
         std::pair<std::vector<size_t>, std::vector<size_t>> pair_cols;
@@ -87,11 +98,16 @@ std::vector<size_t> support_splitting(const codes::Lincode &c1, const codes::Lin
             spectPunct1[transformStack.to_find1[i]] = invariant(c1, pair_cols.first);
             spectPunct2[transformStack.to_find2[i]] = invariant(c2, pair_cols.second);
         }
+        printMI(spectPunct1);
+        std::cout << std::endl;
+        printMI(spectPunct2);
         transformStack.to_find1.clear();
         transformStack.to_find2.clear();
+        std::cout << transformStack.found1[p] << std::endl;
         if (!updateTransformStack(transformStack, ans, spectPunct1, spectPunct2)) {
             return std::vector<size_t>(0);
         }
+        printSSAData(transformStack);
     }
     return ans;
 }
