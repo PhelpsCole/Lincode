@@ -97,18 +97,6 @@ void Matrix::echelon(std::vector<size_t> columns) {
     gaussElimination(true, columns);
 }
 
-void Matrix::hadamardProduct(const Matrix &other) {
-    if (other.rows() != m_rows || other.cols() != m_cols) {
-        throw std::invalid_argument("Incorrect inputted matrix.");
-    }
-    for (size_t i = 0; i < m_rows; ++i) {
-        for (size_t j = 0; j < m_rows; ++j) {
-            m_data[i * m_cols + j] &= other.at(i, j);
-        }
-
-    }
-}
-
 // Not effective by memory
 void Matrix::concatenateByRows(const Matrix &second) {
     if (second.rows() != m_rows) {
