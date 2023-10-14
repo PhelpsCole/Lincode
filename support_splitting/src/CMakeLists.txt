@@ -1,5 +1,6 @@
 #[[]]
 add_library(support_splitting STATIC ssa.cpp
+                                     ssa_structure.cpp
                                      inDeepSSA.cpp
                                      invariants.cpp)
 #[[]]

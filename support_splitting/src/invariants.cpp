@@ -5,7 +5,7 @@ namespace invariants {
 namespace support {
 std::string invariantWeightHullSupporter(const codes::Lincode &code) {
     codes::Lincode punct = code.hull();
-    std::vector<size_t> spectr = punct.spectrum_basis();
+    std::vector<size_t> spectr = punct.spectrum();
     std::ostringstream ss;
     ss << "{";
     for (size_t i = 0; i < spectr.size(); ++i) {
@@ -20,7 +20,7 @@ std::string invariantWeightHullSupporter(const codes::Lincode &code) {
 std::string invariantWeightHullHadSquareSupporter(const codes::Lincode &code) {
     codes::Lincode punct = code.hull();
     punct = codes::hadamardProduct(punct, punct);
-    std::vector<size_t> spectr = punct.spectrum_basis();
+    std::vector<size_t> spectr = punct.spectrum();
     std::ostringstream ss;
     ss << "{";
     for (size_t i = 0; i < spectr.size(); ++i) {
@@ -47,7 +47,8 @@ std::string invariantWeightBasisSupporter(const codes::Lincode &code) {
 }
 
 std::string invariantHullSizeSupporter(const codes::Lincode &code) {
-    size_t size = code.size();
+    codes::Lincode punct = code.hull();
+    size_t size = punct.size();
     return std::to_string(size) + ",";
 }
 

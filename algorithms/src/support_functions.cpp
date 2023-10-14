@@ -71,4 +71,41 @@ std::vector<std::vector<size_t>> generatePermSequences(size_t n, size_t k) {
     return res;
 }
 
+// Returns compbinations of k elements from vector
+std::vector<std::vector<size_t>> permsOfVector(const std::vector<size_t> &vec,  size_t k) {
+    std::vector<std::vector<size_t>> permSeq = generatePermSequences(vec.size(), k);
+    for (size_t i = 0; i < permSeq.size(); ++i) {
+        for (size_t j = 0; j < k; ++j) {
+            permSeq[i][j] = vec[permSeq[i][j]];
+        }
+    }
+    return permSeq;
+}
+
+std::vector<size_t> sequence(size_t start, size_t end, size_t step) {
+    std::vector<size_t> res(end - start);
+    res[0] = start;
+    for (size_t i = 1; i < end - start; ++i) {
+        res[i] += res[i - 1] + step;
+    }
+    return res;
+}
+
+void elemDeleter(std::vector<size_t> &v1, const std::vector<size_t> &v2) {
+    size_t ind = 0;
+    for (size_t i = 0; i < v1.size(); ++i) {
+        bool found = false;
+        for (size_t j = 0; j < v2.size(); ++j) {
+            if (v1[i] == v2[j]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            v1[ind++] = v1[i];
+        }
+    }
+    v1.resize(v1.size() - v2.size());
+}
+
 } // namespace algorithms

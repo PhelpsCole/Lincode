@@ -53,6 +53,7 @@ void printD(const std::map<std::string, std::vector<std::pair<size_t, size_t>>> 
 }
 
 void printDD(const std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> &d) {
+    std::cout << "printDD" << std::endl;
     for (auto iter = d.begin(); iter != d.end(); ++iter) {
         std::cout << "[" << iter->first << "]: {";
         for (auto iter2 = iter->second.first.begin();

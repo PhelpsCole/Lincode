@@ -1,5 +1,5 @@
 link_libraries(support_splitting)
 add_executable(manual manual_tests.cpp)
 add_executable(generated generated_tests.cpp)
-add_executable(indeep_pqsigRM inDeepTests/pqsigRM_tests.cpp)
+add_executable(pqsigRM pqsigRM_tests.cpp)
 #[[add_executable(pqsigRM pqsigRM_tests.cpp)]]

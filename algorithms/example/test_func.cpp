@@ -12,6 +12,7 @@ void testFactorial(size_t n) {
 
 void testGeneratePermSequences(size_t n, size_t k) {
     std::vector<std::vector<size_t>> res = algorithms::generatePermSequences(n, k);
+    std::cout << "Sequences of " << k << " elements from set of " << n << " numbers:" << std::endl;
     for (size_t i = 0; i < res.size(); ++i) {
         for (size_t j = 0; j < res[i].size(); ++j) {
             std::cout << res[i][j] << " ";
@@ -25,5 +26,6 @@ int main() {
     testHamming({1, 0, 1, 2, 3}, {1, 0, 0, 2, 2});
     testFactorial(5);
     testGeneratePermSequences(5, 3);
+    testGeneratePermSequences(8, 2);
     return 0;
 }

@@ -77,10 +77,6 @@ void manualTests(fInvar invariant, fSSA support_splitting) {
 }
 
 int main(void) {
-
-std::string invariantWeightHull(const codes::Lincode &code, const std::vector<size_t> &columns);
-std::string invariantHullSize(const codes::Lincode &code, const std::vector<size_t> &columns);
-std::string invariantWeightBasis(const codes::Lincode &code, const std::vector<size_t> &columns);
     std::cout << "SAA" << std::endl;
 //    std::cout << "invariantWeightHull" << std::endl;
 //    manualTests(codes::invariants::invariantWeightHull, codes::orig::support_splitting);

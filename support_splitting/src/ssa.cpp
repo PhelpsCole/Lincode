@@ -9,8 +9,10 @@ bool updateTransformStack(SSAData &transformStack, std::vector<size_t> &ans,
     // Creates equivalation classes {invariant : <set, set>}
     std::map<std::string, std::pair<std::set<size_t>, std::set<size_t>>> equiv_classes;
     for (auto iter = spectPunct1.begin(); iter != spectPunct1.end(); ++iter) {
+        bool found_pair = false;
         for (auto iter2 = spectPunct2.begin(); iter2 != spectPunct2.end(); ++iter2) {
             if (iter->second == iter2->second) {
+                found_pair = true;
                 if (equiv_classes.find(iter->second) == equiv_classes.end()) {
                     std::set<size_t> s1{iter->first};
                     std::set<size_t> s2{iter2->first};
@@ -20,6 +22,9 @@ bool updateTransformStack(SSAData &transformStack, std::vector<size_t> &ans,
                     equiv_classes[iter2->second].second.insert(iter2->first);
                 }
             }
+        }
+        if (!found_pair) {
+            return false;
         }
     }
     std::vector<size_t> tmp(ans);
