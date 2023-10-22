@@ -2,4 +2,5 @@ link_libraries(support_splitting)
 add_executable(manual manual_tests.cpp)
 add_executable(generated generated_tests.cpp)
 add_executable(pqsigRM pqsigRM_tests.cpp)
-#[[add_executable(pqsigRM pqsigRM_tests.cpp)]]
+add_executable(rmTest test_rmOnInvars.cpp)
+#[[add_executable(pqsigRM test_rmOnInvars.cpp)]]

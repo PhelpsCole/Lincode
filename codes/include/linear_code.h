@@ -20,6 +20,7 @@ public:
     const std::vector<std::vector<char>> &getBasis() const;
     Lincode hull() const;
     std::vector<size_t> spectrum() const;
+    std::string stringSpectrum() const;
     std::vector<size_t> spectrum_basis() const;
     Lincode punctured(const std::vector<size_t> &columns) const;
     Lincode punctured(size_t column) const;
@@ -33,6 +34,7 @@ public:
     void puncture(size_t column);
     void truncate(std::vector<size_t> columns);
 
+    void printCodeSizes() const;
     void printCode() const;
 
 private:

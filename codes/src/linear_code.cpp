@@ -94,7 +94,8 @@ std::vector<size_t> Lincode::spectrum() const {
     std::vector<size_t> spect(n);
     std::vector<char> v(k);
     matrix::Matrix code_matr = toMatrix();
-    for (size_t i = 0; i < static_cast<size_t>((1 << v.size()) - 1); ++i) {
+    unsigned long long size = static_cast<unsigned long long>((1 << v.size()) - 1);
+    for (unsigned long long i = 0; i < size; ++i) {
         addToBinVector(v, 1);
         std::vector<char> res = code_matr.multiplyVectorByMatrix(v);
         size_t weight = algorithms::hammingWeight(res);
@@ -103,6 +104,19 @@ std::vector<size_t> Lincode::spectrum() const {
         }
     }
     return spect;
+}
+
+std::string Lincode::stringSpectrum() const {
+    std::ostringstream ss;
+    ss << "{";
+    std::vector<size_t> spectr = spectrum();
+    for (size_t i = 0; i < spectr.size(); ++i) {
+        if (spectr[i]) {
+            ss << "[" << i + 1 << ":" << std::to_string(spectr[i]) << "];";    
+        }
+    }
+    ss << "}";
+    return ss.str();
 }
 
 std::vector<size_t> Lincode::spectrum_basis() const {
@@ -134,8 +148,12 @@ Lincode Lincode::truncated(std::vector<size_t> &columns) const {
     return copy;
 }
 
-void Lincode::printCode() const {
+void Lincode::printCodeSizes() const {
     std::cout << "k = " << k << ", n = " << n << std::endl;
+}
+
+void Lincode::printCode() const {
+    printCodeSizes();
     for (size_t i = 0; i < k; ++i) {
         for (size_t j = 0; j < n; ++j) {
             std::cout << static_cast<int>(basis[i][j]) << " ";

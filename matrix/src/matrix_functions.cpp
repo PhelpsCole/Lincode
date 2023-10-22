@@ -66,16 +66,16 @@ Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
     if (A.cols() != B.cols()) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
-    std::vector<char> basis((A.rows() + B.rows()) * A.cols());
+    std::vector<char> basis(A.rows() * B.rows() * A.cols());
     size_t k1 = A.rows(), k2 = B.rows(), k12 = A.cols();
     for (size_t i = 0; i < k1; ++i) {
         for (size_t j = 0; j < k2; ++j) {
             for (size_t p = 0; p < k12; ++p) {
-                basis[i * k1 + j * k2 + p] = A.at(i, p) & B.at(j, p);
+                basis[(i * k2 + j) * k12 + p] = A.at(i, p) & B.at(j, p);
             }
         }
     }
-    Matrix res(k1 + k2, k12, basis);
+    Matrix res(k1 * k2, k12, basis);
     res.convertToBasis();
     return res;
 
