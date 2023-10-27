@@ -29,9 +29,9 @@ int main(void) {
       //hadSquare.printCode();
       //std::cout << "[" << i << "]: " << codes::invariants::invariantWeightHullHadSquare(rm_code, cols) << std::endl;
     //}
-    //std::cout << "Hull of inputed code:" << std::endl;
+    std::cout << "Hull of inputed code:" << std::endl;
     codes::Lincode hull = rm_code.hull();
-    //hull.printCode();
+    hull.printCodeSizes();
     std::cout << "Hull of hadamard square:" << std::endl;
     hadSquare.hull().printCodeSizes();
     //hadSquare.hull().printCode();

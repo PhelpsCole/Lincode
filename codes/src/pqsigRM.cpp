@@ -42,7 +42,13 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m) {
 
 matrix::Matrix pqsigRMMcEliece(size_t r, size_t m) {
     matrix::Matrix G = pqsigRMGenerator(r, m);
-    return matrix::generateRandomNonSingular(G.rows(), G.rows()) * G;
+    size_t n = 1 << m;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::uniform_int_distribution<int> distrib(1, n);
+    matrix::Matrix P = matrix::generateRandomPermutation(n, distrib(gen));
+    return matrix::generateRandomNonSingular(G.rows(), G.rows()) * G * P;
 }
 
 } //namespace codes
