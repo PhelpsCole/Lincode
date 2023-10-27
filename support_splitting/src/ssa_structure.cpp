@@ -35,10 +35,8 @@ SSAStructure ssaStructure(const codes::Lincode &c,
             equivClassesVec.push_back(iter->second);
         }
     }
-    //Before this step we can construct 2-, 3- or 4- signature
     columns.resize(2);
     for (size_t refInd = 0; equivClassesVec.size() != 0 && refInd != refinders.size(); ++refInd) {
-        // Can concatenate
         columns[1] = refinders[refInd];
         equivClassesVecSet newEquivClassesVec;
         for (size_t ind = 0; ind != equivClassesVec.size(); ++ind) {
@@ -80,11 +78,11 @@ void printSSAStructure(const SSAStructure &s) {
     for (size_t i = 0; i != s.size(); ++i) {
         std::cout << i << "(" << s[i].size() << "): ";
         for (size_t j = 0; j != s[i].size(); ++j) {
-            std::cout << "{";
+            std::cout << " [";
             for (size_t k = 0; k != s[i][j].first.size(); ++k) {
                 std::cout << s[i][j].first[k] << ", ";
             }
-            std::cout << "}: " << s[i][j].second << "; ";
+            std::cout << "]:" << s[i][j].second;
         }
         std::cout << std::endl;
     }

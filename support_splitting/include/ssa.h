@@ -22,6 +22,7 @@ struct SSASingleData {
 };
 typedef std::pair<std::vector<size_t>, std::string> SSAStep;
 typedef std::vector<std::vector<SSAStep>> SSAStructure;
+typedef std::map<std::vector<size_t>, std::vector<SSAStep>> SSANStructure;
 
 std::vector<size_t> support_splitting(const codes::Lincode &, const codes::Lincode &,
                                       std::function<std::string(const codes::Lincode &,
@@ -29,7 +30,12 @@ std::vector<size_t> support_splitting(const codes::Lincode &, const codes::Linco
 SSAStructure ssaStructure(const codes::Lincode &,
                           std::function<std::string(const codes::Lincode &,
                                                     const std::vector<size_t> &)>);
+SSANStructure ssaNStructure(const codes::Lincode &,
+                            std::function<std::string(const codes::Lincode &,
+                                                      const std::vector<size_t> &)>,
+                            size_t = 1);
 void printSSAStructure(const SSAStructure &);
+void printSSANStructure(const SSANStructure &);
 } //namespace codes
 
 #endif // SSA_H

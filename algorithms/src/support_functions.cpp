@@ -82,6 +82,19 @@ std::vector<std::vector<size_t>> permsOfVector(const std::vector<size_t> &vec,  
     return permSeq;
 }
 
+std::vector<std::vector<size_t>> permsOfVectorWithNew(const std::vector<size_t> &vec,
+                                                      size_t newElem, size_t k) {
+    std::vector<std::vector<size_t>> permSeq = generatePermSequences(vec.size(), k - 1);
+    for (size_t i = 0; i < permSeq.size(); ++i) {
+        for (size_t j = 0; j < k; ++j) {
+            permSeq[i][j] = vec[permSeq[i][j]];
+        }
+        permSeq[i].push_back(newElem);
+        sort(permSeq[i].begin(), permSeq[i].end());
+    }
+    return permSeq;
+}
+
 std::vector<size_t> sequence(size_t start, size_t end, size_t step) {
     std::vector<size_t> res(end - start);
     res[0] = start;

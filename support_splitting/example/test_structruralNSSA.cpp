@@ -7,8 +7,8 @@ void testPqsigRM(size_t r, size_t m,
                  std::function<matrix::Matrix(size_t, size_t)> genFunc) {
     matrix::Matrix pqsigRM = genFunc(r, m);
     codes::Lincode c_perm(pqsigRM);
-    codes::SSAStructure s = codes::ssaStructure(c_perm, invariant);
-    codes::printSSAStructure(s);
+    codes::SSANStructure s = codes::ssaNStructure(c_perm, invariant, 3);
+    codes::printSSANStructure(s);
 }
 
 void testMcElieceRM(size_t r, size_t m,
@@ -18,8 +18,8 @@ void testMcElieceRM(size_t r, size_t m,
     matrix::Matrix matr(rm.toMatrix());
     codes::Lincode c_prev(matr);
     codes::Lincode rmMcEliece = codes::mcEliece(c_prev);
-    codes::SSAStructure s = codes::ssaStructure(rmMcEliece, invariant);
-    codes::printSSAStructure(s);
+    codes::SSANStructure s = codes::ssaNStructure(rmMcEliece, invariant, 3);
+    codes::printSSANStructure(s);
 }
 
 std::vector<size_t> generateNumVector(size_t start, size_t end) {
@@ -36,8 +36,8 @@ std::vector<size_t> generateNumVector(size_t start, size_t end) {
 void runSSA(const codes::Lincode &c,
             std::function<std::string(const codes::Lincode &,
                                       const std::vector<size_t> &)> invariant) {
-    codes::SSAStructure s = codes::ssaStructure(c, invariant);
-    codes::printSSAStructure(s);
+    codes::SSANStructure s = codes::ssaNStructure(c, invariant, 3);
+    codes::printSSANStructure(s);
 }
 
 void randomTestSiclesPqsigRM(size_t r, size_t m, size_t iterations,
@@ -60,13 +60,13 @@ void randomTestSiclesMcElieceRM(size_t r, size_t m, size_t iterations,
 void testByInvariant(std::function<std::string(const codes::Lincode &,
                                                const std::vector<size_t> &)> invariant) {
     //std::cout << "invariantWeightBasis pqsigRM" << std::endl;
-    randomTestSiclesPqsigRM(3, 5, 1, invariant, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRM(3, 5, 1, invariant, codes::pqsigRMMcEliece);
     //std::cout << "invariantWeightBasis McEliece pqsigRM" << std::endl;
-    randomTestSiclesMcElieceRM(3, 5, 1, invariant);
+    //randomTestSiclesMcElieceRM(3, 5, 1, invariant);
     //std::cout << "invariantWeightBasis pqsigRM" << std::endl;
-    randomTestSiclesPqsigRM(3, 7, 1, invariant, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRM(3, 7, 1, invariant, codes::pqsigRMMcEliece);
     //std::cout << "invariantWeightBasis McEliece pqsigRM" << std::endl;
-    randomTestSiclesMcElieceRM(3, 7, 1, invariant);
+    //randomTestSiclesMcElieceRM(3, 7, 1, invariant);
     //std::cout << "invariantWeightBasis pqsigRM" << std::endl;
     //randomTestSiclesPqsigRM(3, 8, 1, invariant, codes::pqsigRMMcEliece);
     //std::cout << "invariantWeightBasis McEliece pqsigRM" << std::endl;
@@ -89,7 +89,7 @@ void testByInvariant(std::function<std::string(const codes::Lincode &,
 }
 
 int main() {
-    testByInvariant(codes::invariants::invariantHullSize);
+    //testByInvariant(codes::invariants::invariantHullSize);
     testByInvariant(codes::invariants::invariantWeightHull);
     return 0;
 }

@@ -3,9 +3,7 @@
 namespace codes {
 namespace invariants {
 namespace support {
-std::string invariantWeightHullSupporter(const codes::Lincode &code) {
-    codes::Lincode hulll = code.hull();
-    std::vector<size_t> spectr = hulll.spectrum();
+std::string invariantString(const std::vector<size_t> &spectr) {
     std::ostringstream ss;
     ss << "{";
     for (size_t i = 0; i < spectr.size(); ++i) {
@@ -15,39 +13,26 @@ std::string invariantWeightHullSupporter(const codes::Lincode &code) {
     }
     ss << "}";
     return ss.str();
+}
+
+std::string invariantWeightHullSupporter(const codes::Lincode &code) {
+    codes::Lincode hull = code.hull();
+    return invariantString(hull.spectrum());
 }
 
 std::string invariantWeightHullHadSquareSupporter(const codes::Lincode &code) {
     codes::Lincode hullHadSquare = codes::hadamardProduct(code, code).hull();
-    std::vector<size_t> spectr = hullHadSquare.spectrum();
-    std::ostringstream ss;
-    ss << "{";
-    for (size_t i = 0; i < spectr.size(); ++i) {
-        if (spectr[i]) {
-            ss << "[" << i + 1 << ":" << std::to_string(spectr[i]) << "];";    
-        }
-    }
-    ss << "}";
-    return ss.str();
+    return invariantString(hullHadSquare.spectrum());
 }
 
 std::string invariantWeightBasisSupporter(const codes::Lincode &code) {
     //codes::Lincode punct = code.hull();
-    std::vector<size_t> spectr = code.spectrum_basis();
-    std::ostringstream ss;
-    ss << "{";
-    for (size_t i = 0; i < spectr.size(); ++i) {
-        if (spectr[i]) {
-            ss << "[" << i + 1 << ":" << std::to_string(spectr[i]) << "];";    
-        }
-    }
-    ss << "}";
-    return ss.str();
+    return invariantString(code.spectrum_basis());
 }
 
 std::string invariantHullSizeSupporter(const codes::Lincode &code) {
-    codes::Lincode punct = code.hull();
-    size_t size = punct.size();
+    codes::Lincode hull = code.hull();
+    size_t size = hull.size();
     return std::to_string(size) + ",";
 }
 
