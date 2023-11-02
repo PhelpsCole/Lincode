@@ -87,4 +87,30 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
     return basis;
 }
 
+// Returns (r, m) if this is rm-code and (0, 0) if not
+std::vector<size_t> rmSizes(const codes::Lincode &c) {
+    std::vector<size_t> res(2);
+    size_t m = c.len();
+    while (m != 1) {
+        if (m % 2 == 1) {
+            return std::vector<size_t>(2);
+        }
+        m >>= 1;
+        ++res[1];
+    }
+    long long k = c.size() - 1;
+    size_t tmp = res[1];
+    while (k > 0) {
+        k -= tmp;
+        ++res[0];
+        tmp *= (res[1] - res[0]);
+        tmp /= (res[0] + 1);
+    }
+    //if (k < 0) {
+    //    return std::vector<size_t>(2);
+    //}
+    // возвращаю максимальный r
+    return res;
+}
+
 } // namespace codes

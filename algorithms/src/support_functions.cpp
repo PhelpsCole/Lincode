@@ -121,4 +121,58 @@ void elemDeleter(std::vector<size_t> &v1, const std::vector<size_t> &v2) {
     v1.resize(v1.size() - v2.size());
 }
 
+void addToBinVector(std::vector<char> &v, size_t n) {
+    for (size_t i = 0; i < v.size() && n != 0; ++i) {
+        v[i] += n & 1;
+        if (v[i] == 2) {
+            v[i] = 0;
+            ++n;
+        }
+        n >>= 1;
+    }
+    if (n != 0) {
+        int cnt = 0, prev_size = v.size();
+        int tmp = n;
+        while (tmp) {
+            ++cnt;
+            tmp >>= 1;
+        }
+        v.resize(prev_size + cnt);
+        for (size_t i = 0; i < v.size() - prev_size; ++i) {
+            v[prev_size + i] = n & 1;
+            n >>= 1;
+        }
+    }
+}
+
+void addToBinWeightVector(std::pair<std::vector<char>, size_t> &v, size_t n) {
+    for (size_t i = 0; i < v.first.size() && n != 0; ++i) {
+        v.first[i] += n & 1;
+        if (v.first[i] == 2) {
+            v.first[i] = 0;
+            ++n;
+            --v.second;
+        } else {
+            ++v.second;
+        }
+        n >>= 1;
+    }
+    if (n != 0) {
+        int cnt = 0, prev_size = v.first.size();
+        int tmp = n;
+        while (tmp) {
+            ++cnt;
+            tmp >>= 1;
+        }
+        v.first.resize(prev_size + cnt);
+        for (size_t i = 0; i < v.first.size() - prev_size; ++i) {
+            v.first[prev_size + i] = n & 1;
+            if (v.first[prev_size + i]) {
+                ++v.second;
+            }
+            n >>= 1;
+        }
+    }
+}
+
 } // namespace algorithms

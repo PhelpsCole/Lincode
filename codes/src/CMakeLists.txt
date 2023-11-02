@@ -1,5 +1,6 @@
 add_library(codes STATIC rm_code.cpp
                          pqsigRM.cpp
+                         encoder.cpp
                          linear_code.cpp
                          linear_functions.cpp)
 

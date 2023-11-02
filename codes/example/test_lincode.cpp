@@ -52,23 +52,14 @@ void testLincodeConverters(codes::Lincode code) {
     res.printCode();
 }
 
-void testChecker(std::vector<std::vector<char>> &basis) {
-    std::cout << "STARTS testChecker" << std::endl;
-    if (codes::incorrect_basis(basis)) {
-        std::cout << "Incorrect basis" << std::endl;
-    } else {
-        std::cout << "Correct basis" << std::endl;
-    }
-}
-
-void testAddToVectors() {
-    std::vector<char> v = {1, 0, 1, 1};
-    codes::addToBinVector(v, 3);
-    for (size_t i = 0; i < v.size(); ++i) {
-        std::cout << static_cast<int>(v[i]) << " ";
-    }
-    std::cout << std::endl;
-}
+//void testChecker(std::vector<std::vector<char>> &basis) {
+//    std::cout << "STARTS testChecker" << std::endl;
+//    if (codes::incorrect_basis(basis)) {
+//        std::cout << "Incorrect basis" << std::endl;
+//    } else {
+//        std::cout << "Correct basis" << std::endl;
+//    }
+//}
 
 void testEncode(codes::Lincode c) {
     std::cout << "STARTS testEncode" << std::endl;
@@ -77,7 +68,7 @@ void testEncode(codes::Lincode c) {
     std::cout << "All words of this code:" << std::endl;
     std::vector<char> v(c.size());
     for (size_t i = 0; i < static_cast<size_t>((1 << v.size()) - 1); ++i) {
-        codes::addToBinVector(v, 1);
+        algorithms::addToBinVector(v, 1);
         std::vector<char> res = c.encode(v);
         for (size_t i = 0; i < v.size(); ++i) {
             std::cout << static_cast<int>(v[i]) << " ";
@@ -122,9 +113,8 @@ int main(void) {
     codes::Lincode code2(basis3);
     testLincodeConverters(code);
     testLincodeConverters(code2);
-    testChecker(basis);
-    testChecker(basis2);
-    testAddToVectors();
+    //testChecker(basis);
+    //testChecker(basis2);
     std::vector<std::vector<char>> basis4 = {{1, 0, 0, 0, 1, 0, 1},
                                             {0, 1, 0, 0, 1, 0, 1},
                                             {0, 1, 1, 0, 1, 0, 1},

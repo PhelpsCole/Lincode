@@ -6,6 +6,7 @@
 #include <list>
 #include <utility>
 #include "matrix.h"
+#include "linear_code.h"
 
 namespace codes {
 
@@ -29,6 +30,8 @@ private:
     size_t m;
     std::vector<std::vector<char>> basis;
 };
+
+std::vector<size_t> rmSizes(const codes::Lincode &);
 
 
 } // namespace codes

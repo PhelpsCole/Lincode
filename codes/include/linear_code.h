@@ -1,3 +1,6 @@
+#ifndef LINCODE_CODE_H
+#define LINCODE_CODE_H
+
 #include "matrix.h"
 #include "algorithms.h"
 #include <algorithm>
@@ -43,13 +46,13 @@ private:
     std::vector<std::vector<char>> basis;
 };
 
-bool incorrect_basis(std::vector<std::vector<char>> &);
-void addToBinVector(std::vector<char> &, size_t);
-
 Lincode sum(const Lincode &, const Lincode &);
 Lincode intersect(Lincode &, Lincode &);
 Lincode hadamardProduct(const Lincode &, const Lincode &);
+Lincode hadPower(const Lincode &c, size_t power);
 
 Lincode mcEliece(const Lincode &);
 
 } // namespace codes
+
+#endif // LINCODE_CODE_H

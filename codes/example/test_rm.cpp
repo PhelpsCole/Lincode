@@ -17,5 +17,8 @@ int main() {
         std::cout << std::endl;
     }
 
+    std::vector<size_t> sizes = codes::rmSizes(codes::Lincode(matr));
+    std::cout << sizes[0] << " " << sizes[1] << std::endl;
+
     return 0;
 }

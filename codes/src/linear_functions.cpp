@@ -28,7 +28,7 @@ void Lincode::dual() {
 }
 
 void Lincode::puncture(const std::vector<size_t> &columns) {
-    for (size_t row = 0; row < k; ++row) {
+    for (size_t row = 0; columns.size() && row < k; ++row) {
         std::vector<char> &v = basis[row];
         for (size_t i = 0; i < columns.size(); ++i) {
             v[columns[i]] = 0;
@@ -85,6 +85,15 @@ Lincode hadamardProduct(const Lincode &first, const Lincode &second) {
     matrix::Matrix a(first.toMatrix());
     matrix::Matrix b(second.toMatrix());
     return Lincode(matrix::hadamardProduct(a, b));
+}
+
+// ToDo: bin power
+Lincode hadPower(const Lincode &c, size_t power) {
+    codes::Lincode newCode(c);
+    while(--power) {
+        newCode = hadamardProduct(newCode, c);
+    }
+    return newCode;
 }
 
 Lincode mcEliece(const Lincode &gCode) {

@@ -60,9 +60,9 @@ void randomTestSiclesMcElieceRM(size_t r, size_t m, size_t iterations,
 void testByInvariant(std::function<std::string(const codes::Lincode &,
                                                const std::vector<size_t> &)> invariant) {
     //std::cout << "invariantWeightBasis pqsigRM" << std::endl;
-    randomTestSiclesPqsigRM(3, 5, 1, invariant, codes::pqsigRMMcEliece);
+    //randomTestSiclesPqsigRM(2, 5, 1, invariant, codes::pqsigRMMcEliece);
     //std::cout << "invariantWeightBasis McEliece pqsigRM" << std::endl;
-    randomTestSiclesMcElieceRM(3, 5, 1, invariant);
+    //randomTestSiclesMcElieceRM(2, 5, 1, invariant);
     //std::cout << "invariantWeightBasis pqsigRM" << std::endl;
     randomTestSiclesPqsigRM(3, 7, 1, invariant, codes::pqsigRMMcEliece);
     //std::cout << "invariantWeightBasis McEliece pqsigRM" << std::endl;
@@ -91,5 +91,6 @@ void testByInvariant(std::function<std::string(const codes::Lincode &,
 int main() {
     testByInvariant(codes::invariants::invariantHullSize);
     testByInvariant(codes::invariants::invariantWeightHull);
+    testByInvariant(codes::invariants::invariantWeightHullMinRM);
     return 0;
 }

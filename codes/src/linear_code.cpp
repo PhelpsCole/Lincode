@@ -1,6 +1,13 @@
-#include <linear_code.h>
+#include "linear_code.h"
 
 namespace codes {
+
+bool incorrect_basis(std::vector<std::vector<char>> &basis) {
+    size_t k = basis.size();
+    size_t n = basis[0].size();
+    matrix::Matrix m(basis);
+    return k > n || m.rank() != k;
+}
 
 Lincode::Lincode(size_t _k, size_t _n)
     : k(_k), n(_n) {
@@ -92,12 +99,12 @@ Lincode Lincode::hull() const {
 //spect[i] - words of weight i + 1
 std::vector<size_t> Lincode::spectrum() const {
     std::vector<size_t> spect(n);
-    std::vector<char> v(k);
+    std::vector<char> vec(k, 0);
+    std::pair<std::vector<char>, size_t> weight_vec = std::make_pair(vec, 0);
     matrix::Matrix code_matr = toMatrix();
-    unsigned long long size = static_cast<unsigned long long>((1 << v.size()) - 1);
-    for (unsigned long long i = 0; i < size; ++i) {
-        addToBinVector(v, 1);
-        std::vector<char> res = code_matr.multiplyVectorByMatrix(v);
+    while (weight_vec.second != k) {
+        algorithms::addToBinWeightVector(weight_vec, 1);
+        std::vector<char> res = code_matr.multiplyVectorByMatrix(weight_vec.first);
         size_t weight = algorithms::hammingWeight(res);
         if (weight != 0) {
             ++spect[weight - 1];
@@ -159,37 +166,6 @@ void Lincode::printCode() const {
             std::cout << static_cast<int>(basis[i][j]) << " ";
         }
         std::cout << std::endl;
-    }
-}
-
-bool incorrect_basis(std::vector<std::vector<char>> &basis) {
-    size_t k = basis.size();
-    size_t n = basis[0].size();
-    matrix::Matrix m(basis);
-    return k > n || m.rank() != k;
-}
-
-void addToBinVector(std::vector<char> &v, size_t n) {
-    for (size_t i = 0; i < v.size() && n != 0; ++i) {
-        v[i] += n % 2;
-        if (v[i] == 2) {
-            v[i] = 0;
-            ++n;
-        }
-        n >>= 1;
-    }
-    if (n != 0) {
-        int cnt = 0, prev_size = v.size();
-        int tmp = n;
-        while (tmp) {
-            ++cnt;
-            tmp >>= 1;
-        }
-        v.resize(prev_size + cnt);
-        for (size_t i = 0; i < v.size() - prev_size; ++i) {
-            v[prev_size + i] = n % 2;
-            n >>= 1;
-        }
     }
 }
 
