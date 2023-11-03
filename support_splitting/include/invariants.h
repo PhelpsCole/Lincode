@@ -5,10 +5,12 @@ namespace invariants {
 
 std::string invariantWeightHull(const codes::Lincode &code,
                                 const std::vector<size_t> &columns);
-std::string invariantWeightHullMinRM(const codes::Lincode &code,
+std::string invariantWeightMinRM(const codes::Lincode &code,
                                      const std::vector<size_t> &columns);
 std::string invariantHullSize(const codes::Lincode &code,
                               const std::vector<size_t> &columns);
+std::string invariantMinRMSize(const codes::Lincode &code,
+                               const std::vector<size_t> &columns);
 std::string invariantHullSizeMinRM(const codes::Lincode &code,
                                    const std::vector<size_t> &columns);
 std::string invariantWeightBasis(const codes::Lincode &code,

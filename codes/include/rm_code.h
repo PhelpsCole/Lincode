@@ -32,6 +32,7 @@ private:
 };
 
 std::vector<size_t> rmSizes(const codes::Lincode &);
+codes::Lincode minRM(const codes::Lincode &);
 
 
 } // namespace codes

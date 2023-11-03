@@ -91,6 +91,6 @@ void testByInvariant(std::function<std::string(const codes::Lincode &,
 int main() {
     testByInvariant(codes::invariants::invariantHullSize);
     testByInvariant(codes::invariants::invariantWeightHull);
-    testByInvariant(codes::invariants::invariantWeightHullMinRM);
+    testByInvariant(codes::invariants::invariantWeightMinRM);
     return 0;
 }

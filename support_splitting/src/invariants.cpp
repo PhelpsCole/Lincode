@@ -32,8 +32,11 @@ std::string invariantWeightBasisSupporter(const codes::Lincode &code) {
 
 std::string invariantHullSizeSupporter(const codes::Lincode &code) {
     codes::Lincode hull = code.hull();
-    size_t size = hull.size();
-    return std::to_string(size) + ",";
+    return std::to_string(hull.size()) + ",";
+}
+
+std::string invariantMinRMSizeSupporter(const codes::Lincode &code) {
+    return std::to_string(code.size()) + ",";
 }
 
 std::string invariantConvecter(const codes::Lincode &code,
@@ -64,29 +67,9 @@ std::string invariantConvecter(const codes::Lincode &code,
 std::string invariantConvecterMinRM(const codes::Lincode &code,
                                     const std::vector<size_t> &columns,
                                     std::function<std::string(const codes::Lincode &)> invariantSup) {
-    std::vector<size_t> rmSizes = codes::rmSizes(code);
-    size_t r = rmSizes[0], m = rmSizes[1];
-    codes::Lincode newCode(code);
-    if (m == 0) {
-        return "Not RM-code for invariant";
-    }
-    if (r != 1) {
-        if (2*r + 1 > m) {
-            r = m - r - 1;
-            newCode.dual();
-        }
-        size_t q = m / r;
-        if (q * r == m) {
-            --q;
-        }
-        if (m - r * q != 1 && m < r * (q - 1) + 1) {
-            newCode = codes::hadPower(code, q);
-            newCode.dual();
-        }
-    }
+    codes::Lincode newCode(codes::minRM(code));
     newCode.puncture(columns);
-    return invariantSup(newCode);
-    
+    return invariantSup(newCode);  
 }
 
 } // namespace support
@@ -98,7 +81,7 @@ std::string invariantWeightHull(const codes::Lincode &code,
                               codes::invariants::support::invariantWeightHullSupporter);
 }
 
-std::string invariantWeightHullMinRM(const codes::Lincode &code,
+std::string invariantWeightMinRM(const codes::Lincode &code,
                                      const std::vector<size_t> &columns) {
     return codes::invariants::support::
            invariantConvecterMinRM(code, columns,
@@ -110,6 +93,13 @@ std::string invariantHullSize(const codes::Lincode &code,
     return codes::invariants::support::
            invariantConvecter(code, columns,
                               codes::invariants::support::invariantHullSizeSupporter);
+}
+
+std::string invariantMinRMSize(const codes::Lincode &code,
+                              const std::vector<size_t> &columns) {
+    return codes::invariants::support::
+           invariantConvecterMinRM(code, columns,
+                                   codes::invariants::support::invariantMinRMSizeSupporter);
 }
 
 std::string invariantHullSizeMinRM(const codes::Lincode &code,

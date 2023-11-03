@@ -50,25 +50,29 @@ int main() {
     //matr.printMatrix();
     //std::cout << "Block view:" << std::endl;
     //matr.printMatrixInBlocks(matr.rows(), matr.cols() / 4);
-    size_t r = 4, m = 7;
+    size_t r = 3, m = 10;
     for (size_t i = 0; i < 20; ++i) {
         codes::RMCode rm(r, m);
         std::cout << "RM-code:" << std::endl;
         codes::Lincode rmCode(rm.toMatrix());
+        rmCode.printCodeSizes();
         //rmCode.printCode();
         //std::cout << spectrMinRM(rmCode) << std::endl;
         std::cout << "Generated pqsigRM:" << std::endl;
         matrix::Matrix matr = codes::pqsigRMGenerator(r, m);
         codes::Lincode code(matr);
+        code.printCodeSizes();
         //code.printCode();
         //std::cout << spectrMinRM(code) << std::endl;
         std::cout << "McEliec on pqsigRM:" << std::endl;
         code = mcEliece(code);
-        code.printCode();
+        code.printCodeSizes();
+        //code.printCode();
         //std::cout << spectrMinRM(code) << std::endl;
         std::cout << "Echelon form:" << std::endl;
         code.basisView();
-        code.printCode();
+        code.printCodeSizes();
+        //code.printCode();
         //std::cout << spectrMinRM(code) << std::endl;
     }
 

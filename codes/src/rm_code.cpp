@@ -113,4 +113,29 @@ std::vector<size_t> rmSizes(const codes::Lincode &c) {
     return res;
 }
 
+codes::Lincode minRM(const codes::Lincode &code) {
+    std::vector<size_t> rmSizes = codes::rmSizes(code);
+    size_t r = rmSizes[0], m = rmSizes[1];
+    codes::Lincode newCode(code);
+    if (m == 0) {
+        return newCode;
+    }
+    if (r != 1) {
+        if (2*r + 1 > m) {
+            r = m - r - 1;
+            newCode.dual();
+        }
+        size_t q = m / r;
+        if (q * r == m) {
+            --q;
+        }
+        if (m - r * q != 1 && m < r * (q - 1) + 1) {
+            newCode = codes::hadPower(code, q);
+            newCode.dual();
+        }
+    }
+    return newCode;
+    
+}
+
 } // namespace codes

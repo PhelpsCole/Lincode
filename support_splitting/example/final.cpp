@@ -1,98 +1,172 @@
 #include "support_splitting.h"
 #include "test_printers.h"
+#include <fstream>
+#include <chrono>
+#include <ctime>
+
+void printSSAStructure(const codes::SSAStructure &s,
+                       const std::string &filename) {
+    std::ofstream out;
+    out.open(filename);
+    if (out.is_open()) {
+        for (size_t i = 0; i != s.size(); ++i) {
+            out << i << "(" << s[i].size() << "): ";
+            for (size_t j = 0; j != s[i].size(); ++j) {
+                out << " [";
+                for (size_t k = 0; k != s[i][j].first.size(); ++k) {
+                    out << s[i][j].first[k] << ", ";
+                }
+                out << "]:" << s[i][j].second;
+            }
+            out << std::endl;
+        }
+    }
+    out.close();
+}
+
+void printSSANStructure(const codes::SSANStructure &s,
+                        const std::string &filename) {
+    std::ofstream out;
+    out.open(filename);
+    if (out.is_open()) {
+        for (auto iter = s.begin(); iter != s.end(); ++iter) {
+            out << "(";
+            for (size_t j = 0; j != iter->first.size(); ++j) {
+                out << iter->first[j] << ", ";
+            }
+            out << "): ";
+            for (size_t j = 0; j != iter->second.size(); ++j) {
+                out << " [";
+                for (size_t k = 0; k != iter->second[j].first.size(); ++k) {
+                    out << iter->second[j].first[k] << ", ";
+                }
+                out << "]:" << iter->second[j].second;
+            }
+            out << std::endl;
+        }
+    }
+    out.close();
+}
 
 void testPqsigRM(size_t r, size_t m,
                  std::function<std::string(const codes::Lincode &,
                                            const std::vector<size_t> &)> invariant,
-                 std::function<matrix::Matrix(size_t, size_t)> genFunc) {
-    matrix::Matrix pqsigRM = genFunc(r, m);
-    codes::Lincode c_perm(pqsigRM);
-    codes::SSAStructure s = codes::ssaStructure(c_perm, invariant);
-    codes::printSSAStructure(s);
-}
-
-void testMcElieceRM(size_t r, size_t m,
-                    std::function<std::string(const codes::Lincode &,
-                                              const std::vector<size_t> &)> invariant) {
-    codes::RMCode rm(r, m);
-    matrix::Matrix matr(rm.toMatrix());
-    codes::Lincode c_prev(matr);
-    codes::Lincode rmMcEliece = codes::mcEliece(c_prev);
-    codes::SSAStructure s = codes::ssaStructure(rmMcEliece, invariant);
-    codes::printSSAStructure(s);
+                 const std::string &filename) {
+    matrix::Matrix pqsigRM = codes::pqsigRMMcEliece(r, m);
+    codes::Lincode c(pqsigRM);
+    codes::SSAStructure s = codes::ssaStructure(c, invariant);
+    printSSAStructure(s, filename);
 }
 
 void testPqsigRM_N(size_t r, size_t m,
                    std::function<std::string(const codes::Lincode &,
                                              const std::vector<size_t> &)> invariant,
-                   std::function<matrix::Matrix(size_t, size_t)> genFunc,
-                   size_t n_sign) {
-    matrix::Matrix pqsigRM = genFunc(r, m);
-    codes::Lincode c_perm(pqsigRM);
-    codes::SSANStructure s = codes::ssaNStructure(c_perm, invariant, n_sign);
-    codes::printSSANStructure(s);
+                   size_t n_sign,
+                   const std::string &filename) {
+    matrix::Matrix pqsigRM = codes::pqsigRMMcEliece(r, m);
+    codes::Lincode c(pqsigRM);
+    codes::SSANStructure s = codes::ssaNStructure(c, invariant, n_sign);
+    printSSANStructure(s, filename);
 }
 
-void testMcElieceRM_N(size_t r, size_t m,
-                      std::function<std::string(const codes::Lincode &,
-                                                const std::vector<size_t> &)> invariant,
-                      size_t n_sign) {
-    codes::RMCode rm(r, m);
-    matrix::Matrix matr(rm.toMatrix());
-    codes::Lincode c_prev(matr);
-    codes::Lincode rmMcEliece = codes::mcEliece(c_prev);
-    codes::SSANStructure s = codes::ssaNStructure(rmMcEliece, invariant, n_sign);
-    codes::printSSANStructure(s);
-}
-
-void testByInvariant(std::function<std::string(const codes::Lincode &,
-                                               const std::vector<size_t> &)> invariant) {
-    std::cout << "pqsigRM (3, 5)" << std::endl;
-    testPqsigRM(3, 5, invariant, codes::pqsigRMMcEliece);
-    std::cout << "McEliece pqsigRM (3, 5)" << std::endl;
-    testMcElieceRM(3, 5, invariant);
-    std::cout << "pqsigRM (2, 6)" << std::endl;
-    testPqsigRM(2, 6, invariant, codes::pqsigRMMcEliece);
-    std::cout << "McEliece pqsigRM (2, 6)" << std::endl;
-    testMcElieceRM(2, 6, invariant);
-    //td::cout << "pqsigRM (3, 10)" << std::endl;
-    //estPqsigRM(3, 10, invariant, codes::pqsigRMMcEliece);
-    //td::cout << "McEliece pqsigRM (3, 10)" << std::endl;
-    //estMcElieceRM(3, 10, invariant);
-
-    std::cout << "pqsigRM (3, 5) 2-puncture" << std::endl;
-    testPqsigRM_N(3, 5, invariant, codes::pqsigRMMcEliece, 2);
-    std::cout << "McEliece pqsigRM (3, 5) 2-puncture" << std::endl;
-    testMcElieceRM_N(3, 5, invariant, 2);
-    //std::cout << "pqsigRM (2, 6) 2-puncture" << std::endl;
-    //testPqsigRM_N(2, 6, invariant, codes::pqsigRMMcEliece, 2);
-    //std::cout << "McEliece pqsigRM (2, 6) 2-puncture" << std::endl;
-    //testMcElieceRM_N(2, 6, invariant, 2);
-    //std::cout << "pqsigRM (3, 10) 2-puncture" << std::endl;
-    //testPqsigRM_N(3, 10, invariant, codes::pqsigRMMcEliece, 2);
-    //std::cout << "McEliece pqsigRM (3, 10) 2-puncture" << std::endl;
-    //testMcElieceRM_N(3, 10, invariant, 2);
-
-    std::cout << "pqsigRM (3, 5) 4-puncture" << std::endl;
-    testPqsigRM_N(3, 5, invariant, codes::pqsigRMMcEliece, 4);
-    std::cout << "McEliece pqsigRM (3, 5) 4-puncture" << std::endl;
-    testMcElieceRM_N(3, 5, invariant, 4);
-    //std::cout << "pqsigRM (2, 6) 4-puncture" << std::endl;
-    //testPqsigRM_N(2, 6, invariant, codes::pqsigRMMcEliece, 4);
-    //std::cout << "McEliece pqsigRM (2, 6) 4-puncture" << std::endl;
-    //testMcElieceRM_N(2, 6, invariant, 4);
-    //std::cout << "pqsigRM (3, 10) 4-puncture" << std::endl;
-    //testPqsigRM_N(3, 10, invariant, codes::pqsigRMMcEliece, 4);
-    //std::cout << "McEliece pqsigRM (3, 10) 4-puncture" << std::endl;
-    //testMcElieceRM_N(3, 10, invariant, 4);
+void testRunner(size_t r, size_t m,
+                std::function<std::string(const codes::Lincode &,
+                                          const std::vector<size_t> &)> invariant,
+                const std::string &filename,
+                size_t nPunct = 0) {
+    auto now = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::cout << "Processing " << filename << "..." << std::endl;
+    std::cout << "Started computation at " << std::ctime(&time) << std::endl;
+    if (nPunct) {
+        testPqsigRM_N(r, m, invariant, nPunct, filename);
+    } else {
+        testPqsigRM(r, m, invariant, filename);
+    }
+    
 }
 
 int main() {
-    //std::cout << "invariantHullSize" << std::endl;
-    //testByInvariant(codes::invariants::invariantHullSize);
-    //std::cout << "invariantWeightHullMinRM" << std::endl;
-    //testByInvariant(codes::invariants::invariantWeightHullMinRM);
-    std::cout << "invariantWeightHull" << std::endl;
-    testByInvariant(codes::invariants::invariantWeightHull);
+    //Tested
+    //testRunner(3, 5, codes::invariants::invariantHullSize, "modRM_3-5_hullSize.txt");
+    //testRunner(3, 5, codes::invariants::invariantMinRMSize, "modRM_3-5_minRMSize.txt");
+    //testRunner(3, 5, codes::invariants::invariantWeightMinRM, "modRM_3-5_weightMinRM.txt");
+    //testRunner(3, 5, codes::invariants::invariantWeightHull, "modRM_3-5_weightHull.txt");
+
+    //Tested
+    //testRunner(2, 6, codes::invariants::invariantHullSize, "modRM_2-6_hullSize.txt");
+    //testRunner(2, 6, codes::invariants::invariantMinRMSize, "modRM_2-6_minRMSize.txt");
+    //testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM.txt");
+    //testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull.txt");
+
+    //Tested
+    //testRunner(3, 5, codes::invariants::invariantHullSize, "modRM_3-5_hullSize_2.txt", 2);
+    //testRunner(3, 5, codes::invariants::invariantMinRMSize, "modRM_3-5_minRMSize_2.txt", 2);
+    //testRunner(3, 5, codes::invariants::invariantWeightMinRM, "modRM_3-5_weightMinRM_2.txt", 2);
+    //testRunner(3, 5, codes::invariants::invariantWeightHull, "modRM_3-5_weightHull_2.txt", 2);
+
+    //Tested
+    //testRunner(3, 5, codes::invariants::invariantHullSize, "modRM_3-5_hullSize_4.txt", 4);
+    //testRunner(3, 5, codes::invariants::invariantMinRMSize, "modRM_3-5_minRMSize_4.txt", 4);
+    //testRunner(3, 5, codes::invariants::invariantWeightMinRM, "modRM_3-5_weightMinRM_4.txt", 4);
+    //testRunner(3, 5, codes::invariants::invariantWeightHull, "modRM_3-5_weightHull_4.txt", 4);
+
+    //Tested
+    //testRunner(2, 6, codes::invariants::invariantHullSize, "modRM_2-6_hullSize_2.txt", 2);
+    //testRunner(2, 6, codes::invariants::invariantMinRMSize, "modRM_2-6_minRMSize_2.txt", 2);
+    
+    ////testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM_2.txt", 2);
+
+    testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-8_weightMinRM.txt");
+
+    testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-8_weightMinRM_2.txt", 2);
+
+    testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM_4.txt", 4);
+
+    testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-9_weightMinRM.txt");
+
+    testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull_2.txt", 2);
+    testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-8_weightHull.txt");
+    testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-8_weightHull_2.txt", 2);
+    testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull_4.txt", 4);
+    testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-9_weightHull.txt");
+
+
+    testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-8_hullSize.txt");
+    testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-8_minRMSize.txt");
+
+    testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-8_hullSize_2.txt", 2);
+    testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-8_minRMSize_2.txt", 2);
+
+    testRunner(2, 6, codes::invariants::invariantHullSize, "modRM_2-6_hullSize_4.txt", 4);
+    testRunner(2, 6, codes::invariants::invariantMinRMSize, "modRM_2-6_minRMSize_4.txt", 4);
+
+    testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-9_hullSize.txt");
+    testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-9_minRMSize.txt");
+
+    testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-9_hullSize_2.txt", 2);
+    testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-9_minRMSize_2.txt", 2);
+    testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-9_weightMinRM_2.txt", 2);
+    testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-9_weightHull_2.txt", 2);
+
+    testRunner(4, 10, codes::invariants::invariantHullSize, "modRM_4-10_hullSize.txt");
+    testRunner(4, 10, codes::invariants::invariantMinRMSize, "modRM_4-10_minRMSize.txt");
+    testRunner(4, 10, codes::invariants::invariantWeightMinRM, "modRM_4-10_weightMinRM.txt");
+    testRunner(4, 10, codes::invariants::invariantWeightHull, "modRM_4-10_weightHull.txt");
+
+    testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-7_hullSize_4.txt", 4);
+    testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-7_minRMSize_4.txt", 4);
+    testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-7_weightMinRM_4.txt", 4);
+    testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-7_weightHull_4.txt", 4);
+
+    testRunner(4, 10, codes::invariants::invariantHullSize, "modRM_4-10_hullSize_2.txt", 2);
+    testRunner(4, 10, codes::invariants::invariantMinRMSize, "modRM_4-10_minRMSize_2.txt", 2);
+    testRunner(4, 10, codes::invariants::invariantWeightMinRM, "modRM_4-10_weightMinRM_2.txt", 2);
+    testRunner(4, 10, codes::invariants::invariantWeightHull, "modRM_4-10_weightHull_2.txt", 2);
+
+    testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-9_hullSize_4.txt", 4);
+    testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-9_minRMSize_4.txt", 4);
+    testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-9_weightMinRM_4.txt", 4);
+    testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-9_weightHull_4.txt", 4);
     return 0;
 }
