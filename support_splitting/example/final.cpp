@@ -96,8 +96,14 @@ int main() {
     //Tested
     //testRunner(2, 6, codes::invariants::invariantHullSize, "modRM_2-6_hullSize.txt");
     //testRunner(2, 6, codes::invariants::invariantMinRMSize, "modRM_2-6_minRMSize.txt");
-    //testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM.txt");
-    //testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull.txt");
+    testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM2.txt");
+    testRunner(3, 6, codes::invariants::invariantWeightMinRM, "modRM_3-6_weightMinRM.txt");
+    testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM3.txt");
+    testRunner(3, 6, codes::invariants::invariantWeightMinRM, "modRM_3-6_weightMinRM2.txt");
+    testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM4.txt");
+    testRunner(3, 6, codes::invariants::invariantWeightHull, "modRM_3-6_weightHull.txt");
+    testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull2.txt");
+    testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull3.txt");
 
     //Tested
     //testRunner(3, 5, codes::invariants::invariantHullSize, "modRM_3-5_hullSize_2.txt", 2);
@@ -114,59 +120,56 @@ int main() {
     //Tested
     //testRunner(2, 6, codes::invariants::invariantHullSize, "modRM_2-6_hullSize_2.txt", 2);
     //testRunner(2, 6, codes::invariants::invariantMinRMSize, "modRM_2-6_minRMSize_2.txt", 2);
+
+    //testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-8_minRMSize.txt");
+    //testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-8_minRMSize_2.txt", 2);
+    //testRunner(2, 6, codes::invariants::invariantMinRMSize, "modRM_2-6_minRMSize_4.txt", 4);
+    //testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-10_minRMSize.txt");
+
+    //testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-8_hullSize.txt");
+    //testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-8_hullSize_2.txt", 2);
+    //testRunner(2, 6, codes::invariants::invariantHullSize, "modRM_2-6_hullSize_4.txt", 4);
+    //testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-10_hullSize.txt");
     
-    ////testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM_2.txt", 2);
-
-    testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-8_weightMinRM.txt");
-
-    testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-8_weightMinRM_2.txt", 2);
-
-    testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM_4.txt", 4);
-
-    testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-9_weightMinRM.txt");
-
-    testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull_2.txt", 2);
-    testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-8_weightHull.txt");
-    testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-8_weightHull_2.txt", 2);
-    testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull_4.txt", 4);
-    testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-9_weightHull.txt");
+    //testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-8_weightMinRM.txt");
+    //testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM_2.txt", 2);
 
 
-    testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-8_hullSize.txt");
-    testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-8_minRMSize.txt");
+    //testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-9_weightMinRM.txt");
+    //testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-8_weightMinRM_2.txt", 2);
+    //testRunner(2, 6, codes::invariants::invariantWeightMinRM, "modRM_2-6_weightMinRM_4.txt", 4);
 
-    testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-8_hullSize_2.txt", 2);
-    testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-8_minRMSize_2.txt", 2);
 
-    testRunner(2, 6, codes::invariants::invariantHullSize, "modRM_2-6_hullSize_4.txt", 4);
-    testRunner(2, 6, codes::invariants::invariantMinRMSize, "modRM_2-6_minRMSize_4.txt", 4);
 
-    testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-9_hullSize.txt");
-    testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-9_minRMSize.txt");
+    //testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull_2.txt", 2);
+    //testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-8_weightHull.txt");
+    //testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-8_weightHull_2.txt", 2);
+    //testRunner(2, 6, codes::invariants::invariantWeightHull, "modRM_2-6_weightHull_4.txt", 4);
+    //testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-10_weightHull.txt");
 
-    testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-9_hullSize_2.txt", 2);
-    testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-9_minRMSize_2.txt", 2);
-    testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-9_weightMinRM_2.txt", 2);
-    testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-9_weightHull_2.txt", 2);
+    //testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-10_hullSize_2.txt", 2);
+    //testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-10_minRMSize_2.txt", 2);
+    //testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-10_weightMinRM_2.txt", 2);
+    //testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-10_weightHull_2.txt", 2);
 
-    testRunner(4, 10, codes::invariants::invariantHullSize, "modRM_4-10_hullSize.txt");
-    testRunner(4, 10, codes::invariants::invariantMinRMSize, "modRM_4-10_minRMSize.txt");
-    testRunner(4, 10, codes::invariants::invariantWeightMinRM, "modRM_4-10_weightMinRM.txt");
-    testRunner(4, 10, codes::invariants::invariantWeightHull, "modRM_4-10_weightHull.txt");
+    //testRunner(4, 10, codes::invariants::invariantHullSize, "modRM_4-10_hullSize.txt");
+    //testRunner(4, 10, codes::invariants::invariantMinRMSize, "modRM_4-10_minRMSize.txt");
+    //testRunner(4, 10, codes::invariants::invariantWeightMinRM, "modRM_4-10_weightMinRM.txt");
+    //testRunner(4, 10, codes::invariants::invariantWeightHull, "modRM_4-10_weightHull.txt");
 
-    testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-7_hullSize_4.txt", 4);
-    testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-7_minRMSize_4.txt", 4);
-    testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-7_weightMinRM_4.txt", 4);
-    testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-7_weightHull_4.txt", 4);
+    //testRunner(3, 8, codes::invariants::invariantHullSize, "modRM_3-7_hullSize_4.txt", 4);
+    //testRunner(3, 8, codes::invariants::invariantMinRMSize, "modRM_3-7_minRMSize_4.txt", 4);
+    //testRunner(3, 8, codes::invariants::invariantWeightMinRM, "modRM_3-7_weightMinRM_4.txt", 4);
+    //testRunner(3, 8, codes::invariants::invariantWeightHull, "modRM_3-7_weightHull_4.txt", 4);
 
-    testRunner(4, 10, codes::invariants::invariantHullSize, "modRM_4-10_hullSize_2.txt", 2);
-    testRunner(4, 10, codes::invariants::invariantMinRMSize, "modRM_4-10_minRMSize_2.txt", 2);
-    testRunner(4, 10, codes::invariants::invariantWeightMinRM, "modRM_4-10_weightMinRM_2.txt", 2);
-    testRunner(4, 10, codes::invariants::invariantWeightHull, "modRM_4-10_weightHull_2.txt", 2);
+    //testRunner(4, 10, codes::invariants::invariantHullSize, "modRM_4-10_hullSize_2.txt", 2);
+    //testRunner(4, 10, codes::invariants::invariantMinRMSize, "modRM_4-10_minRMSize_2.txt", 2);
+    //testRunner(4, 10, codes::invariants::invariantWeightMinRM, "modRM_4-10_weightMinRM_2.txt", 2);
+    //testRunner(4, 10, codes::invariants::invariantWeightHull, "modRM_4-10_weightHull_2.txt", 2);
 
-    testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-9_hullSize_4.txt", 4);
-    testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-9_minRMSize_4.txt", 4);
-    testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-9_weightMinRM_4.txt", 4);
-    testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-9_weightHull_4.txt", 4);
+    //testRunner(3, 10, codes::invariants::invariantHullSize, "modRM_3-9_hullSize_4.txt", 4);
+    //testRunner(3, 10, codes::invariants::invariantMinRMSize, "modRM_3-9_minRMSize_4.txt", 4);
+    //testRunner(3, 10, codes::invariants::invariantWeightMinRM, "modRM_3-9_weightMinRM_4.txt", 4);
+    //testRunner(3, 10, codes::invariants::invariantWeightHull, "modRM_3-9_weightHull_4.txt", 4);
     return 0;
 }

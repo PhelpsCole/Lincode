@@ -78,7 +78,24 @@ Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
     Matrix res(k1 * k2, k12, basis);
     res.convertToBasis();
     return res;
+}
 
+Matrix hadPower(const Matrix &m, size_t power) {
+    Matrix res(m.cols(), m.rows());
+    bool resEmpty = true;
+    Matrix tmp(m);
+    while(power) {
+        if (power % 2 == 1) {
+            if (resEmpty) {
+                res = tmp;
+            } else {
+                res = hadamardProduct(res, tmp);
+            }
+        }
+        tmp = hadamardProduct(tmp, tmp);
+        power >>= 1;
+    }
+    return res;
 }
 
 // Colculates Ax=B by Gauss-Jordan method

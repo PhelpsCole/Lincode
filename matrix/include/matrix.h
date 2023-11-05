@@ -70,6 +70,7 @@ Matrix generateRandomPermutation(size_t n, size_t p);
 Matrix permFromVector(const std::vector<size_t> &);
 Matrix diag(size_t n, char elem);
 Matrix hadamardProduct(const Matrix &, const Matrix &);
+Matrix hadPower(const Matrix &, size_t);
 
 
 Matrix solution_transposed(Matrix &a, Matrix &b);

@@ -113,27 +113,46 @@ std::vector<size_t> rmSizes(const codes::Lincode &c) {
     return res;
 }
 
+// Vector contatins -1 (dual) and q (q-hadamard product)
+std::vector<int> minRMVector(size_t r, size_t m) {
+    std::vector<int> res;
+    if (r == 0 || r == 1 || m - r == 1) {
+        return res;
+    }
+    if (2*r >= m) {
+        res.push_back(-1);
+        r = m - r - 1;
+    }
+    while (r != 1 && m % r != 1) {
+        size_t q = m / r;
+        if (m % r == 0) {
+            --q;
+        }
+        if (q != 1) {
+            res.push_back(q);
+        }
+        r = m - q*r - 1;
+        res.push_back(-1);
+    }
+    return res;
+}
+
 codes::Lincode minRM(const codes::Lincode &code) {
     std::vector<size_t> rmSizes = codes::rmSizes(code);
     size_t r = rmSizes[0], m = rmSizes[1];
     codes::Lincode newCode(code);
-    if (m == 0) {
-        return newCode;
-    }
-    if (r != 1) {
-        if (2*r + 1 > m) {
-            r = m - r - 1;
+    std::vector<int> convVector = minRMVector(r, m);
+    for (size_t i = 0; i < convVector.size(); ++i) {
+        std::cout << convVector[i] << std::endl;
+        if (convVector[i] == -1) {
             newCode.dual();
-        }
-        size_t q = m / r;
-        if (q * r == m) {
-            --q;
-        }
-        if (m - r * q != 1 && m < r * (q - 1) + 1) {
-            newCode = codes::hadPower(code, q);
-            newCode.dual();
+        } else {
+            newCode.printCodeSizes();
+            newCode = codes::hadPower(newCode, convVector[i]);
+            newCode.printCodeSizes();
         }
     }
+        std::cout << std::endl;
     return newCode;
     
 }

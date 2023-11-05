@@ -89,11 +89,7 @@ Lincode hadamardProduct(const Lincode &first, const Lincode &second) {
 
 // ToDo: bin power
 Lincode hadPower(const Lincode &c, size_t power) {
-    codes::Lincode newCode(c);
-    while(--power) {
-        newCode = hadamardProduct(newCode, c);
-    }
-    return newCode;
+    return codes::Lincode(hadPower(c.toMatrix(), power));
 }
 
 Lincode mcEliece(const Lincode &gCode) {
