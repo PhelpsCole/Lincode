@@ -61,7 +61,5 @@ int main(int argc, char *argv[]) {
     for (size_t i = 0; i < iter_num; ++i) {
         testOnce(r, m);
     }
-    //testOnce(2, 8);
-
     return 0;
 }
