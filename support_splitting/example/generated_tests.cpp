@@ -138,14 +138,14 @@ int main() {
     //std::cout << "invariantWeightHullBasis for RM" << std::endl;
     //randomTestSiclesRM(2, 5, 20, codes::invariants::indeep::invariantWeightHullBasis, simplePerm);
 
-    std::cout << "invariantWeightHullHadSquare" << std::endl;
-    randomTestSicles(10, 20, 20, codes::invariants::invariantWeightHullHadSquare, simplePerm);
-    std::cout << "invariantWeightHullHadSquare mcEliece" << std::endl;
-    randomTestSicles(10, 20, 20, codes::invariants::invariantWeightHullHadSquare, mcEliece);
-    std::cout << "invariantWeightHullHadSquare RM equal" << std::endl;
-    randomTestSiclesRM(3, 7, 1, codes::invariants::invariantWeightHullHadSquare, equiv);
-    std::cout << "invariantWeightHullHadSquare RM simple" << std::endl;
-    randomTestSiclesRM(2, 5, 2, codes::invariants::invariantWeightHullHadSquare, simplePerm);
-    std::cout << "invariantWeightHullHadSquare pqsigRM" << std::endl;
-    randomTestSiclesPqsigRM(3, 7, 2, codes::invariants::invariantWeightHullHadSquare);
+    std::cout << "invariantWeightHadSquare" << std::endl;
+    randomTestSicles(10, 20, 20, codes::invariants::invariantWeightHadSquare, simplePerm);
+    std::cout << "invariantWeightHadSquare mcEliece" << std::endl;
+    randomTestSicles(10, 20, 20, codes::invariants::invariantWeightHadSquare, mcEliece);
+    std::cout << "invariantWeightHadSquare RM equal" << std::endl;
+    randomTestSiclesRM(3, 7, 1, codes::invariants::invariantWeightHadSquare, equiv);
+    std::cout << "invariantWeightHadSquare RM simple" << std::endl;
+    randomTestSiclesRM(2, 5, 2, codes::invariants::invariantWeightHadSquare, simplePerm);
+    std::cout << "invariantWeightHadSquare pqsigRM" << std::endl;
+    randomTestSiclesPqsigRM(3, 7, 2, codes::invariants::invariantWeightHadSquare);
 }

@@ -39,6 +39,7 @@ public:
 
     void printCodeSizes() const;
     void printCode() const;
+    void printVisualCode(size_t blocks_num = 1) const;
 
 private:
     size_t k;

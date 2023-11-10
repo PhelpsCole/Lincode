@@ -19,7 +19,7 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m) {
     C *= matrix::generateRandomPermutation(size, p2);
     matrix::Matrix part1 = A;
     part1.concatenateByRows(A);
-    part1.concatenateByRows(part1); // G^s|G^s|G^s|G^s
+    part1.concatenateByRows(part1); // A^s|A^s|A^s|A^s
 
     matrix::Matrix part2 = matrix::Matrix(B.rows(), B.cols());
     part2.concatenateByRows(B);

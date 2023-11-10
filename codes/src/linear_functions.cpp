@@ -34,6 +34,7 @@ void Lincode::puncture(const std::vector<size_t> &columns) {
             v[columns[i]] = 0;
         }
     }
+    basisView();
 }
 
 void Lincode::puncture(size_t column) {

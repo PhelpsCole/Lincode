@@ -169,4 +169,21 @@ void Lincode::printCode() const {
     }
 }
 
+void Lincode::printVisualCode(size_t blocks_num) const {
+    printCodeSizes();
+    for (size_t i = 0; i < k; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+            if (j && j % (n / blocks_num) == 0) {
+                std::cout << "|";
+            }
+            if (basis[i][j] == 0) {
+                std::cout << "-";
+            } else if (basis[i][j] == 1) {
+                std::cout << "+";
+            }
+        }
+        std::cout << std::endl;
+    }
+}
+
 } // namespace codes

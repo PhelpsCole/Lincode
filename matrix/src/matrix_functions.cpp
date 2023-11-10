@@ -77,6 +77,7 @@ Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
     }
     Matrix res(k1 * k2, k12, basis);
     res.convertToBasis();
+    //res.convertToTriangle();
     return res;
 }
 
