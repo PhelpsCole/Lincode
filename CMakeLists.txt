@@ -10,5 +10,7 @@ add_compile_options( -W  -Wall      -pedantic       -fstack-protector-all
                      -Wformat       -Wwrite-strings -Wcast-align
                      -Wno-long-long -Wunused        -Wcast-qual)
 
+add_subdirectory(algorithms)
 add_subdirectory(matrix)
-add_subdirectory(rm_code)
+add_subdirectory(codes)
+add_subdirectory(support_splitting)

@@ -6,10 +6,12 @@ namespace codes {
 typedef std::map<std::string, std::vector<size_t>> equivClassesMap;
 typedef std::vector<std::vector<size_t>> equivClassesVecSet;
 
-SSAStructure ssaStructure(const codes::Lincode &c,
+SSAStructure ssaStructure(codes::Lincode c,
                           std::function<std::string(const codes::Lincode &,
                                                     const std::vector<size_t> &)>
-                          invariant) {
+                          invariant,
+                          std::function<void(codes::Lincode &)> preprocCode) {
+    preprocCode(c);
     size_t len = c.len();
     std::vector<size_t> columns(1);
     SSAStructure result(len);

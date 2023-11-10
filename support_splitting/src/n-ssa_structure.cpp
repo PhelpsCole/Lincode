@@ -23,11 +23,13 @@ std::vector<size_t> mergeNums(const std::vector<size_t> &cols, const std::vector
     return res;
 }
 
-SSANStructure ssaNStructure(const codes::Lincode &c,
-                          std::function<std::string(const codes::Lincode &,
-                                                    const std::vector<size_t> &)>
-                          invariant,
-                          size_t n_sign) {
+SSANStructure ssaNStructure(codes::Lincode c,
+                            std::function<std::string(const codes::Lincode &,
+                                                      const std::vector<size_t> &)>
+                            invariant,
+                            size_t n_sign,
+                            std::function<void(codes::Lincode &)> preprocCode) {
+    preprocCode(c);
     size_t len = c.len();
     SSANStructure result;
     equivClassesMap equivClasses;

@@ -1,7 +1,6 @@
 link_libraries(support_splitting)
 add_executable(manual manual_tests.cpp)
 add_executable(manualNStruct manual_nstruct.cpp)
-add_executable(generated generated_tests.cpp)
 add_executable(pqsigRM pqsigRM_tests.cpp)
 add_executable(structTest test_structruralSSA.cpp)
 add_executable(structNTest test_structruralNSSA.cpp)

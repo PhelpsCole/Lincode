@@ -10,16 +10,10 @@ invarType returnInvarById(size_t id) {
     case 1:
         return invariantWeightHull;
     case 2:
-        return invariantSimpleHullSize;
+        return invariantSize;
     case 3:
-        return invariantHadSquareSize;
+        return invariantWeight;
     case 4:
-        return invariantWeightHadSquare;
-    case 5:
-        return invariantHullHadSquareSize;
-    case 6:
-        return invariantWeightHullHadSquare;
-    case 7:
         return invariantWeightBasis;
     }
     return invariantHullSize;
@@ -32,20 +26,41 @@ std::string returnInvarNameById(size_t id) {
     case 1:
         return "invariantWeightHull";
     case 2:
-        return "invariantSimpleHullSize";
+        return "invariantSize";
     case 3:
-        return "invariantHadSquareSize";
+        return "invariantWeight";
     case 4:
-        return "invariantWeightHadSquare";
-    case 5:
-        return "invariantHullHadSquareSize";
-    case 6:
-        return "invariantWeightHullHadSquare";
-    case 7:
         return "invariantWeightBasis";
-
     }
     return "invariantHullSize";
+}
+
+preprocType returnPreprocById(size_t id) {
+    switch(id) {
+    case 0:
+        return preprocSimple;
+    case 1:
+        return preprocHull;
+    case 2:
+        return preprocHadPower;
+    case 3:
+        return preprocHadPowerHull;
+    }
+    return preprocSimple;
+}
+
+std::string returnPreprocNameById(size_t id) {
+    switch(id) {
+    case 0:
+        return "preprocSimple";
+    case 1:
+        return "preprocHull";
+    case 2:
+        return "preprocHadPower";
+    case 3:
+        return "preprocHadPowerHull";
+    }
+    return "preprocSimple";
 }
 
 namespace support {
@@ -68,11 +83,6 @@ std::string invariantWeightHullSupporter(const codes::Lincode &code) {
 
 std::string invariantWeightSupporter(const codes::Lincode &code) {
     return invariantString(code.spectrum());
-}
-
-std::string invariantWeightBasisSupporter(const codes::Lincode &code) {
-    //codes::Lincode punct = code.hull();
-    return invariantString(code.spectrum_basis());
 }
 
 std::string invariantHullSizeSupporter(const codes::Lincode &code) {
@@ -113,7 +123,7 @@ std::string invariantConvecterSimple(const codes::Lincode &code,
                                      const std::vector<size_t> &columns,
                                      std::function<std::string(const codes::Lincode &)>
                                      invariantSup) {
-    codes::Lincode newCode(code.hull());
+    codes::Lincode newCode(code);
     newCode.puncture(columns);
     return invariantSup(newCode);  
 }
@@ -125,43 +135,6 @@ std::string invariantConvecterMinRM(const codes::Lincode &code,
     codes::Lincode newCode(codes::minRM(code));
     newCode.puncture(columns);
     return invariantSup(newCode);  
-}
-
-std::string invariantConvecterHadSquareSimple(const codes::Lincode &code,
-                                              const std::vector<size_t> &columns,
-                                              std::function<std::string(const codes::Lincode &)>
-                                              invariantSup) {
-    codes::Lincode newCode(codes::hadamardProduct(code, code));
-    newCode.puncture(columns);
-    return invariantSup(newCode);  
-}
-
-std::string invariantConvecterHullHadSquareSimple(const codes::Lincode &code,
-                                              const std::vector<size_t> &columns,
-                                              std::function<std::string(const codes::Lincode &)>
-                                              invariantSup) {
-    codes::Lincode newCode(codes::hadamardProduct(code, code).hull());
-    newCode.puncture(columns);
-    return invariantSup(newCode);  
-}
-
-std::string invariantConvecterHadSquareSendrier(const codes::Lincode &code,
-                                                const std::vector<size_t> &columns,
-                                                std::function<std::string(const codes::Lincode &)>
-                                                invariantSup) {
-    if (columns.size() == 0) {
-        return invariantSup(code);
-    }
-    std::vector<codes::Lincode> codesVec = {code, code};
-    codesVec[0] = codes::hadamardProduct(codesVec[0], codesVec[0]);
-    codesVec[1] = codesVec[0];
-    codesVec[1].dual();
-    std::string ans;
-    for (size_t i = 0; i < codesVec.size(); ++i) {
-        codesVec[i].puncture(columns);
-        ans += invariantSup(codesVec[i]);
-    }
-    return ans;
 }
 
 } // namespace support
@@ -177,62 +150,44 @@ std::string invariantHullSize(const codes::Lincode &code,
                               const std::vector<size_t> &columns) {
     return codes::invariants::support::
            invariantConvecterSendrier(code, columns,
-                              codes::invariants::support::invariantHullSizeSupporter);
+                                      codes::invariants::support::invariantHullSizeSupporter);
 }
 
-std::string invariantSimpleHullSize(const codes::Lincode &code,
+std::string invariantWeight(const codes::Lincode &code,
+                                      const std::vector<size_t> &columns) {
+    return codes::invariants::support::
+           invariantConvecterSimple(code, columns,
+                                    codes::invariants::support::invariantWeightSupporter);
+}
+
+std::string invariantSize(const codes::Lincode &code,
                                     const std::vector<size_t> &columns) {
     return codes::invariants::support::
            invariantConvecterSimple(code, columns,
                                     codes::invariants::support::invariantSizeSupporter);
 }
 
-std::string invariantHadSquareSize(const codes::Lincode &code,
-                                   const std::vector<size_t> &columns) {
-    return codes::invariants::support::
-           invariantConvecterHadSquareSimple(code, columns,
-                                             codes::invariants::support::invariantSizeSupporter);
-}
-
-std::string invariantWeightHadSquare(const codes::Lincode &code,
-                                     const std::vector<size_t> &columns) {
-    return codes::invariants::support::
-           invariantConvecterHadSquareSendrier(code, columns,
-                                               codes::invariants::support::
-                                               invariantWeightSupporter);
-}
-
-std::string invariantHullHadSquareSize(const codes::Lincode &code,
-                                       const std::vector<size_t> &columns) {
-    return codes::invariants::support::
-           invariantConvecterHullHadSquareSimple(code, columns,
-                                                 codes::invariants::support::
-                                                 invariantSizeSupporter);
-}
-
-std::string invariantWeightHullHadSquare(const codes::Lincode &code,
-                                         const std::vector<size_t> &columns) {
-    return codes::invariants::support::
-           invariantConvecterHullHadSquareSimple(code, columns,
-                                                 codes::invariants::support::
-                                                 invariantWeightSupporter);
-}
-
 std::string invariantWeightBasis(const codes::Lincode &code,
                                  const std::vector<size_t> &columns) {
     return codes::invariants::support::
            invariantConvecterSendrier(code, columns,
-                                      codes::invariants::support::invariantWeightBasisSupporter);
+                                      codes::invariants::support::invariantWeightSupporter);
 }
 
-/*
-std::string invariantMinRMSize(const codes::Lincode &code,
-                              const std::vector<size_t> &columns) {
-    return codes::invariants::support::
-           invariantConvecterMinRM(code, columns,
-                                   codes::invariants::support::invariantSizeSupporter);
+void preprocSimple(codes::Lincode &c) {}
+
+void preprocHull(codes::Lincode &c) {
+    c = c.hull();
 }
-*/
+
+void preprocHadPower(codes::Lincode &c) {
+    c = codes::hadamardProduct(c, c);
+}
+
+void preprocHadPowerHull(codes::Lincode &c) {
+    c = codes::hadamardProduct(c, c);
+    c = c.hull();
+}
 
 } //namespace invariants
 } //namespace codes
