@@ -98,18 +98,6 @@ std::string nameFile(size_t r, size_t m, std::string invarName, size_t nPunct, s
     return res;
 }
 
-void helpLog() {
-    std::cout << "Input args in format: r m nPunct invarId cicleIter" << std::endl;
-    std::cout << "Where invarId is:" << std::endl;
-    size_t invarId = 0;
-    std::string zeroReturn = codes::invariants::returnInvarNameById(invarId);
-    std::string current(zeroReturn);
-    do {
-        std::cout << invarId << ": " << current << std::endl;
-        current = codes::invariants::returnInvarNameById(++invarId);
-    } while (current != zeroReturn);
-}
-
 int main(int argc, char *argv[]) {
     size_t r = 2;
     size_t m = 7;
@@ -117,7 +105,19 @@ int main(int argc, char *argv[]) {
     size_t invarId = 0;
     size_t cicleIter = 1;
     if (argc == 1) {
-        helpLog();
+        std::cout << "Input args in format: r m nPunct invarId cicleIter" << std::endl;
+        std::cout << "Shortcuts:" << std::endl;
+        std::cout << "By 1: " << r << " " << m << " " << nPunct << " " << invarId << " cicleIter" << std::endl;
+        std::cout << "By 2: " << r << " " << m << " " << nPunct << " " << "invarId cicleIter" << std::endl;
+        std::cout << "By 3: " << "r m " << nPunct << " " << invarId << " cicleIter" << std::endl;
+        std::cout << "By 4: " << "r m " << nPunct << " invarId cicleIter" << std::endl;
+        std::cout << "Where invarId is:" << std::endl;
+        std::string zeroReturn = codes::invariants::returnInvarNameById(invarId);
+        std::string current(zeroReturn);
+        do {
+            std::cout << invarId << ": " << current << std::endl;
+            current = codes::invariants::returnInvarNameById(++invarId);
+        } while (current != zeroReturn);
         return 0;
     } else if (argc == 2) {
         cicleIter = std::stoi(argv[1]);
