@@ -29,7 +29,9 @@ SSANStructure ssaNStructure(codes::Lincode c,
                             invariant,
                             size_t n_sign,
                             std::function<void(codes::Lincode &)> preprocCode) {
+    c.printCodeSizes();
     preprocCode(c);
+    c.printCodeSizes();
     size_t len = c.len();
     SSANStructure result;
     equivClassesMap equivClasses;

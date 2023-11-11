@@ -74,7 +74,7 @@ void testRunner(size_t r, size_t m, codes::invariants::invarType invariant,
     std::cout << "Processing " << filename << "..." << std::endl;
     std::cout << "Started computation at " << std::ctime(&time) << std::endl;
     if (nPunct != 1) {
-        testPqsigRM_N(r, m, invariant, nPunct, filename);
+        testPqsigRM_N(r, m, invariant, nPunct, filename, preprocFunc);
     } else {
         testPqsigRM(r, m, invariant, filename, preprocFunc);
     }
