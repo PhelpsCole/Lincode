@@ -15,6 +15,7 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m) {
     std::uniform_int_distribution<size_t> distrib(1, size);
     size_t p1 = distrib(gen);
     size_t p2 = distrib(gen);
+    //std::cout << "p1 = " << p1 << ", p2 = " << p2 << std::endl;
     A *= matrix::generateRandomPermutation(size, p1);
     C *= matrix::generateRandomPermutation(size, p2);
     matrix::Matrix part1 = A;

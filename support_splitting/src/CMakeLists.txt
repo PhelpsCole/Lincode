@@ -1,13 +1,10 @@
 #[[]]
-add_library(support_splitting STATIC ssa.cpp
-                                     ssa_structure.cpp
+add_library(support_splitting STATIC ssa_structure.cpp
                                      n-ssa_structure.cpp
-                                     inDeepSSA.cpp
                                      invariants.cpp)
 #[[]]
 #[[
 add_library(support_splitting STATIC testSSA.cpp
-                                     testInDeepSSA.cpp
                                      invariants.cpp
                                      test_printers.cpp)
 ]]

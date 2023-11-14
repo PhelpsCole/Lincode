@@ -18,7 +18,6 @@ SSAStructure ssaStructure(codes::Lincode c,
     equivClassesMap equivClasses;
     for (size_t i = 0; i < len; ++i) {
         columns[0] = i;
-        std::vector<size_t> punctCoords(columns);
         std::string invar = invariant(c, columns);
         if (equivClasses.find(invar) == equivClasses.end()) {
             equivClasses[invar] = std::vector<size_t>(1);
@@ -26,7 +25,7 @@ SSAStructure ssaStructure(codes::Lincode c,
         } else {
             equivClasses[invar].push_back(i);
         }
-        result[i].push_back(std::make_pair(punctCoords, invar));
+        result[i].push_back(std::make_pair(columns, invar));
     }
     std::vector<size_t> refinders;
     equivClassesVecSet equivClassesVec;

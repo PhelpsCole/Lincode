@@ -20,48 +20,45 @@ void testCicle() {
     }
 }
 
+void printCode(const codes::Lincode &c, std::string line, size_t mode) {
+    std::cout << line << std::endl;
+    if (mode == 1) {
+        c.printCodeSizes();
+    } else {
+        c.printVisualCode(4);
+    }
+
+}
+
 void testOnce(size_t r, size_t m, size_t mode) {
     std::cout << "r = " << r << ", m = " << m << std::endl;
     codes::Lincode rmCode(codes::RMCode(r, m).toMatrix());
     rmCode.basisView();
-    std::cout << "RM code:" << std::endl;
-    if (mode == 1) {
-        rmCode.printCodeSizes();
-    } else {
-        rmCode.printVisualCode();
-    }
+    //printCode(rmCode, "RM code:", mode);
     codes::Lincode pqsigrmCode(codes::pqsigRMGenerator(r, m));
+
+    pqsigrmCode.basisView();
+    //printCode(pqsigrmCode, "pqsigRM code:", mode);
+
+    //codes::Lincode hadSquareRM(codes::RMCode(2*r, 7).toMatrix());// = codes::hadamardProduct(rmCode, rmCode);
+    //hadSquareRM.basisView();
+    //printCode(hadSquareRM, "2*r of RM code:", mode);
+
+    //hadSquareRM = codes::hadamardProduct(rmCode, rmCode);
+    //hadSquareRM.basisView();
+    //printCode(hadSquareRM, "Had square of RM code:", mode);
+
     codes::Lincode hadSquarePqsigRM = codes::hadamardProduct(pqsigrmCode, pqsigrmCode);
-    std::cout << "pqsigRM code:" << m << std::endl;
-    if (mode == 1) {
-        pqsigrmCode.printCodeSizes();
-    } else {
-        pqsigrmCode.printVisualCode();
-    }
-    std::cout << "Had square of pqsigRM code:" << std::endl;
-    if (mode == 1) {
-        hadSquarePqsigRM.printCodeSizes();
-    } else {
-        hadSquarePqsigRM.printVisualCode();
-    }
+    //printCode(hadSquarePqsigRM, "Had square of pqsigRM code:", mode);
+
     codes::Lincode dual = hadSquarePqsigRM;
-    dual.dual();
-    std::cout << "Dual of Had square of pqsigRM code:" << std::endl;
-    dual.basisView();
-    if (mode == 1) {
-        dual.printCodeSizes();
-    } else {
-        dual.printVisualCode();
-    }
+    //dual.dual();
+    //dual.basisView();
+    //printCode(dual, "Dual of Had square of pqsigRM code:", mode);
+
     dual = dual.hull();
-    std::cout << "Hull of Had square of pqsigRM code:" << std::endl;
     dual.basisView();
-    if (mode == 1) {
-        dual.printCodeSizes();
-    } else {
-        dual.printVisualCode();
-    }
-    std::cout << std::endl;
+    printCode(dual, "Hull of Had square of pqsigRM code:", mode);
 }
 
 int main(int argc, char *argv[]) {

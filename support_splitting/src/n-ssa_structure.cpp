@@ -29,15 +29,12 @@ SSANStructure ssaNStructure(codes::Lincode c,
                             invariant,
                             size_t n_sign,
                             std::function<void(codes::Lincode &)> preprocCode) {
-    c.printCodeSizes();
     preprocCode(c);
-    c.printCodeSizes();
     size_t len = c.len();
     SSANStructure result;
     equivClassesMap equivClasses;
     std::vector<std::vector<size_t>> colCombs = algorithms::generatePermSequences(len, n_sign);
     for (size_t i = 0; i < colCombs.size(); ++i) {
-        std::vector<size_t> punctCoords(colCombs[i]);
         std::string invar = invariant(c, colCombs[i]);
         if (equivClasses.find(invar) == equivClasses.end()) {
             equivClasses[invar] = std::vector<std::vector<size_t>>(1);
@@ -56,7 +53,6 @@ SSANStructure ssaNStructure(codes::Lincode c,
             equivClassesVec.push_back(iter->second);
         }
     }
-    //Before this step we can construct 2-, 3- or 4- signature
     for (size_t refInd = 0; equivClassesVec.size() != 0 && refInd != refinders.size(); ++refInd) {
         std::vector<size_t> invarColumns(refinders[refInd]);
         equivClassesVecSet newEquivClassesVec;

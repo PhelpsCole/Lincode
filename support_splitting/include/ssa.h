@@ -8,9 +8,6 @@
 
 namespace codes {
 
-//typedef std::pair<std::vector<std::vector<size_t>>, std::vector<std::vector<size_t>>> VVPair;
-//typedef std::map<size_t, std::pair<std::vector<size_t>, std::string>> SSAStructure;
-
 struct SSAData {
     std::vector<size_t> found1;
     std::vector<size_t> to_find1;
@@ -25,9 +22,6 @@ typedef std::pair<std::vector<size_t>, std::string> SSAStep;
 typedef std::vector<std::vector<SSAStep>> SSAStructure;
 typedef std::map<std::vector<size_t>, std::vector<SSAStep>> SSANStructure;
 
-std::vector<size_t> support_splitting(const codes::Lincode &, const codes::Lincode &,
-                                      std::function<std::string(const codes::Lincode &,
-                                                                const std::vector<size_t> &)>);
 SSAStructure ssaStructure(codes::Lincode,
                           std::function<std::string(const codes::Lincode &,
                                                     const std::vector<size_t> &)>,
