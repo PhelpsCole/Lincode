@@ -29,12 +29,10 @@ std::vector<size_t> mergeNums(const std::vector<size_t> &cols, const std::vector
 }
 
 SSANStructure ssaNStructure(codes::Lincode c,
-                            std::function<std::string(const codes::Lincode &,
-                                                      const std::vector<size_t> &)>
-                            invariant,
+                            size_t invarId,
                             size_t n_sign,
-                            std::function<void(codes::Lincode &)> preprocCode) {
-    preprocCode(c);
+                            size_t preprocId) {
+    codes::invariants::runPreproc(c, preprocId);
     /**/
     auto now = std::chrono::system_clock::now();
     std::time_t time = std::chrono::system_clock::to_time_t(now);
@@ -45,7 +43,7 @@ SSANStructure ssaNStructure(codes::Lincode c,
     equivClassesMap equivClasses;
     std::vector<std::vector<size_t>> colCombs = algorithms::generatePermSequences(len, n_sign);
     for (size_t i = 0; i < colCombs.size(); ++i) {
-        std::string invar = invariant(c, colCombs[i]);
+        std::string invar = codes::invariants::runInvariant(c, colCombs[i], invarId);
         if (equivClasses.find(invar) == equivClasses.end()) {
             equivClasses[invar] = std::vector<std::vector<size_t>>(1);
             equivClasses[invar][0] = colCombs[i];
@@ -70,7 +68,7 @@ SSANStructure ssaNStructure(codes::Lincode c,
             equivClasses.clear();
             for (size_t i = 0; i < equivClassesVec[ind].size(); ++i) {
                 std::vector<size_t> punctCols = mergeNums(invarColumns, equivClassesVec[ind][i]);
-                std::string invar = invariant(c, punctCols);
+                std::string invar = codes::invariants::runInvariant(c, punctCols, invarId);
                 if (equivClasses.find(invar) == equivClasses.end()) {
                     equivClasses[invar] = std::vector<std::vector<size_t>>(1);
                     equivClasses[invar][0] = equivClassesVec[ind][i];

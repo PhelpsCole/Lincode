@@ -23,14 +23,12 @@ typedef std::vector<std::vector<SSAStep>> SSAStructure;
 typedef std::map<std::vector<size_t>, std::vector<SSAStep>> SSANStructure;
 
 SSAStructure ssaStructure(codes::Lincode,
-                          std::function<std::string(const codes::Lincode &,
-                                                    const std::vector<size_t> &)>,
-                          std::function<void(codes::Lincode &)> = codes::invariants::preprocSimple);
+                          size_t invarId,
+                          size_t preprocId = 0);
 SSANStructure ssaNStructure(codes::Lincode,
-                            std::function<std::string(const codes::Lincode &,
-                                                      const std::vector<size_t> &)>,
+                            size_t invarId,
                             size_t = 1,
-                            std::function<void(codes::Lincode &)> = codes::invariants::preprocSimple);
+                            size_t preprocId = 0);
 void printSSAStructure(const SSAStructure &);
 void printSSANStructure(const SSANStructure &);
 } //namespace codes

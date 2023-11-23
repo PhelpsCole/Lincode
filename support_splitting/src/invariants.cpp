@@ -3,20 +3,22 @@
 namespace codes {
 namespace invariants {
 
-invarType returnInvarById(size_t id) {
+std::string runInvariant(const codes::Lincode &code,
+                         const std::vector<size_t> &columns,
+                         size_t id) {
     switch(id) {
     case 0:
-        return invariantHullSize;
+        return invariantHullSize(code, columns);
     case 1:
-        return invariantWeightHull;
+        return invariantWeightHull(code, columns);
     case 2:
-        return invariantSize;
+        return invariantSize(code, columns);
     case 3:
-        return invariantWeight;
+        return invariantWeight(code, columns);
     case 4:
-        return invariantWeightBasis;
+        return invariantWeightBasis(code, columns);
     }
-    return invariantHullSize;
+    return invariantHullSize(code, columns);
 }
 
 std::string returnInvarNameById(size_t id) {
@@ -35,26 +37,25 @@ std::string returnInvarNameById(size_t id) {
     return "invariantHullSize";
 }
 
-preprocType returnPreprocById(size_t id) {
+void runPreproc(codes::Lincode &c, size_t id) {
     switch(id) {
     case 0:
-        return preprocSimple;
+        return;
     case 1:
-        return preprocHull;
+        return preprocHull(c);
     case 2:
-        return preprocHadPower;
+        return preprocHadPower(c);
     case 3:
-        return preprocHadPowerHull;
+        return preprocHadPowerHull(c);
     case 4:
-        return preprocMaxRMSubMatrPqsigRM;
+        return preprocMaxRMSubMatrPqsigRM(c);
     }
-    return preprocSimple;
 }
 
 std::string returnPreprocNameById(size_t id) {
     switch(id) {
     case 0:
-        return "preprocSimple";
+        return "No preproc";
     case 1:
         return "preprocHull";
     case 2:
@@ -64,7 +65,7 @@ std::string returnPreprocNameById(size_t id) {
     case 4:
         return "preprocMaxRMSubMatrPqsigRM";
     }
-    return "preprocSimple";
+    return "No preproc";
 }
 
 namespace support {
@@ -178,8 +179,6 @@ std::string invariantWeightBasis(const codes::Lincode &code,
                                       codes::invariants::support::invariantWeightSupporter);
 }
 
-void preprocSimple(codes::Lincode &c) {}
-
 void preprocHull(codes::Lincode &c) {
     c = c.hull();
 }
@@ -198,6 +197,7 @@ void preprocMaxRMSubMatrPqsigRM(codes::Lincode &c) {
     std::vector<size_t> rmSizes = codes::rmSizes(c);
     std::vector<int> maxRMVector = codes::maxRMVector(rmSizes[0], rmSizes[1] - 2);
     for (size_t i = 0; i < maxRMVector.size(); ++i) {
+        std::cout << maxRMVector[i] << " " << maxRMVector.size() << std::endl;
         if (maxRMVector[i] == -1) {
             c.dual();
         } else {

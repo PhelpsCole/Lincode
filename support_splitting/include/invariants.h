@@ -6,11 +6,6 @@
 namespace codes {
 namespace invariants {
 
-typedef std::function<std::string(const codes::Lincode &,
-                                  const std::vector<size_t> &)> invarType;
-
-typedef std::function<void(codes::Lincode &)> preprocType;
-
 std::string invariantHullSize(const codes::Lincode &code,
                               const std::vector<size_t> &columns);
 std::string invariantWeightHull(const codes::Lincode &code,
@@ -22,14 +17,15 @@ std::string invariantWeight(const codes::Lincode &code,
 std::string invariantWeightBasis(const codes::Lincode &code,
                                  const std::vector<size_t> &columns);
 
-void preprocSimple(codes::Lincode &);
 void preprocHull(codes::Lincode &);
 void preprocHadPower(codes::Lincode &);
 void preprocHadPowerHull(codes::Lincode &);
 void preprocMaxRMSubMatrPqsigRM(codes::Lincode &);
 
-invarType returnInvarById(size_t id);
-preprocType returnPreprocById(size_t id);
+void runPreproc(codes::Lincode &, size_t id);
+std::string runInvariant(const codes::Lincode &,
+                         const std::vector<size_t> &columns,
+                         size_t id);
 std::string returnInvarNameById(size_t id);
 std::string returnPreprocNameById(size_t id);
 
