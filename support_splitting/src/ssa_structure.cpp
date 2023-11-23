@@ -1,6 +1,11 @@
 #include "ssa.h"
 #include "test_printers.h"
 
+//
+#include <chrono>
+#include <ctime>
+//
+
 namespace codes {
 
 typedef std::map<std::string, std::vector<size_t>> equivClassesMap;

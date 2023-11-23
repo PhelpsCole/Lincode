@@ -78,6 +78,9 @@ void testRunner(size_t r, size_t m, codes::invariants::invarType invariant,
     } else {
         testPqsigRM(r, m, invariant, filename, preprocFunc);
     }
+    now = std::chrono::system_clock::now();
+    time = std::chrono::system_clock::to_time_t(now);
+    std::cout << "Completed computation at " << std::ctime(&time) << std::endl;
     
 }
 
