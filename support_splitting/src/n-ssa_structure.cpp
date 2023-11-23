@@ -1,6 +1,11 @@
 #include "ssa.h"
 #include "test_printers.h"
 
+//
+#include <chrono>
+#include <ctime>
+//
+
 namespace codes {
 
 typedef std::map<std::string, std::vector<std::vector<size_t>>> equivClassesMap;
@@ -28,7 +33,11 @@ SSANStructure ssaNStructure(codes::Lincode c,
                             size_t n_sign,
                             size_t preprocId) {
     codes::invariants::runPreproc(c, preprocId);
-    std::cout << "Completed preprocCode" << std::endl;
+    /**/
+    auto now = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::cout << "Completed preprocCode at " << std::ctime(&time) << std::endl;
+    /**/
     size_t len = c.len();
     SSANStructure result;
     equivClassesMap equivClasses;
