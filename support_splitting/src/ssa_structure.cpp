@@ -7,19 +7,17 @@ typedef std::map<std::string, std::vector<size_t>> equivClassesMap;
 typedef std::vector<std::vector<size_t>> equivClassesVecSet;
 
 SSAStructure ssaStructure(codes::Lincode c,
-                          std::function<std::string(const codes::Lincode &,
-                                                    const std::vector<size_t> &)>
-                          invariant,
-                          std::function<void(codes::Lincode &)> preprocCode) {
-    preprocCode(c);
-    //std::cout << "Completed preprocCode" << std::endl;
+                          size_t invarId,
+                          size_t preprocId) {
+    codes::invariants::runPreproc(c, preprocId);
+    std::cout << "Completed preprocCode" << std::endl;
     size_t len = c.len();
     std::vector<size_t> columns(1);
     SSAStructure result(len);
     equivClassesMap equivClasses;
     for (size_t i = 0; i < len; ++i) {
         columns[0] = i;
-        std::string invar = invariant(c, columns);
+        std::string invar = codes::invariants::runInvariant(c, columns, invarId);
         if (equivClasses.find(invar) == equivClasses.end()) {
             equivClasses[invar] = std::vector<size_t>(1);
             equivClasses[invar][0] = i;
@@ -46,7 +44,7 @@ SSAStructure ssaStructure(codes::Lincode c,
             for (size_t i = 0; i < equivClassesVec[ind].size(); ++i) {
                 columns[0] = equivClassesVec[ind][i];
                 //std::vector<size_t> punctCoords(columns);
-                std::string invar = invariant(c, columns);
+                std::string invar = codes::invariants::runInvariant(c, columns, invarId);
                 if (equivClasses.find(invar) == equivClasses.end()) {
                     equivClasses[invar] = std::vector<size_t>(1);
                     equivClasses[invar][0] = equivClassesVec[ind][i];

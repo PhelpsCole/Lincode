@@ -48,35 +48,33 @@ void printSSANStructure(const codes::SSANStructure &s,
     out.close();
 }
 
-void testPqsigRM(size_t r, size_t m, codes::invariants::invarType invariant,
-                 const std::string &filename,
-                 codes::invariants::preprocType preprocFunc = codes::invariants::preprocSimple) {
+void testPqsigRM(size_t r, size_t m, size_t invariantId,
+                 const std::string &filename, size_t preprocId = 0) {
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode c(pqsigRM);
-    codes::SSAStructure s = codes::ssaStructure(c, invariant, preprocFunc);
+    codes::SSAStructure s = codes::ssaStructure(c, invariantId, preprocId);
     printSSAStructure(s, filename);
 }
 
-void testPqsigRM_N(size_t r, size_t m, codes::invariants::invarType invariant,
-                   size_t n_sign, const std::string &filename,
-                   codes::invariants::preprocType preprocFunc = codes::invariants::preprocSimple) {
+void testPqsigRM_N(size_t r, size_t m, size_t invariantId,
+                   size_t n_sign, const std::string &filename, size_t preprocId = 0) {
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode c(pqsigRM);
-    codes::SSANStructure s = codes::ssaNStructure(c, invariant, n_sign, preprocFunc);
+    codes::SSANStructure s = codes::ssaNStructure(c, invariantId, n_sign, preprocId);
     printSSANStructure(s, filename);
 }
 
-void testRunner(size_t r, size_t m, codes::invariants::invarType invariant,
+void testRunner(size_t r, size_t m, size_t invariantId,
                 const std::string &filename, size_t nPunct = 1,
-                codes::invariants::preprocType preprocFunc = codes::invariants::preprocSimple) {
+                size_t preprocId = 0) {
     auto now = std::chrono::system_clock::now();
     std::time_t time = std::chrono::system_clock::to_time_t(now);
     std::cout << "Processing " << filename << "..." << std::endl;
     std::cout << "Started computation at " << std::ctime(&time) << std::endl;
     if (nPunct != 1) {
-        testPqsigRM_N(r, m, invariant, nPunct, filename, preprocFunc);
+        testPqsigRM_N(r, m, invariantId, nPunct, filename, preprocId);
     } else {
-        testPqsigRM(r, m, invariant, filename, preprocFunc);
+        testPqsigRM(r, m, invariantId, filename, preprocId);
     }
     
 }
@@ -155,13 +153,11 @@ int main(int argc, char *argv[]) {
         invarId = std::stoi(argv[5]);
         cicleIter = std::stoi(argv[6]);
     }
-    codes::invariants::invarType invarFunc = codes::invariants::returnInvarById(invarId);
-    codes::invariants::preprocType preprocFunc = codes::invariants::returnPreprocById(preprocId);
     for (size_t i = 0; i < cicleIter; ++i) {
         std::string filename = nameFile(r, m, codes::invariants::returnInvarNameById(invarId),
                                         codes::invariants::returnPreprocNameById(preprocId),
                                         nPunct, i + 1);
-        testRunner(r, m, invarFunc, filename, nPunct, preprocFunc);
+        testRunner(r, m, invarId, filename, nPunct, preprocId);
     }
     return 0;
 }
