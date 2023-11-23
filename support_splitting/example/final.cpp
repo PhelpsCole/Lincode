@@ -107,10 +107,11 @@ int main(int argc, char *argv[]) {
     if (argc == 1) {
         std::cout << "Input args in format: r m nPunct preprocId invarId cicleIter" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
-        std::cout << "By 1: " << r << " " << m << " " << nPunct << " " << preprocId << " " << invarId << " cicleIter" << std::endl;
-        std::cout << "By 2: " << r << " " << m << " " << nPunct << " " << preprocId << " invarId cicleIter" << std::endl;
-        std::cout << "By 3: " << "r m " << nPunct << " " << preprocId << " " << invarId << " cicleIter" << std::endl;
-        std::cout << "By 4: " << "r m " << nPunct << " " << preprocId << " invarId cicleIter" << std::endl;
+        std::cout << "By 1: " << r << " " << m << " " << nPunct << " " << preprocId << " invarId" << " " << cicleIter << std::endl;
+        std::cout << "By 2: " << r << " " << m << " " << nPunct << " preprocId invarId " << cicleIter << std::endl;
+        std::cout << "By 3: " << r << " " << m << " nPunct preprocId invarId " << cicleIter << std::endl;
+        std::cout << "By 4: " << r << " m nPunct preprocId invarId " << cicleIter << std::endl;
+        std::cout << "By 5: r m nPunct preprocId invarId " << cicleIter << std::endl;
         std::cout << "Where preprocId is:" << std::endl;
         std::string zeroReturn = codes::invariants::returnPreprocNameById(preprocId);
         std::string current(zeroReturn);
@@ -127,25 +128,25 @@ int main(int argc, char *argv[]) {
         } while (current != zeroReturn);
         return 0;
     } else if (argc == 2) {
-        cicleIter = std::stoi(argv[1]);
-    } else if (argc == 3) {
         invarId = std::stoi(argv[1]);
-        cicleIter = std::stoi(argv[2]);
+    } else if (argc == 3) {
+        preprocId = std::stoi(argv[1]);
+        invarId = std::stoi(argv[2]);
     } else if (argc == 4) {
-        r = std::stoi(argv[1]);
-        m = std::stoi(argv[2]);
-        cicleIter = std::stoi(argv[3]);
-    } else if (argc == 5) {
-        r = std::stoi(argv[1]);
-        m = std::stoi(argv[2]);
+        nPunct = std::stoi(argv[1]);
+        preprocId = std::stoi(argv[2]);
         invarId = std::stoi(argv[3]);
-        cicleIter = std::stoi(argv[4]);
+    } else if (argc == 5) {
+        m = std::stoi(argv[1]);
+        nPunct = std::stoi(argv[2]);
+        preprocId = std::stoi(argv[3]);
+        invarId = std::stoi(argv[4]);
     } else if (argc == 6) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);
         nPunct = std::stoi(argv[3]);
-        invarId = std::stoi(argv[4]);
-        cicleIter = std::stoi(argv[5]);
+        preprocId = std::stoi(argv[4]);
+        invarId = std::stoi(argv[5]);
     } else if (argc >= 7) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);

@@ -20,6 +20,14 @@ void testGeneratePermSequences(size_t n, size_t k) {
         std::cout << std::endl;
     }
 }
+void testAddToVectors() {
+    std::vector<char> v = {1, 0, 1, 1};
+    algorithms::addToBinVector(v, 3);
+    for (size_t i = 0; i < v.size(); ++i) {
+        std::cout << static_cast<int>(v[i]) << " ";
+    }
+    std::cout << std::endl;
+}
 
 
 int main() {
@@ -27,5 +35,6 @@ int main() {
     testFactorial(5);
     testGeneratePermSequences(5, 3);
     testGeneratePermSequences(8, 2);
+    testAddToVectors();
     return 0;
 }

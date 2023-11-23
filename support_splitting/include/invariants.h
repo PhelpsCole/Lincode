@@ -26,6 +26,7 @@ void preprocSimple(codes::Lincode &);
 void preprocHull(codes::Lincode &);
 void preprocHadPower(codes::Lincode &);
 void preprocHadPowerHull(codes::Lincode &);
+void preprocMaxRMSubMatrPqsigRM(codes::Lincode &);
 
 invarType returnInvarById(size_t id);
 preprocType returnPreprocById(size_t id);

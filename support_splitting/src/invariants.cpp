@@ -45,6 +45,8 @@ preprocType returnPreprocById(size_t id) {
         return preprocHadPower;
     case 3:
         return preprocHadPowerHull;
+    case 4:
+        return preprocMaxRMSubMatrPqsigRM;
     }
     return preprocSimple;
 }
@@ -59,6 +61,8 @@ std::string returnPreprocNameById(size_t id) {
         return "preprocHadPower";
     case 3:
         return "preprocHadPowerHull";
+    case 4:
+        return "preprocMaxRMSubMatrPqsigRM";
     }
     return "preprocSimple";
 }
@@ -187,6 +191,19 @@ void preprocHadPower(codes::Lincode &c) {
 void preprocHadPowerHull(codes::Lincode &c) {
     c = codes::hadamardProduct(c, c);
     c = c.hull();
+}
+
+// Maximize first block of pqsigRM matrix
+void preprocMaxRMSubMatrPqsigRM(codes::Lincode &c) {
+    std::vector<size_t> rmSizes = codes::rmSizes(c);
+    std::vector<int> maxRMVector = codes::maxRMVector(rmSizes[0], rmSizes[1] - 2);
+    for (size_t i = 0; i < maxRMVector.size(); ++i) {
+        if (maxRMVector[i] == -1) {
+            c.dual();
+        } else {
+            c = codes::hadPower(c, maxRMVector[i]);
+        }
+    }
 }
 
 } //namespace invariants

@@ -12,6 +12,7 @@ SSAStructure ssaStructure(codes::Lincode c,
                           invariant,
                           std::function<void(codes::Lincode &)> preprocCode) {
     preprocCode(c);
+    //std::cout << "Completed preprocCode" << std::endl;
     size_t len = c.len();
     std::vector<size_t> columns(1);
     SSAStructure result(len);
