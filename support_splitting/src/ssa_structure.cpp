@@ -12,7 +12,11 @@ SSAStructure ssaStructure(codes::Lincode c,
                           invariant,
                           std::function<void(codes::Lincode &)> preprocCode) {
     preprocCode(c);
-    //std::cout << "Completed preprocCode" << std::endl;
+    /**/
+    auto now = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::cout << "Completed preprocCode at " << std::ctime(&time) << std::endl;
+    /**/
     size_t len = c.len();
     std::vector<size_t> columns(1);
     SSAStructure result(len);
