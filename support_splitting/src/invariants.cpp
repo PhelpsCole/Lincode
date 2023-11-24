@@ -193,17 +193,8 @@ void preprocHadPowerHull(codes::Lincode &c) {
 }
 
 // Maximize first block of pqsigRM matrix
-void preprocMaxRMSubMatrPqsigRM(codes::Lincode &c) {
-    std::vector<size_t> rmSizes = codes::rmSizes(c);
-    std::vector<int> maxRMVector = codes::maxRMVector(rmSizes[0], rmSizes[1] - 2);
-    for (size_t i = 0; i < maxRMVector.size(); ++i) {
-        std::cout << maxRMVector[i] << " " << maxRMVector.size() << std::endl;
-        if (maxRMVector[i] == -1) {
-            c.dual();
-        } else {
-            c = codes::hadPower(c, maxRMVector[i]);
-        }
-    }
+void preprocMaxRMSubMatrPqsigRM(codes::Lincode &pqsigRMcode) {
+    maxRMSubMatrPqsigRM(pqsigRMcode);
 }
 
 } //namespace invariants

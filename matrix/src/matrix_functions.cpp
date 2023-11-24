@@ -88,12 +88,15 @@ Matrix hadPower(const Matrix &m, size_t power) {
         if (power % 2 == 1) {
             if (resEmpty) {
                 res = tmp;
+                resEmpty = false;
             } else {
                 res = hadamardProduct(res, tmp);
             }
         }
-        tmp = hadamardProduct(tmp, tmp);
         power >>= 1;
+        if (power) {
+            tmp = hadamardProduct(tmp, tmp);
+        }
     }
     return res;
 }

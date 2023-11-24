@@ -37,8 +37,8 @@ void testOnce(size_t r, size_t m, size_t mode) {
     //printCode(rmCode, "RM code:", mode);
     codes::Lincode pqsigrmCode(codes::pqsigRMGenerator(r, m));
 
-    pqsigrmCode.basisView();
-    //printCode(pqsigrmCode, "pqsigRM code:", mode);
+    //pqsigrmCode.basisView();
+    printCode(pqsigrmCode, "pqsigRM code:", mode);
 
     //codes::Lincode hadSquareRM(codes::RMCode(2*r, 7).toMatrix());// = codes::hadamardProduct(rmCode, rmCode);
     //hadSquareRM.basisView();
@@ -49,7 +49,7 @@ void testOnce(size_t r, size_t m, size_t mode) {
     //printCode(hadSquareRM, "Had square of RM code:", mode);
 
     codes::Lincode hadSquarePqsigRM = codes::hadamardProduct(pqsigrmCode, pqsigrmCode);
-    //printCode(hadSquarePqsigRM, "Had square of pqsigRM code:", mode);
+    printCode(hadSquarePqsigRM, "Had square of pqsigRM code:", mode);
 
     codes::Lincode dual = hadSquarePqsigRM;
     //dual.dual();
@@ -57,37 +57,42 @@ void testOnce(size_t r, size_t m, size_t mode) {
     //printCode(dual, "Dual of Had square of pqsigRM code:", mode);
 
     dual = dual.hull();
-    dual.basisView();
+    //dual.basisView();
     printCode(dual, "Hull of Had square of pqsigRM code:", mode);
+
+    codes::Lincode maxSubRM(pqsigrmCode);
+    codes::maxRMSubMatrPqsigRM(maxSubRM);
+    printCode(maxSubRM, "maxSubRM of pqsigRM code:", mode);
+
+    codes::Lincode hullMaxSubRM = maxSubRM.hull();
+    hullMaxSubRM.basisView();
+    printCode(hullMaxSubRM, "Hull of maxSubRM of pqsigRM code:", mode);
 }
 
 int main(int argc, char *argv[]) {
     //testCicle();
-    size_t iter_num = 20;
+    size_t iter_num = 1;
     size_t r = 2, m = 7;
     size_t mode = 1;
-    if (argc == 1) {
-        std::cout << "Input args in format: r m iter_num mode" << std::endl;
+    if (argc < 3) {
+        std::cout << "Input args in format: r m mode iter_num" << std::endl;
         std::cout << "Where mode=0 -- printVisualCode, mode=1 -- printCodeSizes" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
-        std::cout << "By 1: " << r << " " << m << " iter_num " <<  mode << std::endl;
-        std::cout << "By 2: " << r << " m iter_num " << mode << std::endl;
-        std::cout << "By 3: r m iter_num " << mode << std::endl;
+        std::cout << "By 2: r m " << mode << " " << iter_num << std::endl;
+        std::cout << "By 3: r m mode " << iter_num << std::endl;
         return 0;
-    } else if (argc == 2) {
-        iter_num = std::stoi(argv[1]);
     } else if (argc == 3) {
-        m = std::stoi(argv[1]);
-        iter_num = std::stoi(argv[2]);
+        r = std::stoi(argv[1]);
+        m = std::stoi(argv[2]);
     } else if (argc == 4) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);
-        iter_num = std::stoi(argv[3]);
+        mode = std::stoi(argv[3]);
     } else if (argc >= 5) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);
-        iter_num = std::stoi(argv[3]);
-        mode = std::stoi(argv[4]);
+        mode = std::stoi(argv[3]);
+        iter_num = std::stoi(argv[4]);
     }
     for (size_t i = 0; i < iter_num; ++i) {
         testOnce(r, m, mode);

@@ -8,6 +8,7 @@ namespace codes {
 
 matrix::Matrix pqsigRMGenerator(size_t r, size_t m);
 matrix::Matrix pqsigRMMcEliece(size_t r, size_t m);
+void maxRMSubMatrPqsigRM(codes::Lincode &pqsigRMcode);
 
 } // namespace codes
 
