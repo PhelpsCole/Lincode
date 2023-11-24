@@ -56,7 +56,6 @@ void maxRMSubMatrPqsigRM(codes::Lincode &pqsigRMcode) {
     std::vector<size_t> rmSizes = codes::rmSizes(pqsigRMcode);
     std::vector<int> maxRMVector = codes::maxRMVector(rmSizes[0], rmSizes[1] - 2);
     for (size_t i = 0; i < maxRMVector.size(); ++i) {
-        std::cout << maxRMVector[i] << " " << maxRMVector.size() << std::endl;
         if (maxRMVector[i] == -1) {
             pqsigRMcode.dual();
         } else {
