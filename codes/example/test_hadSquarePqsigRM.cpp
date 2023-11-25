@@ -48,17 +48,17 @@ void testOnce(size_t r, size_t m, size_t mode) {
     //hadSquareRM.basisView();
     //printCode(hadSquareRM, "Had square of RM code:", mode);
 
-    codes::Lincode hadSquarePqsigRM = codes::hadamardProduct(pqsigrmCode, pqsigrmCode);
-    printCode(hadSquarePqsigRM, "Had square of pqsigRM code:", mode);
+    //codes::Lincode hadSquarePqsigRM = codes::hadamardProduct(pqsigrmCode, pqsigrmCode);
+    //printCode(hadSquarePqsigRM, "Had square of pqsigRM code:", mode);
 
-    codes::Lincode dual = hadSquarePqsigRM;
+    //codes::Lincode dual = hadSquarePqsigRM;
     //dual.dual();
     //dual.basisView();
     //printCode(dual, "Dual of Had square of pqsigRM code:", mode);
 
-    dual = dual.hull();
+    //dual = dual.hull();
     //dual.basisView();
-    printCode(dual, "Hull of Had square of pqsigRM code:", mode);
+    //printCode(dual, "Hull of Had square of pqsigRM code:", mode);
 
     codes::Lincode maxSubRM(pqsigrmCode);
     codes::maxRMSubMatrPqsigRM(maxSubRM);

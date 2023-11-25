@@ -88,12 +88,12 @@ SSANStructure ssaNStructure(codes::Lincode c,
         }
         equivClassesVec = newEquivClassesVec;
     }
-    for (size_t ind = 0; ind != equivClassesVec.size(); ++ind) {
-        for (size_t i = 0; i < equivClassesVec[ind].size(); ++i) {
-            std::vector<size_t> col = equivClassesVec[ind][i];
-            result[equivClassesVec[ind][i]].push_back(std::make_pair(col, "Not found"));
-        }
-    }
+    //for (size_t ind = 0; ind != equivClassesVec.size(); ++ind) {
+    //    for (size_t i = 0; i < equivClassesVec[ind].size(); ++i) {
+    //        std::vector<size_t> col = equivClassesVec[ind][i];
+    //        result[equivClassesVec[ind][i]].push_back(std::make_pair(col, "Not found"));
+    //    }
+    //}
     return result;
 }
 
