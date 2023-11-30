@@ -3,13 +3,15 @@
 namespace matrix {
 
 void Matrix::T() {
-    std::vector<char> tmp(m_rows * m_cols);
-    for (size_t i = 0; i < m_rows; ++i) {
-        for (size_t j = 0; j < m_cols; ++j) {
-            tmp[j * m_rows + i] = m_data[i * m_cols + j];
+    std::vector<std::vector<char>> tmpData;
+    for (size_t i = 0; i < m_cols; ++i) {
+        std::vector<char> tmp(m_cols);
+        for (size_t j = 0; j < m_rows; ++j) {
+            tmp[j] = at(j, i);
         }
+        tmpData.push_back(tmp);
     }
-    m_data = tmp;
+    m_data = tmpData;
     size_t temp = m_cols;
     m_cols = m_rows;
     m_rows = temp;
@@ -30,7 +32,7 @@ std::vector<size_t> Matrix::gaussElimination(bool onlyForward, std::vector<size_
         size_t c = columns.size() == 0 ? j : columns[j];
         bool isZero = true;
         for (; k < m_rows; k++) {
-            if (m_data[k * m_cols + c] == 1) {
+            if (at(k, c) == 1) {
               isZero = false;
               break;
             }
@@ -39,7 +41,7 @@ std::vector<size_t> Matrix::gaussElimination(bool onlyForward, std::vector<size_
             infoWindow.push_back(c);
             if (i != k) {
                 for (uint32_t col = 0; col < m_cols; ++col) {
-                    m_data[i * m_cols + col] ^= m_data[k * m_cols + col];
+                    at(i, col) ^= at(k, col);
                 }
             }
             size_t start = 0;
@@ -47,9 +49,9 @@ std::vector<size_t> Matrix::gaussElimination(bool onlyForward, std::vector<size_
                 start = i + 1;
             }
             for (uint32_t t = start; t < m_rows; ++t) {
-                if (t != i && m_data[t * m_cols + c] == 1) {
+                if (t != i && at(t, c) == 1) {
                     for (uint32_t col = 0; col < m_cols; ++col) {
-                        m_data[t * m_cols + col] ^= m_data[i * m_cols + col];
+                        at(t, col) ^= at(i, col);
                     }
                 }
             }
@@ -64,27 +66,30 @@ void Matrix::orthogonal() {
     std::vector<size_t> iw = diag.gaussElimination();
     size_t r = m_cols - iw.size();
     if (r == 0) {
-        m_data = std::vector<char>(m_cols);
+        m_data = std::vector<std::vector<char>>();
+        m_data.push_back(std::vector<char>(m_cols));
         m_rows = 1;
     } else {
         std::map<int, char> tmp;
         for (size_t i = 0; i < iw.size(); ++i) {
             tmp[iw[i]] = 0;
         }
-        m_data = std::vector<char>(m_cols * r);
+        for (size_t i = 0; i < r; ++i) {
+            m_data.push_back(std::vector<char>(m_cols));
+        }
         size_t id = 0;
         size_t p = 0;
         for (size_t i = 0; i < m_cols; ++i) {
             if (tmp.find(i) != tmp.end()) {
                 for (size_t j = 0, l = 0; l < r; ++j) {
                     if (tmp.find(j) == tmp.end()) {
-                        m_data[l * m_cols + i] = diag.at(p, j);
+                        at(l, i) = diag.at(p, j);
                         ++l;
                     }
                 }
                 ++p;
             } else {
-                m_data[id * m_cols + i] = 1;
+                at(id, i) = 1;
                 ++id;
             }
         }
@@ -102,36 +107,28 @@ void Matrix::concatenateByRows(const Matrix &second) {
     if (second.rows() != m_rows) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
-    size_t cols2 = second.cols();
-    std::vector<char> v2 = second.matrixToVector();
-    std::vector<char>::iterator it1 = m_data.begin(), endIter;
-    std::vector<char>::iterator it2 = v2.begin();
-    std::vector<char> res;
-    for (size_t i = 0; i < m_rows; ++i) {
-        endIter = it1 + m_cols;
-        res.insert(res.end(), it1, endIter);
-        it1 = endIter;
-        endIter = it2 + cols2;
-        res.insert(res.end(), it2, endIter);
-        it2 = endIter;
+    for(size_t i = 0; i < m_rows; ++i) {
+        std::vector<char> secRow = second.row(i);
+        m_data[i].insert(m_data[i].end(), secRow.begin(), secRow.end());
     }
-    m_cols += cols2;
-    m_data = res;
+    m_cols += second.cols();
 }
 
 void Matrix::concatenateByColumns(const Matrix &second) {
     if (second.cols() != m_cols) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
-    std::vector<char> v2 = second.matrixToVector();
-    m_data.insert(m_data.end(), v2.begin(), v2.end());
-    m_rows += second.rows();
+    size_t secRows = second.rows();
+    for(size_t i = 0; i < secRows; ++i) {
+        m_data.push_back(second.row(i));
+    }
+    m_rows += secRows;
 }
 
 void Matrix::convertToBasis() {
     std::vector<size_t> iw = gaussElimination(true);
     m_rows = iw.size();
-    m_data.resize(m_rows * m_cols);
+    m_data.resize(m_rows);
 }
 
 } //namespace matrix

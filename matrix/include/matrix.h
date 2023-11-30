@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
+//uses in perm, need to delete
 #include <algorithm>
 #include <iterator>
 #include <random>
@@ -17,7 +18,8 @@ namespace matrix {
 class Matrix {
 public:
     Matrix(size_t rows, size_t cols);
-    Matrix(size_t rows, size_t cols, std::vector<char> &vec);
+    //Matrix(size_t rows, size_t cols, std::vector<char> &vec);
+    Matrix(size_t rows, size_t cols, std::vector<std::vector<char>> vec);
     Matrix(const std::vector<std::vector<char>> &vec);
     Matrix(std::vector<char> &vec, bool isTransposed = false);
     Matrix(size_t rows, size_t cols, std::string &str);
@@ -33,18 +35,21 @@ public:
 
     char &at(size_t row, size_t col);
     const char &at(size_t row, size_t col) const;
-    std::vector<char> &getBasis();
+    const std::vector<std::vector<char>> &getBasis();
     std::vector<char> col(size_t) const;
     std::vector<char> row(size_t) const;
     size_t rows() const;
     size_t cols() const;
-    std::vector<char> matrixToVector() const;
+    //std::vector<char> matrixToVector() const;
     size_t rank() const;
-    std::vector<std::vector<char>> toVectors() const;
+    //std::vector<std::vector<char>> toVectors() const;
     Matrix submatrix(const std::vector<size_t> &, const std::vector<size_t> &) const;
 
     void printMatrix() const;
     void printMatrixInBlocks(size_t row_num = 1, size_t col_num = 1) const;
+
+    std::vector<char> multiplyMatrixByVector(const std::vector<char> &vec) const;
+    std::vector<char> multiplyVectorByMatrix(const std::vector<char> &vec) const;
 
     void T();
     std::vector<size_t> gaussElimination(bool = false, std::vector<size_t> = {});
@@ -55,13 +60,10 @@ public:
     void concatenateByColumns(const Matrix &);
     void convertToBasis();
 
-    std::vector<char> multiplyMatrixByVector(const std::vector<char> &vec) const;
-    std::vector<char> multiplyVectorByMatrix(const std::vector<char> &vec) const;
-
 private:
     size_t m_rows;
     size_t m_cols;
-    std::vector<char> m_data;
+    std::vector<std::vector<char>> m_data;
 };
 
 Matrix generateRandomMatrix(size_t rows, size_t cols);
@@ -73,8 +75,8 @@ Matrix hadamardProduct(const Matrix &, const Matrix &);
 Matrix hadPower(const Matrix &, size_t);
 
 
-Matrix solution_transposed(Matrix &a, Matrix &b);
-Matrix solution(Matrix &a, Matrix &b);
+//Matrix solution_transposed(Matrix &a, Matrix &b);
+//Matrix solution(Matrix &a, Matrix &b);
 
 Matrix matrFromFile(const std::string &filename, char col_sep = ' ', char row_sep = '\n');
 bool isEqual(const Matrix &, const Matrix &);

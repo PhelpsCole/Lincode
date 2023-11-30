@@ -16,7 +16,7 @@ void Lincode::basisView() {
     matr.convertToBasis();
     k = matr.rows();
     n = matr.cols();
-    basis = matr.toVectors();
+    basis = matr.getBasis();
 }
 
 void Lincode::dual() {
@@ -24,7 +24,7 @@ void Lincode::dual() {
     m.orthogonal();
     k = m.rows();
     n = m.cols();
-    basis = m.toVectors();
+    basis = m.getBasis();
 }
 
 void Lincode::puncture(const std::vector<size_t> &columns) {

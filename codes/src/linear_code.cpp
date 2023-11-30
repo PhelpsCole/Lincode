@@ -37,7 +37,10 @@ Lincode::Lincode(const Lincode &other, bool check)
 }
 
 Lincode::Lincode(const matrix::Matrix &matr, bool check)
-    : k(matr.rows()), n(matr.cols()), basis(matr.toVectors()) {
+    : k(matr.rows()), n(matr.cols()) {
+    for (size_t i = 0; i < k; ++i) {
+        basis.push_back(matr.row(i));
+    }
     if (check && incorrect_basis(basis)) {
         throw std::invalid_argument("Incorrect inputted basis.");
     }
@@ -47,7 +50,9 @@ Lincode::Lincode(std::string &str,  char tabs, char sep, bool check) {
     matrix::Matrix matr(str, tabs, sep);
     k = matr.rows();
     n = matr.cols();
-    basis = matr.toVectors();
+    for (size_t i = 0; i < k; ++i) {
+        basis.push_back(matr.row(i));
+    }
     if (check && incorrect_basis(basis)) {
         throw std::invalid_argument("Incorrect inputted basis.");
     }
@@ -66,8 +71,7 @@ size_t Lincode::min_dist() const {
     code_matr.gaussElimination();
     size_t min_weight = n;
     for (size_t i = 0; i < code_matr.rows(); ++i) {
-        std::vector<char> v = code_matr.row(i);
-        size_t weight = algorithms::hammingWeight(v);
+        size_t weight = algorithms::hammingWeight(code_matr.row(i));
         if (weight < min_weight) {
             min_weight = weight;
         }

@@ -1,19 +1,23 @@
 #include "matrix.h"
 
-void testMatrixVectorConstructors(size_t rows, size_t cols, std::vector<char> &basis,
-                            std::vector<std::vector<char>> &vec) {
+void testMatrixVectorConstructors(size_t rows, size_t cols,
+                                  std::vector<std::vector<char>> &basis) {
     std::cout << "STARTS testMatrixVectorConstructors" << std::endl;
     std::cout << "Default constructor of " << rows << " x " << cols << " matrix:" << std::endl;
     matrix::Matrix m(rows, cols);
+    std::cout << "Matrix sizes: rows = " << m.rows() << ", cols = " << m.cols() << std::endl; 
     m.printMatrix();
-    std::cout << "Constructor with vector of values:" << std::endl;
+    std::cout << "Constructor by vector of vectors with sizes:" << std::endl;
     m = matrix::Matrix(rows, cols, basis);
+    std::cout << "Matrix sizes: rows = " << m.rows() << ", cols = " << m.cols() << std::endl; 
     m.printMatrix();
-    std::cout << "Constructor by vector of vectors:" << std::endl;
-    m = matrix::Matrix(vec);
+    std::cout << "Constructor by vector of vectors without sizes:" << std::endl;
+    m = matrix::Matrix(basis);
+    std::cout << "Matrix sizes: rows = " << m.rows() << ", cols = " << m.cols() << std::endl; 
     m.printMatrix();
-    std::cout << "Constructor by isTransposed vector:" << std::endl;
-    m = matrix::Matrix(basis, true);
+    std::cout << "Constructor by isTransposed vector with first row:" << std::endl;
+    m = matrix::Matrix(basis[0], true);
+    std::cout << "Matrix sizes: rows = " << m.rows() << ", cols = " << m.cols() << std::endl; 
     m.printMatrix();
 }
 
@@ -21,6 +25,7 @@ void testMatrixStringConstructorSeparators(std::string &str, const char tab = '\
                                            const char sep = '\n') {
     std::cout << "Constructor by string with separators:" << std::endl;
     matrix::Matrix m = matrix::Matrix(str, tab, sep);
+    std::cout << "Matrix sizes: rows = " << m.rows() << ", cols = " << m.cols() << std::endl; 
     m.printMatrix();
 }
 
@@ -29,6 +34,7 @@ void testMatrixStringConstructors(size_t rows, size_t cols, std::string &str,
     std::cout << "STARTS testMatrixStringConstructors" << std::endl;
     std::cout << "Constructor by string with matrix sizes:" << std::endl;
     matrix::Matrix m(rows, cols, str);
+    std::cout << "Matrix sizes: rows = " << m.rows() << ", cols = " << m.cols() << std::endl; 
     m.printMatrix();
     testMatrixStringConstructorSeparators(str2, tab, sep);
 }
@@ -53,8 +59,8 @@ int main() {
                                            {0, 0, 1, 1}},
                                    code2 = {{1, 0, 1},
                                             {0, 1, 1}};
-    std::vector<char> vec = {1, 0, 0, 1}, vec2 = {1, 0};
-    testMatrixVectorConstructors(2, 2, vec, code);
+    //std::vector<char> vec = {1, 0, 0, 1}, vec2 = {1, 0};
+    testMatrixVectorConstructors(2, 2, code);
     std::string str2 = "010100101010000011";
     std::string str3 = "0 1 0 1 0 0\n1 0 1 0 1 0\n0 0 0 0 1 1";
     testMatrixStringConstructors(3, 6, str2, str, '\n');

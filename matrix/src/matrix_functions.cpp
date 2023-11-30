@@ -66,13 +66,15 @@ Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
     if (A.cols() != B.cols()) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
-    std::vector<char> basis(A.rows() * B.rows() * A.cols());
+    std::vector<std::vector<char>> basis(A.rows() * B.rows());
     size_t k1 = A.rows(), k2 = B.rows(), k12 = A.cols();
     for (size_t i = 0; i < k1; ++i) {
         for (size_t j = 0; j < k2; ++j) {
+            std::vector<char> tmp(k12);
             for (size_t p = 0; p < k12; ++p) {
-                basis[(i * k2 + j) * k12 + p] = A.at(i, p) & B.at(j, p);
+                tmp[p] = A.at(i, p) & B.at(j, p);
             }
+            basis[i * k2 + j] = std::move(tmp);
         }
     }
     Matrix res(k1 * k2, k12, basis);
@@ -102,20 +104,20 @@ Matrix hadPower(const Matrix &m, size_t power) {
 }
 
 // Colculates Ax=B by Gauss-Jordan method
-Matrix solution(Matrix &a, Matrix &b) {
-    Matrix c(a);
-    c.concatenateByRows(b);
-    c.gaussElimination();
-    c.T();
-    std::vector<char> basis = c.matrixToVector();
-    size_t size = c.cols() * c.cols();
-    std::vector<char> inter_basis(basis.size() - size);
-    inter_basis.insert(inter_basis.begin(), basis.begin() + size, basis.end());
-    return matrix::Matrix(c.rows() - c.cols(), c.cols(), inter_basis);
-}
+//Matrix solution(Matrix &a, Matrix &b) {
+//    Matrix c(a);
+//    c.concatenateByRows(b);
+//    c.gaussElimination();
+//    c.T();
+//    std::vector<char> basis = c.matrixToVector();
+//    size_t size = c.cols() * c.cols();
+//    std::vector<char> inter_basis(basis.size() - size);
+//    inter_basis.insert(inter_basis.begin(), basis.begin() + size, basis.end());
+//    return matrix::Matrix(c.rows() - c.cols(), c.cols(), inter_basis);
+//}
 
 Matrix matrFromFile(const std::string& filename, char col_sep, char row_sep) {
-        std::string str, tmp;
+    std::string str, tmp;
     std::ifstream input_file(filename);
     if (input_file.is_open()) {
         while(getline(input_file, tmp)) {

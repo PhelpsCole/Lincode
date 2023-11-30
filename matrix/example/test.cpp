@@ -64,13 +64,13 @@ void testMatrixSimpleOperations(matrix::Matrix &m, size_t row, size_t col) {
     for (size_t i = 0 ; i < v.size(); ++i) {
         std::cout << static_cast<int>(v[i]) << std::endl;
     }
-    v = m.matrixToVector();
-    std::cout << "Matrix to simple vector:" << std::endl;
-    for (size_t i = 0 ; i < v.size(); ++i) {
-        std::cout << static_cast<int>(v[i]) << " ";
-    }
-    std::cout << std::endl; 
-    std::vector<std::vector<char>> vv = m.toVectors();
+    //v = m.matrixToVector();
+    //std::cout << "Matrix to simple vector:" << std::endl;
+    //for (size_t i = 0 ; i < v.size(); ++i) {
+    //    std::cout << static_cast<int>(v[i]) << " ";
+    //}
+    //std::cout << std::endl; 
+    std::vector<std::vector<char>> vv = m.getBasis();
     std::cout << "Matrix to vector of vectors:" << std::endl;
     for (size_t i = 0; i < m.rows(); ++i) {
         for (size_t j = 0; j < m.cols(); ++j) {
@@ -82,31 +82,6 @@ void testMatrixSimpleOperations(matrix::Matrix &m, size_t row, size_t col) {
     std::cout << "Submatr of matrix by {0, 2} rows and {1, 3} cols:" << std::endl;
     matrix::Matrix submatr = m.submatrix({0, 2}, {1, 3});
     submatr.printMatrix();
-}
-
-void testMultiplyByVector(matrix::Matrix &m, std::vector<char> &v) {
-    std::cout << "STARTS testMultiplyByVector" << std::endl;
-    std::cout << "m:" << std::endl;
-    m.printMatrix();
-    std::cout << "v:" << std::endl;
-    for (size_t i = 0 ; i < v.size(); ++i) {
-        std::cout << static_cast<int>(v[i]) << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "m*v:" << std::endl;
-    std::vector<char> res = m.multiplyVectorByMatrix(v);
-    for (size_t i = 0 ; i < res.size(); ++i) {
-        std::cout << static_cast<int>(res[i]) << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "m:" << std::endl;
-    m.T();
-    m.printMatrix();
-    std::cout << "v*m:" << std::endl;
-    res = m.multiplyMatrixByVector(v);
-    for (size_t i = 0 ; i < res.size(); ++i) {
-        std::cout << static_cast<int>(res[i]) << std::endl;
-    }
 }
 
 void testGenerators(size_t rows, size_t cols, size_t n, size_t p,
@@ -129,6 +104,31 @@ void testGenerators(size_t rows, size_t cols, size_t n, size_t p,
     std::cout << "}" << std::endl;
     m = matrix::permFromVector(v);
     m.printMatrix();
+}
+
+void testMultiplyByVector(matrix::Matrix &m, std::vector<char> &v) {
+    std::cout << "STARTS testMultiplyByVector" << std::endl;
+    std::cout << "m:" << std::endl;
+    m.printMatrix();
+    std::cout << "v:" << std::endl;
+    for (size_t i = 0 ; i < v.size(); ++i) {
+        std::cout << static_cast<int>(v[i]) << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "v*m:" << std::endl;
+    std::vector<char> res = m.multiplyVectorByMatrix(v);
+    for (size_t i = 0 ; i < res.size(); ++i) {
+        std::cout << static_cast<int>(res[i]) << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "m:" << std::endl;
+    m.T();
+    m.printMatrix();
+    std::cout << "m*v:" << std::endl;
+    res = m.multiplyMatrixByVector(v);
+    for (size_t i = 0 ; i < res.size(); ++i) {
+        std::cout << static_cast<int>(res[i]) << std::endl;
+    }
 }
 
 void testComplexOperations(matrix::Matrix &matrix) {
@@ -162,20 +162,20 @@ void testComplexOperations(matrix::Matrix &matrix) {
     matrix.printMatrix();
 }
 
-void testSolution() {
-    std::vector<std::vector<char>> code = {{1, 0, 0, 0},
-                                           {1, 1, 0, 1},
-                                           {1, 1, 1, 1},
-                                           {0, 0, 1, 1}},
-                                   code2 = {{1, 0, 1, 1},
-                                            {0, 1, 1, 0}};
-    matrix::Matrix a(code);
-    matrix::Matrix b(code2);
-    b.T();
-    matrix::Matrix c = matrix::solution(a, b);
-    std::cout << "Solution of Ax = B:" << std::endl;
-    c.printMatrix();
-}
+//void testSolution() {
+//    std::vector<std::vector<char>> code = {{1, 0, 0, 0},
+//                                           {1, 1, 0, 1},
+//                                           {1, 1, 1, 1},
+//                                           {0, 0, 1, 1}},
+//                                   code2 = {{1, 0, 1, 1},
+//                                            {0, 1, 1, 0}};
+//    matrix::Matrix a(code);
+//    matrix::Matrix b(code2);
+//    b.T();
+//    matrix::Matrix c = matrix::solution(a, b);
+//    std::cout << "Solution of Ax = B:" << std::endl;
+//    c.printMatrix();
+//}
 
 
 int main() {
@@ -197,6 +197,6 @@ int main() {
     testGenerators(5, 5, 5, 2, {1, 7, 4, 2, 5, 6, 3});
     testMultiplyByVector(m3, vec2);
     testComplexOperations(m2);
-    testSolution();
+    //testSolution();
     return 0;
 }
