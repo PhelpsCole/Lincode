@@ -19,7 +19,7 @@ std::vector<char> Encoder::stage() const {
     return weightVec.first;
 }
 
-size_t Encoder::stageWeight() const {
+unsigned long long Encoder::stageWeight() const {
     return weightVec.second;
 }
 

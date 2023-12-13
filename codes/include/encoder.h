@@ -14,13 +14,13 @@ public:
     std::vector<char> next(size_t = 1);
     std::vector<char> current() const;
     std::vector<char> stage() const;
-    size_t stageWeight() const;
+    unsigned long long stageWeight() const;
     codes::Lincode code() const;
 
 private:
     codes::Lincode c;
     matrix::Matrix cMatr;
-    std::pair<std::vector<char>, size_t> weightVec;
+    std::pair<std::vector<char>, unsigned long long> weightVec;
 };
 
 } // namespace codes

@@ -1,6 +1,6 @@
 #include "matrix.h"
 
-void testMatrixVectorConstructors(size_t rows, size_t cols, std::vector<char> &basis,
+void testMatrixVectorConstructors(unsigned long long rows, unsigned long long cols, std::vector<char> &basis,
                             std::vector<std::vector<char>> &vec) {
     std::cout << "STARTS testMatrixVectorConstructors" << std::endl;
     std::cout << "Default constructor of " << rows << " x " << cols << " matrix:" << std::endl;
@@ -24,7 +24,7 @@ void testMatrixStringConstructorSeparators(std::string &str, const char tab = '\
     m.printMatrix();
 }
 
-void testMatrixStringConstructors(size_t rows, size_t cols, std::string &str,
+void testMatrixStringConstructors(unsigned long long rows, unsigned long long cols, std::string &str,
                                   std::string &str2, const char tab = '\0', const char sep = '\n') {
     std::cout << "STARTS testMatrixStringConstructors" << std::endl;
     std::cout << "Constructor by string with matrix sizes:" << std::endl;

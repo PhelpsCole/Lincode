@@ -41,7 +41,8 @@ void testMatrixComputationsAndTranspose(matrix::Matrix &a, matrix::Matrix &b) {
     a.printMatrix();
 }
 
-void testMatrixSimpleOperations(matrix::Matrix &m, size_t row, size_t col) {
+void testMatrixSimpleOperations(matrix::Matrix &m, unsigned long long row,
+                                unsigned long long col) {
     std::cout << "STARTS testMatrixSimpleOperations" << std::endl;
     std::cout << "Inputed matrix:" << std::endl;
     m.printMatrix();
@@ -72,8 +73,8 @@ void testMatrixSimpleOperations(matrix::Matrix &m, size_t row, size_t col) {
     std::cout << std::endl; 
     std::vector<std::vector<char>> vv = m.toVectors();
     std::cout << "Matrix to vector of vectors:" << std::endl;
-    for (size_t i = 0; i < m.rows(); ++i) {
-        for (size_t j = 0; j < m.cols(); ++j) {
+    for (unsigned long long i = 0; i < m.rows(); ++i) {
+        for (unsigned long long j = 0; j < m.cols(); ++j) {
             std::cout << static_cast<int>(vv[i][j]) << " ";
         }
         std::cout << std::endl;
@@ -109,8 +110,9 @@ void testMultiplyByVector(matrix::Matrix &m, std::vector<char> &v) {
     }
 }
 
-void testGenerators(size_t rows, size_t cols, size_t n, size_t p,
-                    std::vector<size_t> v) {
+void testGenerators(unsigned long long rows, unsigned long long cols,
+                    unsigned long long n, size_t p,
+                    std::vector<unsigned long long> v) {
     std::cout << "STARTS testGenerators" << std::endl;
     matrix::Matrix m = matrix::generateRandomMatrix(rows, cols);
     std::cout << "Random matrix:" << std::endl;
@@ -141,7 +143,7 @@ void testComplexOperations(matrix::Matrix &matrix) {
     copy.printMatrix();
     copy = matrix;
     std::cout << "Gauss Elimination of this matrix:" << std::endl;
-    std::vector<size_t> v = copy.gaussElimination();
+    std::vector<unsigned long long> v = copy.gaussElimination();
     copy.printMatrix();
     std::cout << "Count of Gauss Elimination:" << std::endl;
     for (size_t i = 0 ; i < v.size(); ++i) {

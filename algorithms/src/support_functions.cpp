@@ -33,9 +33,9 @@ size_t factorial(size_t n) {
     return res;
 }
 
-std::vector<size_t> supportGenerator(std::vector<size_t> &s) {
+std::vector<unsigned long long> supportGenerator(std::vector<unsigned long long> &s) {
     size_t size = s.size();
-    std::vector<size_t> res(size);
+    std::vector<unsigned long long> res(size);
     for (size_t i = 0; i < size; ++i) {
         res[i] = s[size - 1 - i] - 1;
     }
@@ -44,9 +44,9 @@ std::vector<size_t> supportGenerator(std::vector<size_t> &s) {
 
 
 // Slow, need to fix
-std::vector<std::vector<size_t>> generatePermSequences(size_t n, size_t k) {
-    std::vector<std::vector<size_t>> res;
-    std::vector<size_t> seq(k);
+std::vector<std::vector<unsigned long long>> generatePermSequences(size_t n, size_t k) {
+    std::vector<std::vector<unsigned long long>> res;
+    std::vector<unsigned long long> seq(k);
     for (size_t i = 0; i < seq.size(); ++i) {
         seq[i] = k - i;
     }
@@ -72,8 +72,8 @@ std::vector<std::vector<size_t>> generatePermSequences(size_t n, size_t k) {
 }
 
 // Returns compbinations of k elements from vector
-std::vector<std::vector<size_t>> permsOfVector(const std::vector<size_t> &vec,  size_t k) {
-    std::vector<std::vector<size_t>> permSeq = generatePermSequences(vec.size(), k);
+std::vector<std::vector<unsigned long long>> permsOfVector(const std::vector<size_t> &vec,  size_t k) {
+    std::vector<std::vector<unsigned long long>> permSeq = generatePermSequences(vec.size(), k);
     for (size_t i = 0; i < permSeq.size(); ++i) {
         for (size_t j = 0; j < k; ++j) {
             permSeq[i][j] = vec[permSeq[i][j]];
@@ -82,9 +82,9 @@ std::vector<std::vector<size_t>> permsOfVector(const std::vector<size_t> &vec,  
     return permSeq;
 }
 
-std::vector<std::vector<size_t>> permsOfVectorWithNew(const std::vector<size_t> &vec,
+std::vector<std::vector<unsigned long long>> permsOfVectorWithNew(const std::vector<size_t> &vec,
                                                       size_t newElem, size_t k) {
-    std::vector<std::vector<size_t>> permSeq = generatePermSequences(vec.size(), k - 1);
+    std::vector<std::vector<unsigned long long>> permSeq = generatePermSequences(vec.size(), k - 1);
     for (size_t i = 0; i < permSeq.size(); ++i) {
         for (size_t j = 0; j < k; ++j) {
             permSeq[i][j] = vec[permSeq[i][j]];
@@ -145,7 +145,7 @@ void addToBinVector(std::vector<char> &v, size_t n) {
     }
 }
 
-void addToBinWeightVector(std::pair<std::vector<char>, size_t> &v, size_t n) {
+void addToBinWeightVector(std::pair<std::vector<char>, unsigned long long> &v, size_t n) {
     for (size_t i = 0; i < v.first.size() && n != 0; ++i) {
         v.first[i] += n & 1;
         if (v.first[i] == 2) {

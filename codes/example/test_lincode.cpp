@@ -11,9 +11,9 @@ void testLincodeConstructorsAndSizes(std::vector<std::vector<char>> basis) {
     std::cout << "size = " << code.size() << ", len  = " << code.len() << std::endl;
     std::cout << "min_dist = " << code.min_dist() << std::endl;
     std::cout << "Code spectrum: ";
-    std::vector<size_t> v = code.spectrum();
+    std::vector<unsigned long long> v = code.spectrum();
     for (size_t i = 0; i < v.size(); ++i) {
-        std::cout << static_cast<int>(v[i]) << " ";
+        std::cout << v[i] << " ";
     }
     std::cout << std::endl;
     std::cout << "Copy constructor:" << std::endl; 
@@ -43,7 +43,7 @@ void testLincodeConverters(codes::Lincode code) {
     res = codes::intersect(code, dual);
     res.printCode();
     std::cout << "Puncture of code C in {1, 2} columns:" << std::endl;
-    std::vector<size_t> v = {0, 1};
+    std::vector<unsigned long long> v = {0, 1};
     res = code.punctured(v);
     res.printCode();
     std::cout << "Truncated code of C in {1} column:" << std::endl;
@@ -77,7 +77,7 @@ void testEncode(codes::Lincode c) {
     }
 }
 
-void testPuncturing(codes::Lincode c, std::vector<size_t> columns) {
+void testPuncturing(codes::Lincode c, std::vector<unsigned long long> columns) {
     std::cout << "STARTS testPuncturing" << std::endl;
     std::cout << "Inputted code:" << std::endl;
     c.printCode();

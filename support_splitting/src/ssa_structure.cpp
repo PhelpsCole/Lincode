@@ -8,8 +8,8 @@
 
 namespace codes {
 
-typedef std::map<std::string, std::vector<size_t>> equivClassesMap;
-typedef std::vector<std::vector<size_t>> equivClassesVecSet;
+typedef std::map<std::string, std::vector<unsigned long long>> equivClassesMap;
+typedef std::vector<std::vector<unsigned long long>> equivClassesVecSet;
 
 SSAStructure ssaStructure(codes::Lincode c,
                           size_t invarId,
@@ -21,14 +21,14 @@ SSAStructure ssaStructure(codes::Lincode c,
     std::cout << "Completed preprocCode at " << std::ctime(&time) << std::endl;
     /**/
     size_t len = c.len();
-    std::vector<size_t> columns(1);
+    std::vector<unsigned long long> columns(1);
     SSAStructure result(len);
     equivClassesMap equivClasses;
     for (size_t i = 0; i < len; ++i) {
         columns[0] = i;
         std::string invar = codes::invariants::runInvariant(c, columns, invarId);
         if (equivClasses.find(invar) == equivClasses.end()) {
-            equivClasses[invar] = std::vector<size_t>(1);
+            equivClasses[invar] = std::vector<unsigned long long>(1);
             equivClasses[invar][0] = i;
         } else {
             equivClasses[invar].push_back(i);
@@ -55,7 +55,7 @@ SSAStructure ssaStructure(codes::Lincode c,
                 //std::vector<size_t> punctCoords(columns);
                 std::string invar = codes::invariants::runInvariant(c, columns, invarId);
                 if (equivClasses.find(invar) == equivClasses.end()) {
-                    equivClasses[invar] = std::vector<size_t>(1);
+                    equivClasses[invar] = std::vector<unsigned long long>(1);
                     equivClasses[invar][0] = equivClassesVec[ind][i];
                 } else {
                     equivClasses[invar].push_back(equivClassesVec[ind][i]);

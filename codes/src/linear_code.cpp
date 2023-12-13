@@ -3,16 +3,16 @@
 namespace codes {
 
 bool incorrect_basis(std::vector<std::vector<char>> &basis) {
-    size_t k = basis.size();
-    size_t n = basis[0].size();
+    unsigned long long k = basis.size();
+    unsigned long long n = basis[0].size();
     matrix::Matrix m(basis);
     return k > n || m.rank() != k;
 }
 
-Lincode::Lincode(size_t _k, size_t _n)
+Lincode::Lincode(unsigned long long _k, unsigned long long _n)
     : k(_k), n(_n) {
     basis = std::vector<std::vector<char>>();
-    for (size_t i = 0; i < k; ++i) {
+    for (unsigned long long i = 0; i < k; ++i) {
         basis.push_back(std::vector<char>(n));
     }
 }
@@ -31,7 +31,7 @@ Lincode::Lincode(const Lincode &other, bool check)
         throw std::invalid_argument("Incorrect inputted basis.");
     }
     std::vector<std::vector<char>> other_basis = other.getBasis();
-    for (size_t i = 0; i < k; ++i) {
+    for (unsigned long long i = 0; i < k; ++i) {
         basis[i].insert(basis[i].begin(), other_basis[i].begin(), other_basis[i].end());
     }
 }
@@ -53,21 +53,21 @@ Lincode::Lincode(std::string &str,  char tabs, char sep, bool check) {
     }
 }
 
-size_t Lincode::len() const {
+unsigned long long Lincode::len() const {
     return n;
 }
 
-size_t Lincode::size() const {
+unsigned long long Lincode::size() const {
     return k;
 }
 
-size_t Lincode::min_dist() const {
+unsigned long long Lincode::min_dist() const {
     matrix::Matrix code_matr(basis);
     code_matr.gaussElimination();
-    size_t min_weight = n;
-    for (size_t i = 0; i < code_matr.rows(); ++i) {
+    unsigned long long min_weight = n;
+    for (unsigned long long i = 0; i < code_matr.rows(); ++i) {
         std::vector<char> v = code_matr.row(i);
-        size_t weight = algorithms::hammingWeight(v);
+        unsigned long long weight = algorithms::hammingWeight(v);
         if (weight < min_weight) {
             min_weight = weight;
         }
@@ -97,15 +97,15 @@ Lincode Lincode::hull() const {
 }
 
 //spect[i] - words of weight i + 1
-std::vector<size_t> Lincode::spectrum() const {
-    std::vector<size_t> spect(n);
+std::vector<unsigned long long> Lincode::spectrum() const {
+    std::vector<unsigned long long> spect(n);
     std::vector<char> vec(k, 0);
-    std::pair<std::vector<char>, size_t> weight_vec = std::make_pair(vec, 0);
+    std::pair<std::vector<char>, unsigned long long> weight_vec = std::make_pair(vec, 0);
     matrix::Matrix code_matr = toMatrix();
     while (weight_vec.second != k) {
         algorithms::addToBinWeightVector(weight_vec, 1);
         std::vector<char> res = code_matr.multiplyVectorByMatrix(weight_vec.first);
-        size_t weight = algorithms::hammingWeight(res);
+        unsigned long long weight = algorithms::hammingWeight(res);
         if (weight != 0) {
             ++spect[weight - 1];
         }
@@ -116,8 +116,8 @@ std::vector<size_t> Lincode::spectrum() const {
 std::string Lincode::stringSpectrum() const {
     std::ostringstream ss;
     ss << "{";
-    std::vector<size_t> spectr = spectrum();
-    for (size_t i = 0; i < spectr.size(); ++i) {
+    std::vector<unsigned long long> spectr = spectrum();
+    for (unsigned long long i = 0; i < spectr.size(); ++i) {
         if (spectr[i]) {
             ss << "[" << i + 1 << ":" << std::to_string(spectr[i]) << "];";    
         }
@@ -126,10 +126,10 @@ std::string Lincode::stringSpectrum() const {
     return ss.str();
 }
 
-std::vector<size_t> Lincode::spectrum_basis() const {
-    std::vector<size_t> spect(n);
-    for (size_t i = 0; i < k; ++i) {
-        size_t weight = algorithms::hammingWeight(basis[i]);
+std::vector<unsigned long long> Lincode::spectrum_basis() const {
+    std::vector<unsigned long long> spect(n);
+    for (unsigned long long i = 0; i < k; ++i) {
+        unsigned long long weight = algorithms::hammingWeight(basis[i]);
         if (weight != 0) {
             ++spect[weight - 1];
         }
@@ -137,19 +137,19 @@ std::vector<size_t> Lincode::spectrum_basis() const {
     return spect;
 }
 
-Lincode Lincode::punctured(const std::vector<size_t> &columns) const {
+Lincode Lincode::punctured(const std::vector<unsigned long long> &columns) const {
     Lincode copy(*this);
     copy.puncture(columns);
     return copy;
 }
 
-Lincode Lincode::punctured(size_t column) const {
+Lincode Lincode::punctured(unsigned long long column) const {
     Lincode copy(*this);
     copy.puncture(column);
     return copy;
 }
 
-Lincode Lincode::truncated(std::vector<size_t> &columns) const {
+Lincode Lincode::truncated(std::vector<unsigned long long> &columns) const {
     Lincode copy(*this);
     copy.truncate(columns);
     return copy;
@@ -161,18 +161,18 @@ void Lincode::printCodeSizes() const {
 
 void Lincode::printCode() const {
     printCodeSizes();
-    for (size_t i = 0; i < k; ++i) {
-        for (size_t j = 0; j < n; ++j) {
+    for (unsigned long long i = 0; i < k; ++i) {
+        for (unsigned long long j = 0; j < n; ++j) {
             std::cout << static_cast<int>(basis[i][j]) << " ";
         }
         std::cout << std::endl;
     }
 }
 
-void Lincode::printVisualCode(size_t blocks_num) const {
+void Lincode::printVisualCode(unsigned long long blocks_num) const {
     printCodeSizes();
-    for (size_t i = 0; i < k; ++i) {
-        for (size_t j = 0; j < n; ++j) {
+    for (unsigned long long i = 0; i < k; ++i) {
+        for (unsigned long long j = 0; j < n; ++j) {
             if (j && j % (n / blocks_num) == 0) {
                 std::cout << "|";
             }

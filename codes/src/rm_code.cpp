@@ -16,18 +16,18 @@ const std::vector<std::vector<char>> &RMCode::getBasis() {
     return basis;
 }
 
-size_t RMCode::len() {
+unsigned long long RMCode::len() {
     return 1 << m;
 }
-size_t RMCode::size() {
+unsigned long long RMCode::size() {
     return basis.size();
 }
-size_t RMCode::min_dist() {
+unsigned long long RMCode::min_dist() {
     return 1 << (m - r);
 }
 
 std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
-    size_t code_len = 1 << m;
+    unsigned long long code_len = 1 << m;
     std::vector<char> a(code_len, 1);
 
     std::list<std::pair<int, std::vector<char>>> rows;
@@ -38,7 +38,7 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
         for (unsigned int i = 0; i < m; ++i) {
             size_t r = 0;
             int b = 0;
-            for (size_t j = 0; j < code_len; ++j) {
+            for (unsigned long long j = 0; j < code_len; ++j) {
                 if ((j >> (m - i - 1)) != r) {
                     ++r;
                     // Only contains 1 and 0
@@ -58,7 +58,7 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
             for (auto e = std::next(lStart); e != lEnd; ++e) {
                 for (unsigned int j = e->first + 1; j < m; ++j) {
                     std::vector<char> current_row(code_len);
-                    for (size_t k = 0; k < code_len; ++k) {
+                    for (unsigned long long k = 0; k < code_len; ++k) {
                         current_row[k] = monoms[j][k] & e->second[k];
                     }
                     rows.emplace_back(j, current_row);
@@ -66,7 +66,7 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
             }
             for (unsigned int j = lEnd->first + 1; j < m; ++j) {
                 std::vector<char> current_row(code_len);
-                for (size_t k = 0; k < code_len; ++k) {
+                for (unsigned long long k = 0; k < code_len; ++k) {
                     current_row[k] = monoms[j][k] & lEnd->second[k];
                 }
                 rows.emplace_back(j, current_row);
@@ -166,9 +166,9 @@ std::vector<int> maxRMVector(size_t r, size_t m) {
         return res;
     }
     res.push_back(m / r);
-    //if (m % r == 0) {
-    //    --res[res.size() - 1];
-    //}
+    if (m % r == 0) {
+        --res[res.size() - 1];
+    }
     return res;
 }
 

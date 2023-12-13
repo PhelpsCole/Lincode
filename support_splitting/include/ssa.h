@@ -18,9 +18,9 @@ struct SSASingleData {
     std::vector<size_t> found;
     std::vector<size_t> to_find;
 };
-typedef std::pair<std::vector<size_t>, std::string> SSAStep;
+typedef std::pair<std::vector<unsigned long long>, std::string> SSAStep;
 typedef std::vector<std::vector<SSAStep>> SSAStructure;
-typedef std::map<std::vector<size_t>, std::vector<SSAStep>> SSANStructure;
+typedef std::map<std::vector<unsigned long long>, std::vector<SSAStep>> SSANStructure;
 
 SSAStructure ssaStructure(codes::Lincode,
                           size_t invarId,

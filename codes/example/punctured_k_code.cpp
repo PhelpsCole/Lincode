@@ -3,7 +3,7 @@
 // Returns all punctured codes in num columns
 std::vector<codes::Lincode> punctCodes(codes::Lincode &code, size_t num) {
     std::vector<codes::Lincode> res;
-    std::vector<std::vector<size_t>> seqs = algorithms::generatePermSequences(code.len(), num);
+    std::vector<std::vector<unsigned long long>> seqs = algorithms::generatePermSequences(code.len(), num);
     for (size_t i = 0; i < seqs.size(); ++i) {
         res.push_back(code.punctured(seqs[i]));
     }

@@ -16,11 +16,11 @@ namespace matrix {
 
 class Matrix {
 public:
-    Matrix(size_t rows, size_t cols);
-    Matrix(size_t rows, size_t cols, std::vector<char> &vec);
+    Matrix(unsigned long long rows, unsigned long long cols);
+    Matrix(unsigned long long rows, unsigned long long cols, std::vector<char> &vec);
     Matrix(const std::vector<std::vector<char>> &vec);
     Matrix(std::vector<char> &vec, bool isTransposed = false);
-    Matrix(size_t rows, size_t cols, std::string &str);
+    Matrix(unsigned long long rows, unsigned long long cols, std::string &str);
     Matrix(std::string &str, char tabs = '\0', char sep='\n');
     Matrix(const Matrix &) = default;
     ~Matrix() = default;
@@ -31,24 +31,24 @@ public:
     Matrix operator*(const Matrix &other) const;
     void operator*=(const Matrix &other);
 
-    char &at(size_t row, size_t col);
-    const char &at(size_t row, size_t col) const;
+    char &at(unsigned long long row, unsigned long long col);
+    const char &at(unsigned long long row, unsigned long long col) const;
     std::vector<char> &getBasis();
-    std::vector<char> col(size_t) const;
-    std::vector<char> row(size_t) const;
-    size_t rows() const;
-    size_t cols() const;
+    std::vector<char> col(unsigned long long) const;
+    std::vector<char> row(unsigned long long) const;
+    unsigned long long rows() const;
+    unsigned long long cols() const;
     std::vector<char> matrixToVector() const;
-    size_t rank() const;
+    unsigned long long rank() const;
     std::vector<std::vector<char>> toVectors() const;
-    Matrix submatrix(const std::vector<size_t> &, const std::vector<size_t> &) const;
+    Matrix submatrix(const std::vector<unsigned long long> &, const std::vector<unsigned long long> &) const;
 
     void printMatrix() const;
-    void printMatrixInBlocks(size_t row_num = 1, size_t col_num = 1) const;
+    void printMatrixInBlocks(unsigned long long row_num = 1, unsigned long long col_num = 1) const;
 
     void T();
-    std::vector<size_t> gaussElimination(bool = false, std::vector<size_t> = {});
-    void echelon(std::vector<size_t> = {});
+    std::vector<unsigned long long> gaussElimination(bool = false, std::vector<unsigned long long> = {});
+    void echelon(std::vector<unsigned long long> = {});
     void orthogonal();
     void hadamardProduct(const Matrix &);
     void concatenateByRows(const Matrix &);
@@ -59,16 +59,16 @@ public:
     std::vector<char> multiplyVectorByMatrix(const std::vector<char> &vec) const;
 
 private:
-    size_t m_rows;
-    size_t m_cols;
+    unsigned long long m_rows;
+    unsigned long long m_cols;
     std::vector<char> m_data;
 };
 
-Matrix generateRandomMatrix(size_t rows, size_t cols);
-Matrix generateRandomNonSingular(size_t rows, size_t cols);
-Matrix generateRandomPermutation(size_t n, size_t p);
-Matrix permFromVector(const std::vector<size_t> &);
-Matrix diag(size_t n, char elem);
+Matrix generateRandomMatrix(unsigned long long rows, unsigned long long cols);
+Matrix generateRandomNonSingular(unsigned long long rows, unsigned long long cols);
+Matrix generateRandomPermutation(unsigned long long n, unsigned long long p);
+Matrix permFromVector(const std::vector<unsigned long long> &);
+Matrix diag(unsigned long long n, char elem);
 Matrix hadamardProduct(const Matrix &, const Matrix &);
 Matrix hadPower(const Matrix &, size_t);
 

@@ -11,7 +11,7 @@ void testFactorial(size_t n) {
 }
 
 void testGeneratePermSequences(size_t n, size_t k) {
-    std::vector<std::vector<size_t>> res = algorithms::generatePermSequences(n, k);
+    std::vector<std::vector<unsigned long long>> res = algorithms::generatePermSequences(n, k);
     std::cout << "Sequences of " << k << " elements from set of " << n << " numbers:" << std::endl;
     for (size_t i = 0; i < res.size(); ++i) {
         for (size_t j = 0; j < res[i].size(); ++j) {

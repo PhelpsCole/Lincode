@@ -8,11 +8,12 @@
 
 namespace codes {
 
-typedef std::map<std::string, std::vector<std::vector<size_t>>> equivClassesMap;
-typedef std::vector<std::vector<std::vector<size_t>>> equivClassesVecSet;
+typedef std::map<std::string, std::vector<std::vector<unsigned long long>>> equivClassesMap;
+typedef std::vector<std::vector<std::vector<unsigned long long>>> equivClassesVecSet;
 
-std::vector<size_t> mergeNums(const std::vector<size_t> &cols, const std::vector<size_t> &v) {
-    std::vector<size_t> res(cols);
+std::vector<unsigned long long> mergeNums(const std::vector<unsigned long long> &cols,
+                                          const std::vector<unsigned long long> &v) {
+    std::vector<unsigned long long> res(cols);
     for (size_t i = 0; i < v.size(); ++i) {
         bool found = false;
         for (size_t j = 0; j < res.size(); ++j) {
@@ -41,18 +42,18 @@ SSANStructure ssaNStructure(codes::Lincode c,
     size_t len = c.len();
     SSANStructure result;
     equivClassesMap equivClasses;
-    std::vector<std::vector<size_t>> colCombs = algorithms::generatePermSequences(len, n_sign);
+    std::vector<std::vector<unsigned long long>> colCombs = algorithms::generatePermSequences(len, n_sign);
     for (size_t i = 0; i < colCombs.size(); ++i) {
         std::string invar = codes::invariants::runInvariant(c, colCombs[i], invarId);
         if (equivClasses.find(invar) == equivClasses.end()) {
-            equivClasses[invar] = std::vector<std::vector<size_t>>(1);
+            equivClasses[invar] = std::vector<std::vector<unsigned long long>>(1);
             equivClasses[invar][0] = colCombs[i];
         } else {
             equivClasses[invar].push_back(colCombs[i]);
         }
         result[colCombs[i]].push_back(std::make_pair(colCombs[i], invar));
     }
-    std::vector<std::vector<size_t>> refinders;
+    std::vector<std::vector<unsigned long long>> refinders;
     equivClassesVecSet equivClassesVec;
     for (auto iter = equivClasses.begin(); iter != equivClasses.end(); ++iter) {
         if (iter->second.size() == 1) {
@@ -62,15 +63,15 @@ SSANStructure ssaNStructure(codes::Lincode c,
         }
     }
     for (size_t refInd = 0; equivClassesVec.size() != 0 && refInd != refinders.size(); ++refInd) {
-        std::vector<size_t> invarColumns(refinders[refInd]);
+        std::vector<unsigned long long> invarColumns(refinders[refInd]);
         equivClassesVecSet newEquivClassesVec;
         for (size_t ind = 0; ind != equivClassesVec.size(); ++ind) {
             equivClasses.clear();
             for (size_t i = 0; i < equivClassesVec[ind].size(); ++i) {
-                std::vector<size_t> punctCols = mergeNums(invarColumns, equivClassesVec[ind][i]);
+                std::vector<unsigned long long> punctCols = mergeNums(invarColumns, equivClassesVec[ind][i]);
                 std::string invar = codes::invariants::runInvariant(c, punctCols, invarId);
                 if (equivClasses.find(invar) == equivClasses.end()) {
-                    equivClasses[invar] = std::vector<std::vector<size_t>>(1);
+                    equivClasses[invar] = std::vector<std::vector<unsigned long long>>(1);
                     equivClasses[invar][0] = equivClassesVec[ind][i];
                 } else {
                     equivClasses[invar].push_back(equivClassesVec[ind][i]);
@@ -78,7 +79,7 @@ SSANStructure ssaNStructure(codes::Lincode c,
             }
             for (auto iter = equivClasses.begin(); iter != equivClasses.end(); ++iter) {
                 if (iter->second.size() == 1) {
-                    std::vector<size_t> punctCols = mergeNums(invarColumns, iter->second[0]);
+                    std::vector<unsigned long long> punctCols = mergeNums(invarColumns, iter->second[0]);
                     refinders.push_back(iter->second[0]);
                     result[iter->second[0]].push_back(std::make_pair(punctCols, iter->first));
                 } else {

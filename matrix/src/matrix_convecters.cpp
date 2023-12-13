@@ -4,13 +4,13 @@ namespace matrix {
 
 void Matrix::T() {
     std::vector<char> tmp(m_rows * m_cols);
-    for (size_t i = 0; i < m_rows; ++i) {
-        for (size_t j = 0; j < m_cols; ++j) {
+    for (unsigned long long i = 0; i < m_rows; ++i) {
+        for (unsigned long long j = 0; j < m_cols; ++j) {
             tmp[j * m_rows + i] = m_data[i * m_cols + j];
         }
     }
     m_data = tmp;
-    size_t temp = m_cols;
+    unsigned long long temp = m_cols;
     m_cols = m_rows;
     m_rows = temp;
 }
@@ -18,16 +18,17 @@ void Matrix::T() {
 // Do Gauss elimination on matrix
 // Returns positions of maximum rank submatrix
 // if columns.size() != 0 then apply only on submatrixes on these columns
-std::vector<size_t> Matrix::gaussElimination(bool onlyForward, std::vector<size_t> columns) {
+std::vector<unsigned long long> Matrix::gaussElimination(bool onlyForward,
+                                                         std::vector<unsigned long long> columns) {
     if (m_cols == 0 || m_rows == 0) {
-        return std::vector<size_t>();
+        return std::vector<unsigned long long>();
     }
-    size_t edge = columns.size() ? columns.size() : m_cols;
-    std::vector<size_t> infoWindow;
+    unsigned long long edge = columns.size() ? columns.size() : m_cols;
+    std::vector<unsigned long long> infoWindow;
     infoWindow.reserve(edge);
-    for (size_t i = 0, j = 0; i < m_rows && j < edge; ++j) {
-        size_t k = i;
-        size_t c = columns.size() == 0 ? j : columns[j];
+    for (unsigned long long i = 0, j = 0; i < m_rows && j < edge; ++j) {
+        unsigned long long k = i;
+        unsigned long long c = columns.size() == 0 ? j : columns[j];
         bool isZero = true;
         for (; k < m_rows; k++) {
             if (m_data[k * m_cols + c] == 1) {
@@ -42,7 +43,7 @@ std::vector<size_t> Matrix::gaussElimination(bool onlyForward, std::vector<size_
                     m_data[i * m_cols + col] ^= m_data[k * m_cols + col];
                 }
             }
-            size_t start = 0;
+            unsigned long long start = 0;
             if (onlyForward) {
                 start = i + 1;
             }
@@ -61,22 +62,22 @@ std::vector<size_t> Matrix::gaussElimination(bool onlyForward, std::vector<size_
 
 void Matrix::orthogonal() {
     Matrix diag(*this);
-    std::vector<size_t> iw = diag.gaussElimination();
-    size_t r = m_cols - iw.size();
+    std::vector<unsigned long long> iw = diag.gaussElimination();
+    unsigned long long r = m_cols - iw.size();
     if (r == 0) {
         m_data = std::vector<char>(m_cols);
         m_rows = 1;
     } else {
         std::map<int, char> tmp;
-        for (size_t i = 0; i < iw.size(); ++i) {
+        for (unsigned long long i = 0; i < iw.size(); ++i) {
             tmp[iw[i]] = 0;
         }
         m_data = std::vector<char>(m_cols * r);
-        size_t id = 0;
-        size_t p = 0;
-        for (size_t i = 0; i < m_cols; ++i) {
+        unsigned long long id = 0;
+        unsigned long long p = 0;
+        for (unsigned long long i = 0; i < m_cols; ++i) {
             if (tmp.find(i) != tmp.end()) {
-                for (size_t j = 0, l = 0; l < r; ++j) {
+                for (unsigned long long j = 0, l = 0; l < r; ++j) {
                     if (tmp.find(j) == tmp.end()) {
                         m_data[l * m_cols + i] = diag.at(p, j);
                         ++l;
@@ -93,7 +94,7 @@ void Matrix::orthogonal() {
 }
 
 // Converts matrix to echelon form
-void Matrix::echelon(std::vector<size_t> columns) {
+void Matrix::echelon(std::vector<unsigned long long> columns) {
     gaussElimination(true, columns);
 }
 
@@ -102,12 +103,12 @@ void Matrix::concatenateByRows(const Matrix &second) {
     if (second.rows() != m_rows) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
-    size_t cols2 = second.cols();
+    unsigned long long cols2 = second.cols();
     std::vector<char> v2 = second.matrixToVector();
     std::vector<char>::iterator it1 = m_data.begin(), endIter;
     std::vector<char>::iterator it2 = v2.begin();
     std::vector<char> res;
-    for (size_t i = 0; i < m_rows; ++i) {
+    for (unsigned long long i = 0; i < m_rows; ++i) {
         endIter = it1 + m_cols;
         res.insert(res.end(), it1, endIter);
         it1 = endIter;
@@ -129,7 +130,7 @@ void Matrix::concatenateByColumns(const Matrix &second) {
 }
 
 void Matrix::convertToBasis() {
-    std::vector<size_t> iw = gaussElimination(true);
+    std::vector<unsigned long long> iw = gaussElimination(true);
     m_rows = iw.size();
     m_data.resize(m_rows * m_cols);
 }

@@ -9,12 +9,12 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m) {
     matrix::Matrix A = codes::RMCode(r, m - 2).toMatrix();
     matrix::Matrix B = codes::RMCode(r - 1, m - 2).toMatrix();
     matrix::Matrix C = codes::RMCode(r - 2, m - 2).toMatrix();
-    size_t size = A.cols();
+    unsigned long long size = A.cols();
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<size_t> distrib(1, size);
-    size_t p1 = distrib(gen);
-    size_t p2 = distrib(gen);
+    std::uniform_int_distribution<unsigned long long> distrib(1, size);
+    unsigned long long p1 = distrib(gen);
+    unsigned long long p2 = distrib(gen);
     //std::cout << "p1 = " << p1 << ", p2 = " << p2 << std::endl;
     A *= matrix::generateRandomPermutation(size, p1);
     C *= matrix::generateRandomPermutation(size, p2);
@@ -43,7 +43,7 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m) {
 
 matrix::Matrix pqsigRMMcEliece(size_t r, size_t m) {
     matrix::Matrix G = pqsigRMGenerator(r, m);
-    size_t n = 1 << m;
+    unsigned long long n = 1 << m;
     std::random_device rd;
     std::mt19937 gen(rd());
 
@@ -55,7 +55,7 @@ matrix::Matrix pqsigRMMcEliece(size_t r, size_t m) {
 void maxRMSubMatrPqsigRM(codes::Lincode &pqsigRMcode) {
     std::vector<size_t> rmSizes = codes::rmSizes(pqsigRMcode);
     std::vector<int> maxRMVector = codes::maxRMVector(rmSizes[0], rmSizes[1] - 2);
-    for (size_t i = 0; i < maxRMVector.size(); ++i) {
+    for (unsigned long long i = 0; i < maxRMVector.size(); ++i) {
         if (maxRMVector[i] == -1) {
             pqsigRMcode.dual();
         } else {

@@ -4,7 +4,7 @@ namespace codes {
 namespace invariants {
 
 std::string runInvariant(const codes::Lincode &code,
-                         const std::vector<size_t> &columns,
+                         const std::vector<unsigned long long> &columns,
                          size_t id) {
     switch(id) {
     case 0:
@@ -69,7 +69,7 @@ std::string returnPreprocNameById(size_t id) {
 }
 
 namespace support {
-std::string invariantString(const std::vector<size_t> &spectr) {
+std::string invariantString(const std::vector<unsigned long long> &spectr) {
     std::ostringstream ss;
     ss << "{";
     for (size_t i = 0; i < spectr.size(); ++i) {
@@ -100,7 +100,7 @@ std::string invariantSizeSupporter(const codes::Lincode &code) {
 }
 
 std::string invariantConvecterSendrier(const codes::Lincode &code,
-                                       const std::vector<size_t> &columns,
+                                       const std::vector<unsigned long long> &columns,
                                        std::function<std::string(const codes::Lincode &)>
                                        invariantSup) {
     if (columns.size() == 0) {
@@ -125,7 +125,7 @@ std::string invariantConvecterSendrier(const codes::Lincode &code,
 }
 
 std::string invariantConvecterSimple(const codes::Lincode &code,
-                                     const std::vector<size_t> &columns,
+                                     const std::vector<unsigned long long> &columns,
                                      std::function<std::string(const codes::Lincode &)>
                                      invariantSup) {
     codes::Lincode newCode(code);
@@ -134,7 +134,7 @@ std::string invariantConvecterSimple(const codes::Lincode &code,
 }
 
 std::string invariantConvecterMinRM(const codes::Lincode &code,
-                                    const std::vector<size_t> &columns,
+                                    const std::vector<unsigned long long> &columns,
                                     std::function<std::string(const codes::Lincode &)>
                                     invariantSup) {
     codes::Lincode newCode(codes::minRM(code));
@@ -145,35 +145,35 @@ std::string invariantConvecterMinRM(const codes::Lincode &code,
 } // namespace support
 
 std::string invariantWeightHull(const codes::Lincode &code,
-                                const std::vector<size_t> &columns) {
+                                const std::vector<unsigned long long> &columns) {
     return codes::invariants::support::
            invariantConvecterSendrier(code, columns,
                                       codes::invariants::support::invariantWeightHullSupporter);
 }
 
 std::string invariantHullSize(const codes::Lincode &code,
-                              const std::vector<size_t> &columns) {
+                              const std::vector<unsigned long long> &columns) {
     return codes::invariants::support::
            invariantConvecterSendrier(code, columns,
                                       codes::invariants::support::invariantHullSizeSupporter);
 }
 
 std::string invariantWeight(const codes::Lincode &code,
-                                      const std::vector<size_t> &columns) {
+                                      const std::vector<unsigned long long> &columns) {
     return codes::invariants::support::
            invariantConvecterSimple(code, columns,
                                     codes::invariants::support::invariantWeightSupporter);
 }
 
 std::string invariantSize(const codes::Lincode &code,
-                                    const std::vector<size_t> &columns) {
+                                    const std::vector<unsigned long long> &columns) {
     return codes::invariants::support::
            invariantConvecterSimple(code, columns,
                                     codes::invariants::support::invariantSizeSupporter);
 }
 
 std::string invariantWeightBasis(const codes::Lincode &code,
-                                 const std::vector<size_t> &columns) {
+                                 const std::vector<unsigned long long> &columns) {
     return codes::invariants::support::
            invariantConvecterSendrier(code, columns,
                                       codes::invariants::support::invariantWeightSupporter);

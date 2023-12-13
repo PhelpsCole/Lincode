@@ -27,29 +27,29 @@ void Lincode::dual() {
     basis = m.toVectors();
 }
 
-void Lincode::puncture(const std::vector<size_t> &columns) {
-    for (size_t row = 0; columns.size() && row < k; ++row) {
+void Lincode::puncture(const std::vector<unsigned long long> &columns) {
+    for (unsigned long long row = 0; columns.size() && row < k; ++row) {
         std::vector<char> &v = basis[row];
-        for (size_t i = 0; i < columns.size(); ++i) {
+        for (unsigned long long i = 0; i < columns.size(); ++i) {
             v[columns[i]] = 0;
         }
     }
     basisView();
 }
 
-void Lincode::puncture(size_t column) {
-    for (size_t row = 0; row < k; ++row) {
+void Lincode::puncture(unsigned long long column) {
+    for (unsigned long long row = 0; row < k; ++row) {
         basis[row][column] = 0;
     }
 }
 
-void Lincode::truncate(std::vector<size_t> columns) {
+void Lincode::truncate(std::vector<unsigned long long> columns) {
     std::sort(columns.begin(), columns.end());
     std::vector<std::vector<char>> new_basis(k);
-    for (size_t row = 0; row < k; ++row) {
-        size_t ind = 0;
+    for (unsigned long long row = 0; row < k; ++row) {
+        unsigned long long ind = 0;
         std::vector<char> v(n - columns.size());
-        for (size_t i = 0; i < n; ++i) {
+        for (unsigned long long i = 0; i < n; ++i) {
             if (i != columns[ind]) {
                 v[i - ind] = basis[row][i];
             } else {
@@ -97,8 +97,8 @@ Lincode mcEliece(const Lincode &gCode) {
     std::random_device rd;
     std::mt19937 gen(rd());
     
-    size_t k = gCode.size();
-    size_t n = gCode.len();
+    unsigned long long k = gCode.size();
+    unsigned long long n = gCode.len();
     matrix::Matrix m(gCode.toMatrix());
     matrix::Matrix M = matrix::generateRandomNonSingular(k, k);
 
