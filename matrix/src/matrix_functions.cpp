@@ -62,7 +62,10 @@ Matrix diag(unsigned long long n, char elem) {
 }
 
 // Returns hadamard product of linear combinations A and B
-Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
+Matrix hadamardProduct(const Matrix &A, const Matrix &B, bool safe) {
+    if (safe) {
+        return hadamardProductSafe(A, B);
+    }
     if (A.cols() != B.cols()) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
@@ -82,7 +85,35 @@ Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
     return res;
 }
 
-Matrix hadPower(const Matrix &m, size_t power) {
+// Slower algorithm with effective memory usage 
+Matrix hadamardProductSafe(const Matrix &A, const Matrix &B) {
+    if (A.cols() != B.cols()) {
+        throw std::invalid_argument("Incorrect inputted matrix.");
+    }
+    unsigned long long k1 = A.rows(), k2 = B.rows(), k12 = A.cols();
+    std::vector<std::vector<char>> basis;
+    for (unsigned long long i = 0; i < k1; ++i) {
+        std::vector<std::vector<char>> tmpBasis;
+        for (unsigned long long j = 0; j < k2; ++j) {
+            std::vector<char> tmp(k12);
+            for (unsigned long long p = 0; p < k12; ++p) {
+                tmp[p] = A.at(i, p) & B.at(j, p);
+            }
+            tmpBasis.push_back(tmp);
+        }
+        if (basis.size() == 0) {
+            basis = tmpBasis;
+        } else {
+            basis.insert(basis.end(), tmpBasis.begin(), tmpBasis.end());
+        }
+        Matrix tmp(basis);
+        tmp.convertToBasis();
+        basis = tmp.toVectors();
+    }
+    return Matrix(basis);
+}
+
+Matrix hadPower(const Matrix &m, size_t power, bool safe) {
     Matrix res(m.cols(), m.rows());
     bool resEmpty = true;
     Matrix tmp(m);
@@ -92,12 +123,12 @@ Matrix hadPower(const Matrix &m, size_t power) {
                 res = tmp;
                 resEmpty = false;
             } else {
-                res = hadamardProduct(res, tmp);
+                res = hadamardProduct(res, tmp, safe);
             }
         }
         power >>= 1;
         if (power) {
-            tmp = hadamardProduct(tmp, tmp);
+            tmp = hadamardProduct(tmp, tmp, safe);
         }
     }
     return res;

@@ -166,9 +166,9 @@ std::vector<int> maxRMVector(size_t r, size_t m) {
         return res;
     }
     res.push_back(m / r);
-    if (m % r == 0) {
-        --res[res.size() - 1];
-    }
+    //if (m % r == 0) {
+    //    --res[res.size() - 1];
+    //}
     return res;
 }
 

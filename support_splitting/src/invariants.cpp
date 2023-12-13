@@ -49,6 +49,8 @@ void runPreproc(codes::Lincode &c, size_t id) {
         return preprocHadPowerHull(c);
     case 4:
         return preprocMaxRMSubMatrPqsigRM(c);
+    case 5:
+        return preprocMaxRMSubMatrPqsigRMSafe(c);
     }
 }
 
@@ -64,6 +66,8 @@ std::string returnPreprocNameById(size_t id) {
         return "preprocHadPowerHull";
     case 4:
         return "preprocMaxRMSubMatrPqsigRM";
+    case 5:
+        return "preprocMaxRMSubMatrPqsigRMSafe";
     }
     return "No preproc";
 }
@@ -195,6 +199,10 @@ void preprocHadPowerHull(codes::Lincode &c) {
 // Maximize first block of pqsigRM matrix
 void preprocMaxRMSubMatrPqsigRM(codes::Lincode &pqsigRMcode) {
     maxRMSubMatrPqsigRM(pqsigRMcode);
+}
+
+void preprocMaxRMSubMatrPqsigRMSafe(codes::Lincode &pqsigRMcode) {
+    maxRMSubMatrPqsigRM(pqsigRMcode, true);
 }
 
 } //namespace invariants

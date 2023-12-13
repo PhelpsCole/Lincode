@@ -52,14 +52,14 @@ matrix::Matrix pqsigRMMcEliece(size_t r, size_t m) {
     return matrix::generateRandomNonSingular(G.rows(), G.rows()) * G * P;
 }
 
-void maxRMSubMatrPqsigRM(codes::Lincode &pqsigRMcode) {
+void maxRMSubMatrPqsigRM(codes::Lincode &pqsigRMcode, bool safe) {
     std::vector<size_t> rmSizes = codes::rmSizes(pqsigRMcode);
     std::vector<int> maxRMVector = codes::maxRMVector(rmSizes[0], rmSizes[1] - 2);
     for (unsigned long long i = 0; i < maxRMVector.size(); ++i) {
         if (maxRMVector[i] == -1) {
             pqsigRMcode.dual();
         } else {
-            pqsigRMcode = codes::hadPower(pqsigRMcode, maxRMVector[i]);
+            pqsigRMcode = codes::hadPower(pqsigRMcode, maxRMVector[i], safe);
         }
     }
 }
