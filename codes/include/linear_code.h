@@ -36,9 +36,9 @@ public:
     void puncture(unsigned long long column);
     void truncate(std::vector<unsigned long long> columns);
 
-    void printCodeSizes() const;
-    void printCode() const;
-    void printVisualCode(unsigned long long blocks_num = 1) const;
+    void printCodeSizes(const std::string &filename = "NoName") const;
+    void printCode(const std::string &filename = "NoName") const;
+    void printVisualCode(unsigned long long blocks_num = 1, const std::string &filename = "NoName") const;
 
 private:
     unsigned long long k;

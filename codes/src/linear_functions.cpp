@@ -85,7 +85,7 @@ Lincode intersect(Lincode &first, Lincode &second) {
 Lincode hadamardProduct(const Lincode &first, const Lincode &second, bool safe) {
     matrix::Matrix a(first.toMatrix());
     matrix::Matrix b(second.toMatrix());
-    return Lincode(matrix::hadamardProduct(a, b));
+    return Lincode(matrix::hadamardProduct(a, b, safe));
 }
 
 // ToDo: bin power

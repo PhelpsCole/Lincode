@@ -155,35 +155,75 @@ Lincode Lincode::truncated(std::vector<unsigned long long> &columns) const {
     return copy;
 }
 
-void Lincode::printCodeSizes() const {
-    std::cout << "k = " << k << ", n = " << n << std::endl;
+void Lincode::printCodeSizes(const std::string &filename) const {
+    if (filename == "NoName") {
+        std::cout << "k = " << k << ", n = " << n << std::endl;
+        return;
+    }
+    std::ofstream out;
+    out.open(filename);
+    out << "k = " << k << ", n = " << n << std::endl;
+    out.close();
 }
 
-void Lincode::printCode() const {
-    printCodeSizes();
+void Lincode::printCode(const std::string &filename) const {
+    if (filename == "NoName") {
+        printCodeSizes();
+        for (unsigned long long i = 0; i < k; ++i) {
+            for (unsigned long long j = 0; j < n; ++j) {
+                std::cout << static_cast<int>(basis[i][j]) << " ";
+            }
+            std::cout << std::endl;
+        }
+        return;
+    }
+    std::ofstream out;
+    out.open(filename);
+    out << "k = " << k << ", n = " << n << std::endl;
     for (unsigned long long i = 0; i < k; ++i) {
         for (unsigned long long j = 0; j < n; ++j) {
-            std::cout << static_cast<int>(basis[i][j]) << " ";
+            out << static_cast<int>(basis[i][j]) << " ";
         }
-        std::cout << std::endl;
+        out << std::endl;
     }
+    out.close();
 }
 
-void Lincode::printVisualCode(unsigned long long blocks_num) const {
-    printCodeSizes();
+void Lincode::printVisualCode(unsigned long long blocks_num, const std::string &filename) const {
+    if (filename == "NoName") {
+        printCodeSizes();
+        for (unsigned long long i = 0; i < k; ++i) {
+            for (unsigned long long j = 0; j < n; ++j) {
+                if (j && j % (n / blocks_num) == 0) {
+                    std::cout << "|";
+                }
+                if (basis[i][j] == 0) {
+                    std::cout << "-";
+                } else if (basis[i][j] == 1) {
+                    std::cout << "+";
+                }
+            }
+            std::cout << std::endl;
+        }
+        return;
+    }
+    std::ofstream out;
+    out.open(filename);
+    out << "k = " << k << ", n = " << n << std::endl;
     for (unsigned long long i = 0; i < k; ++i) {
         for (unsigned long long j = 0; j < n; ++j) {
             if (j && j % (n / blocks_num) == 0) {
-                std::cout << "|";
+                out << "|";
             }
             if (basis[i][j] == 0) {
-                std::cout << "-";
+                out << "-";
             } else if (basis[i][j] == 1) {
-                std::cout << "+";
+                out << "+";
             }
         }
-        std::cout << std::endl;
+        out << std::endl;
     }
+    out.close();
 }
 
 } // namespace codes

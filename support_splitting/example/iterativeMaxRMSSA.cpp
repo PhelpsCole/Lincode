@@ -63,6 +63,7 @@ void testIterative(size_t r, size_t m, size_t invariantId,
 
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode pqsigRMcode(pqsigRM);
+    codes::Lincode startCode(pqsigRMcode);
     std::vector<int> maxRMVector = codes::maxRMVector(r, m - 2);
     if (maxRMVector.size() == 0) {
         throw std::invalid_argument("Wrong r and m parameters.");
@@ -98,7 +99,10 @@ void testIterative(size_t r, size_t m, size_t invariantId,
     }
     std::string tempFilename = filename + '_' + symb  
                                + '_' + std::to_string(cicleStep) + ".txt";
+    std::string unFoundMatrix = filename + '_' + symb  
+                               + "_matrix" + std::to_string(cicleStep) + ".txt";
     printSSAStructure(s, tempFilename);
+    startCode.printCode(unFoundMatrix);
 }
 
 std::string nameFile(size_t r, size_t m, std::string invarName,
