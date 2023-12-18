@@ -43,5 +43,9 @@ int main() {
     rmCode = hadPower(codes::RMCode(2, 6).toMatrix(), 2);
     rmCode.printCodeSizes();
 
+    size_t k = codes::codeSizeFromRM(4, 12);
+    std::cout << "Code size from RM(4, 12):" << std::endl;
+    std::cout << k << std::endl;
+
     return 0;
 }

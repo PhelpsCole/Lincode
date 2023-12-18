@@ -113,6 +113,17 @@ std::vector<size_t> rmSizes(const codes::Lincode &c) {
     return res;
 }
 
+unsigned long long codeSizeFromRM(size_t r, size_t m) {
+    unsigned long long k = 1;
+    unsigned long long tmp = k, cnt = r, delta = m;
+    while (cnt-- != 0) {
+        tmp *= delta--;
+        tmp /= r - cnt;
+        k += tmp;
+    }
+    return k;
+}
+
 // Vector contatins -1 (dual) and q (q-hadamard product)
 std::vector<int> minRMVector(size_t r, size_t m) {
     std::vector<int> res;

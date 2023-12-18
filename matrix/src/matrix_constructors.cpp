@@ -62,10 +62,11 @@ Matrix::Matrix(std::string &str,  char tabs, char sep) {
     }
     if (!m_cols) {
         m_cols = cnt;
-    } else if (m_cols != cnt) {
+    } else if (m_cols != cnt && cnt != 0) {
         throw std::invalid_argument("Bad data in string");
+    } else if (cnt != 0) {
+        ++m_rows;
     }
-    ++m_rows;
     m_data.resize(m_cols * m_rows);
 }
 

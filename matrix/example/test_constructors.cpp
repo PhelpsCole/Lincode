@@ -33,18 +33,6 @@ void testMatrixStringConstructors(unsigned long long rows, unsigned long long co
     testMatrixStringConstructorSeparators(str2, tab, sep);
 }
 
-// Problem with Cmake linkage
-//void testMatrixFromFile(std::string &filename, char c = ' ', char r = '\n') {
-//    std::cout << "STARTS testMatrixFromFile" << std::endl;
-//    //std::cout << "Matrix from " << filename << std::endl;
-//    std::cout << "Input full path to your file with matrix:" << std::endl;
-//    std::cin >> filename;
-//    std::cout << filename << std::endl;
-//    matrix::Matrix m = matrix::matrFromFile(filename, c, r);
-//    m.printMatrix();
-//}
-
-
 int main() {
 	std::string str = "010100\n101010\n000011";
     std::vector<std::vector<char>> code = {{1, 0, 0, 0},
@@ -59,7 +47,5 @@ int main() {
     std::string str3 = "0 1 0 1 0 0\n1 0 1 0 1 0\n0 0 0 0 1 1";
     testMatrixStringConstructors(3, 6, str2, str, '\n');
     testMatrixStringConstructorSeparators(str3, ' ', '\n');
-    //std::string filename = "./matr_1.txt";
-    //testMatrixFromFile(filename);
 	return 0;
 }
