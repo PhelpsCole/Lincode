@@ -101,6 +101,62 @@ void testIterative(size_t r, size_t m, size_t invariantId,
     startCode.printCode(unFoundMatrix);
 }
 
+// Doesn't work for 2r >= m-2
+void testMinIterations(size_t r, size_t m, size_t invariantId,
+                   const std::string &filename, size_t cicleStep) {
+    size_t preprocId = 0;
+
+    auto now = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::cout << "Processing " << filename << "..." << std::endl;
+    std::cout << "Started computation at " << std::ctime(&time) << std::endl;
+
+    matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
+    codes::Lincode pqsigRMcode(pqsigRM);
+    codes::Lincode startCode(pqsigRMcode);
+
+    size_t q = (m - 2) / r;
+    if ((m - 2) % r == 0) {
+        --q;
+    }
+    std::string symb = std::to_string(q) + "|";
+    pqsigRMcode = codes::hadPower(pqsigRMcode, q);
+    codes::SSAStructure s = codes::ssaStructure(pqsigRMcode, invariantId, preprocId);
+
+    now = std::chrono::system_clock::now();
+    time = std::chrono::system_clock::to_time_t(now);
+    std::cout << "Completed computation of " << symb << " at " << std::ctime(&time) << std::endl;
+    if (check_signature(s, m)) {
+        std::string tempFilename = filename + '_' + symb  
+                                   + '_' + std::to_string(cicleStep) + "_found.txt";
+        printSSAStructure(s, tempFilename);
+        return;
+    }
+
+    codes::Lincode dual = pqsigRMcode;
+    dual.dual();
+    symb += "-1|";
+    pqsigRMcode = codes::hadamardProduct(pqsigRMcode, dual);
+    s = codes::ssaStructure(pqsigRMcode, invariantId, preprocId);
+
+    now = std::chrono::system_clock::now();
+    time = std::chrono::system_clock::to_time_t(now);
+    std::cout << "Completed computation of " << symb << " at " << std::ctime(&time) << std::endl;
+    if (check_signature(s, m)) {
+        std::string tempFilename = filename + '_' + symb  
+                                   + '_' + std::to_string(cicleStep) + "_found.txt";
+        printSSAStructure(s, tempFilename);
+        return;
+    }
+
+    std::string tempFilename = filename + '_' + symb  
+                               + '_' + std::to_string(cicleStep) + ".txt";
+    std::string unFoundMatrix = filename + '_' + symb  
+                               + "_matrix" + std::to_string(cicleStep) + ".txt";
+    printSSAStructure(s, tempFilename);
+    startCode.printCode(unFoundMatrix);
+}
+
 std::string nameFile(size_t r, size_t m, std::string invarName,
                      std::string preprocName) {
     std::string res = "modRM_(" + std::to_string(r) + "," + std::to_string(m) + ")_" + invarName;
@@ -139,6 +195,7 @@ int main(int argc, char *argv[]) {
         std::string filename = nameFile(r, m, codes::invariants::returnInvarNameById(invarId),
                                         "iterativeMaxRM");
         testIterative(r, m, invarId, filename, i);
+        //testMinIterations(r, m, invarId, filename, i);
     }
     return 0;
 }
