@@ -21,6 +21,7 @@ void testCodeFromFile(const std::string &filename, char c = ' ', char r = '\n') 
     }
     codes::Lincode subCode(matr.submatrix(rows, cols));
     std::cout << "pqsigRM (1, 1) block:" << std::endl;
+    //subCode.printCode("NoName", '\0', " \\\\\n");
     subCode.printVisualCode();
 }
 

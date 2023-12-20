@@ -43,7 +43,7 @@ public:
     std::vector<std::vector<char>> toVectors() const;
     Matrix submatrix(const std::vector<unsigned long long> &, const std::vector<unsigned long long> &) const;
 
-    void printMatrix(const std::string &filename = "NoName") const;
+    void printMatrix(const std::string &filename = "NoName", char sep = ' ', std::string end = "\n") const;
     void printMatrixInBlocks(unsigned long long row_num = 1, unsigned long long col_num = 1) const;
 
     void T();

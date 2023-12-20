@@ -120,13 +120,13 @@ Matrix Matrix::submatrix(const std::vector<unsigned long long> &rows, const std:
 }
 
 
-void Matrix::printMatrix(const std::string &filename) const {
+void Matrix::printMatrix(const std::string &filename, char sep, std::string end) const {
     if (filename == "NoName") {
         for (unsigned long long i = 0; i < m_rows; ++i) {
             for (unsigned long long j = 0; j < m_cols; ++j) {
-                std::cout << static_cast<int>(at(i, j)) << " ";
+                std::cout << static_cast<int>(at(i, j)) << sep;
             }
-            std::cout << std::endl;
+            std::cout << end;
         }
         return;
     }
@@ -134,9 +134,9 @@ void Matrix::printMatrix(const std::string &filename) const {
     out.open(filename);
     for (unsigned long long i = 0; i < m_rows; ++i) {
         for (unsigned long long j = 0; j < m_cols; ++j) {
-            out << static_cast<int>(at(i, j)) << " ";
+            out << static_cast<int>(at(i, j)) << sep;
         }
-        out << std::endl;
+        out << end;
     }
     out.close();
 }

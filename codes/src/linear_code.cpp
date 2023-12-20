@@ -166,14 +166,14 @@ void Lincode::printCodeSizes(const std::string &filename) const {
     out.close();
 }
 
-void Lincode::printCode(const std::string &filename) const {
+void Lincode::printCode(const std::string &filename, char sep, std::string end) const {
     if (filename == "NoName") {
         printCodeSizes();
         for (unsigned long long i = 0; i < k; ++i) {
             for (unsigned long long j = 0; j < n; ++j) {
-                std::cout << static_cast<int>(basis[i][j]) << " ";
+                std::cout << static_cast<int>(basis[i][j]) << sep;
             }
-            std::cout << std::endl;
+            std::cout << end;
         }
         return;
     }
@@ -182,14 +182,16 @@ void Lincode::printCode(const std::string &filename) const {
     out << "k = " << k << ", n = " << n << std::endl;
     for (unsigned long long i = 0; i < k; ++i) {
         for (unsigned long long j = 0; j < n; ++j) {
-            out << static_cast<int>(basis[i][j]) << " ";
+            out << static_cast<int>(basis[i][j]) << sep;
         }
-        out << std::endl;
+        out << end;
     }
     out.close();
 }
 
-void Lincode::printVisualCode(unsigned long long blocks_num, const std::string &filename) const {
+void Lincode::printVisualCode(unsigned long long blocks_num,
+                              const std::string &filename,
+                              std::string end) const {
     if (filename == "NoName") {
         printCodeSizes();
         for (unsigned long long i = 0; i < k; ++i) {
@@ -203,7 +205,7 @@ void Lincode::printVisualCode(unsigned long long blocks_num, const std::string &
                     std::cout << "+";
                 }
             }
-            std::cout << std::endl;
+            std::cout << end;
         }
         return;
     }
@@ -221,7 +223,7 @@ void Lincode::printVisualCode(unsigned long long blocks_num, const std::string &
                 out << "+";
             }
         }
-        out << std::endl;
+        out << end;
     }
     out.close();
 }

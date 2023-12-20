@@ -37,8 +37,10 @@ public:
     void truncate(std::vector<unsigned long long> columns);
 
     void printCodeSizes(const std::string &filename = "NoName") const;
-    void printCode(const std::string &filename = "NoName") const;
-    void printVisualCode(unsigned long long blocks_num = 1, const std::string &filename = "NoName") const;
+    void printCode(const std::string &filename = "NoName", char sep = ' ', std::string end = "\n") const;
+    void printVisualCode(unsigned long long blocks_num = 1,
+                         const std::string &filename = "NoName",
+                         std::string end = "\n") const;
 
 private:
     unsigned long long k;
