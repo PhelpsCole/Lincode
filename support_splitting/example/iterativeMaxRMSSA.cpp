@@ -74,6 +74,7 @@ void testIterative(size_t r, size_t m, size_t invariantId,
         if (maxRMVector[i] == -1) {
             symb += "-1|";
             pqsigRMcode.dual();
+            //pqsigRMcode = pqsigRMcode.hull();
         } else {
             symb += std::to_string(maxRMVector[i]) + "|";
             pqsigRMcode = codes::hadPower(pqsigRMcode, maxRMVector[i]);

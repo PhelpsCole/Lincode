@@ -150,6 +150,10 @@ std::vector<int> minRMVector(size_t r, size_t m) {
 
 // Vector contatins -1 (dual) and q (q-hadamard product)
 std::vector<int> maxRMVector(size_t r, size_t m) {
+    if (r >= m) {
+        std::cerr << r << " " << m << std::endl;
+        throw std::invalid_argument("Bad (r,m) parameters");
+    }
     std::vector<int> res;
     if (r == 0 || m - r == 1) {
         return res;

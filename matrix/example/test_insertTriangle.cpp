@@ -26,7 +26,8 @@ int main() {
     testinsertTriangle(m, code[3]);
     testinsertTriangle(m, vec);
     testinsertTriangle(m, code[1]);
-    testinsertTriangle(m, code[2]);
+    testinsertTriangle(m, {1, 0, 1, 0});
     testinsertTriangle(m, code[0]);
+    testinsertTriangle(m, code[2]);
     return 0;
 }

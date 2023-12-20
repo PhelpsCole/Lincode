@@ -5,6 +5,7 @@ namespace matrix {
 
 void Matrix::insertRow(unsigned long long row, const std::vector<char> &line) {
     if (row > m_rows && m_rows != 0) {
+        std::cout << row << " " << m_rows << std::endl;
         throw std::invalid_argument("Incorrect row index.");
     }
     if (m_rows == 0 && m_cols == 0) {
@@ -57,7 +58,7 @@ void Matrix::insertTriangle(std::vector<char> row) {
                     }
                     break;
                 } else {
-                    insertRow(index, row);
+                    insertRow(i, row);
                     return;
                 }
             } else if (at(i, index) != 0) {

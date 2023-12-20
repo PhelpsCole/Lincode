@@ -67,18 +67,16 @@ Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
     unsigned long long k1 = A.rows(), k2 = B.rows(), k12 = A.cols();
-    std::vector<char> basis(k1 * k2 * k12);
-    std::vector<char>::iterator ptr = basis.begin();
+    Matrix res(0, 0);
+    std::vector<char> tmp(k12);
     for (unsigned long long i = 0; i < k1; ++i) {
         for (unsigned long long j = 0; j < k2; ++j) {
             for (unsigned long long p = 0; p < k12; ++p) {
-                *ptr = A.at(i, p) & B.at(j, p);
-                ++ptr;
+                tmp[p] = A.at(i, p) & B.at(j, p);
             }
+            res.insertTriangle(tmp);
         }
     }
-    Matrix res(k1 * k2, k12, basis);
-    res.convertToBasis();
     return res;
 }
 
