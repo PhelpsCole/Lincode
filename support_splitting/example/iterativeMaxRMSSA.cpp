@@ -70,18 +70,13 @@ void testIterative(size_t r, size_t m, size_t invariantId,
     }
     std::string symb;
     codes::SSAStructure s;
-    bool safe = false;
-    if (m > 11) {
-        safe = true;
-        symb += "safe";
-    }
     for (unsigned long long i = 0; i < maxRMVector.size(); ++i) {
         if (maxRMVector[i] == -1) {
             symb += "-1|";
             pqsigRMcode.dual();
         } else {
             symb += std::to_string(maxRMVector[i]) + "|";
-            pqsigRMcode = codes::hadPower(pqsigRMcode, maxRMVector[i], safe);
+            pqsigRMcode = codes::hadPower(pqsigRMcode, maxRMVector[i]);
 
             s = codes::ssaStructure(pqsigRMcode, invariantId, preprocId);
 

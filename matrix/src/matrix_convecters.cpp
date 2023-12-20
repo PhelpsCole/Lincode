@@ -2,6 +2,77 @@
 
 namespace matrix {
 
+
+void Matrix::insertRow(unsigned long long row, const std::vector<char> &line) {
+    if (row > m_rows && m_rows != 0) {
+        throw std::invalid_argument("Incorrect row index.");
+    }
+    if (m_rows == 0 && m_cols == 0) {
+        m_rows = 1;
+        m_cols = line.size();
+        m_data = line;
+        return;
+    }
+    if (line.size() != m_cols) {
+        throw std::invalid_argument("Added row has incorrect len.");
+    }
+    if (row == m_rows) {
+        m_data.insert(m_data.end(), line.begin(), line.end());
+
+    } else {
+        size_t delta = line.size();
+        m_data.resize(m_data.size() + delta);
+        for (size_t i = m_data.size() - 1; i >= row * m_cols + delta; --i) {
+            m_data[i] = m_data[i - delta];
+        }
+        for (size_t i = row * m_cols; i < row * m_cols + delta; ++i) {
+            m_data[i] = line[i - row * m_cols];
+        }
+    }
+    ++m_rows;
+}
+
+// Functions insert row in triangle matrix with saving it's triangle form.
+// If row is linear independent with matrix. Matrix doesn't changed 
+void Matrix::insertTriangle(std::vector<char> row) {
+    if (m_rows == 0 && m_cols == 0) {
+        m_rows = 1;
+        m_cols = row.size();
+        m_data = row;
+        return;
+    }
+    if (m_rows >= m_cols) {
+        return;
+    }
+    if (row.size() != m_cols) {
+        throw std::invalid_argument("Added row has incorrect len.");
+    }
+    size_t index = 0;
+    for (size_t i = 0; i < m_rows && index < m_cols; ++i, ++index) {
+        for (; index < m_cols; ++index) {
+            if (row[index] != 0) {
+                if (at(i, index) != 0) {
+                    for (size_t j = index; j < m_cols; ++j) {
+                        row[j] ^= at(i, j);
+                    }
+                    break;
+                } else {
+                    insertRow(index, row);
+                    return;
+                }
+            } else if (at(i, index) != 0) {
+                break;
+            }
+        }
+    }
+    for (; index < m_cols; ++index) {
+        if (row[index] != 0) {
+            insertRow(m_rows, row);
+            return;
+        }
+    }
+}
+
 void Matrix::T() {
     std::vector<char> tmp(m_rows * m_cols);
     for (unsigned long long i = 0; i < m_rows; ++i) {

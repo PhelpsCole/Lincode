@@ -66,11 +66,13 @@ char& Matrix::at(unsigned long long row, unsigned long long col) {
 const char& Matrix::at(unsigned long long row, unsigned long long col) const {
     return m_data[row * m_cols + col];
 }
+
 std::vector<char> Matrix::row(unsigned long long i) const {
     std::vector<char>::const_iterator first = m_data.begin() + i * m_cols;
     std::vector<char>::const_iterator last = m_data.begin() + i * m_cols + m_cols;
     return std::vector<char>(first, last);
 }
+
 std::vector<char> Matrix::col(unsigned long long j) const {
     std::vector<char> res(m_rows);
     for (unsigned long long i = 0; i < m_rows; ++i) {

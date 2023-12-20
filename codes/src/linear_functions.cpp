@@ -82,15 +82,15 @@ Lincode intersect(Lincode &first, Lincode &second) {
     return first;
 }
 
-Lincode hadamardProduct(const Lincode &first, const Lincode &second, bool safe) {
+Lincode hadamardProduct(const Lincode &first, const Lincode &second) {
     matrix::Matrix a(first.toMatrix());
     matrix::Matrix b(second.toMatrix());
-    return Lincode(matrix::hadamardProduct(a, b, safe));
+    return Lincode(matrix::hadamardProduct(a, b));
 }
 
 // ToDo: bin power
-Lincode hadPower(const Lincode &c, size_t power, bool safe) {
-    return codes::Lincode(hadPower(c.toMatrix(), power, safe));
+Lincode hadPower(const Lincode &c, size_t power) {
+    return codes::Lincode(hadPower(c.toMatrix(), power));
 }
 
 Lincode mcEliece(const Lincode &gCode) {

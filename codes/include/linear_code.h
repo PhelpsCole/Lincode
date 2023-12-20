@@ -50,8 +50,8 @@ private:
 
 Lincode sum(const Lincode &, const Lincode &);
 Lincode intersect(Lincode &, Lincode &);
-Lincode hadamardProduct(const Lincode &, const Lincode &, bool safe = false);
-Lincode hadPower(const Lincode &c, size_t power, bool safe = false);
+Lincode hadamardProduct(const Lincode &, const Lincode &);
+Lincode hadPower(const Lincode &c, size_t power);
 
 Lincode mcEliece(const Lincode &);
 

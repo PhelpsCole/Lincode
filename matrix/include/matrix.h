@@ -46,6 +46,8 @@ public:
     void printMatrix(const std::string &filename = "NoName", char sep = ' ', std::string end = "\n") const;
     void printMatrixInBlocks(unsigned long long row_num = 1, unsigned long long col_num = 1) const;
 
+    void insertRow(unsigned long long, const std::vector<char> &);
+    void insertTriangle(std::vector<char>);
     void T();
     std::vector<unsigned long long> gaussElimination(bool = false, std::vector<unsigned long long> = {});
     void echelon(std::vector<unsigned long long> = {});
@@ -70,8 +72,8 @@ Matrix generateRandomPermutation(unsigned long long n, unsigned long long p);
 Matrix permFromVector(const std::vector<unsigned long long> &);
 Matrix diag(unsigned long long n, char elem);
 Matrix hadamardProductSafe(const Matrix &, const Matrix &);
-Matrix hadamardProduct(const Matrix &, const Matrix &, bool safe = false);
-Matrix hadPower(const Matrix &, size_t, bool safe = false);
+Matrix hadamardProduct(const Matrix &, const Matrix &);
+Matrix hadPower(const Matrix &, size_t);
 
 
 Matrix solution_transposed(Matrix &a, Matrix &b);

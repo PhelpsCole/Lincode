@@ -21,7 +21,6 @@ void preprocHull(codes::Lincode &);
 void preprocHadPower(codes::Lincode &);
 void preprocHadPowerHull(codes::Lincode &);
 void preprocMaxRMSubMatrPqsigRM(codes::Lincode &);
-void preprocMaxRMSubMatrPqsigRMSafe(codes::Lincode &);
 
 void runPreproc(codes::Lincode &, size_t id);
 std::string runInvariant(const codes::Lincode &,
