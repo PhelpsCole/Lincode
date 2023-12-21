@@ -1,13 +1,6 @@
-#[[]]
 add_library(support_splitting STATIC ssa_structure.cpp
                                      n-ssa_structure.cpp
                                      invariants.cpp)
-#[[]]
-#[[
-add_library(support_splitting STATIC testSSA.cpp
-                                     invariants.cpp
-                                     test_printers.cpp)
-]]
 
 target_include_directories(support_splitting PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(matrix PUBLIC ${CMAKE_SOURCE_DIR}/matrix/include)
