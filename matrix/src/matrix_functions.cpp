@@ -101,17 +101,25 @@ Matrix hadPower(const Matrix &m, size_t power) {
     return res;
 }
 
-// Colculates Ax=B by Gauss-Jordan method
-Matrix solution(Matrix &a, Matrix &b) {
-    Matrix c(a);
-    c.concatenateByRows(b);
-    c.gaussElimination();
-    c.T();
-    std::vector<char> basis = c.matrixToVector();
-    unsigned long long size = c.cols() * c.cols();
-    std::vector<char> inter_basis(basis.size() - size);
-    inter_basis.insert(inter_basis.begin(), basis.begin() + size, basis.end());
-    return matrix::Matrix(c.rows() - c.cols(), c.cols(), inter_basis);
+// Colculates Ax=b by Gauss-Jordan method
+std::vector<char> solution(Matrix a, const std::vector<char> &b) {
+    if (a.rows() < a.cols()) {
+        std::cerr << a.rows() << " " << a.cols() << std::endl;
+        throw std::invalid_argument("This function didn't calculate fundamental system");
+    }
+    a.concatenateByRows(Matrix(b, true));
+    a.gaussElimination(true);
+    std::vector<char> res(a.cols() - 1);
+    for (int i = res.size() - 1; i >= 0; --i) {
+        res[i] = a.at(i, a.cols() - 1); // = b'[i];
+        for (size_t j = i + 1; j < res.size(); ++j) {
+            if (a.at(i, j) != 0) {
+                res[i] ^= res[j];
+            }
+        }
+    }
+    a.printMatrix();
+    return res;
 }
 
 Matrix matrFromFile(const std::string& filename, char col_sep, char row_sep) {

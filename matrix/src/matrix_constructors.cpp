@@ -21,7 +21,7 @@ Matrix::Matrix(const std::vector<std::vector<char>> &vec) {
     }
 }
 
-Matrix::Matrix(std::vector<char> &vec, bool isTransposed) {
+Matrix::Matrix(const std::vector<char> &vec, bool isTransposed) {
     m_cols = vec.size();
     m_rows = 1;
     m_data = std::vector<char>(m_cols);

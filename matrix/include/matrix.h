@@ -19,7 +19,7 @@ public:
     Matrix(unsigned long long rows, unsigned long long cols);
     Matrix(unsigned long long rows, unsigned long long cols, std::vector<char> &vec);
     Matrix(const std::vector<std::vector<char>> &vec);
-    Matrix(std::vector<char> &vec, bool isTransposed = false);
+    Matrix(const std::vector<char> &vec, bool isTransposed = false);
     Matrix(unsigned long long rows, unsigned long long cols, std::string &str);
     Matrix(std::string &str, char tabs = '\0', char sep='\n');
     Matrix(const Matrix &) = default;
@@ -75,9 +75,7 @@ Matrix hadamardProductSafe(const Matrix &, const Matrix &);
 Matrix hadamardProduct(const Matrix &, const Matrix &);
 Matrix hadPower(const Matrix &, size_t);
 
-
-Matrix solution_transposed(Matrix &a, Matrix &b);
-Matrix solution(Matrix &a, Matrix &b);
+std::vector<char> solution(Matrix, const std::vector<char> &);
 
 Matrix matrFromFile(const std::string &filename, char col_sep = ' ', char row_sep = '\n');
 bool isEqual(const Matrix &, const Matrix &);

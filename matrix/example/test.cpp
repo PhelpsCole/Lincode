@@ -41,7 +41,7 @@ void testMatrixComputationsAndTranspose(matrix::Matrix &a, matrix::Matrix &b) {
     a.printMatrix();
 }
 
-void testMatrixSimpleOperations(matrix::Matrix &m, unsigned long long row,
+void testMatrixSimpleOperations(matrix::Matrix m, unsigned long long row,
                                 unsigned long long col) {
     std::cout << "STARTS testMatrixSimpleOperations" << std::endl;
     std::cout << "Inputed matrix:" << std::endl;
@@ -164,18 +164,15 @@ void testComplexOperations(matrix::Matrix &matrix) {
     matrix.printMatrix();
 }
 
-void testSolution() {
-    std::vector<std::vector<char>> code = {{1, 0, 0, 0},
-                                           {1, 1, 0, 1},
-                                           {1, 1, 1, 1},
-                                           {0, 0, 1, 1}},
-                                   code2 = {{1, 0, 1, 1},
-                                            {0, 1, 1, 0}};
-    matrix::Matrix a(code);
-    matrix::Matrix b(code2);
-    b.T();
-    matrix::Matrix c = matrix::solution(a, b);
-    std::cout << "Solution of Ax = B:" << std::endl;
+void testSolution(const matrix::Matrix &a, std::vector<char> b) {
+    std::cout << "A:" << std::endl;
+    a.printMatrix();
+    std::cout << "b:" << std::endl;
+    for (size_t i = 0; i < b.size(); ++i) {
+        std::cout << static_cast<unsigned long long>(b[i]) << std::endl;
+    }
+    matrix::Matrix c(matrix::solution(a, b), true);
+    std::cout << "Solution of Ax = b:" << std::endl;
     c.printMatrix();
 }
 
@@ -199,6 +196,10 @@ int main() {
     testGenerators(5, 5, 5, 2, {1, 7, 4, 2, 5, 6, 3});
     testMultiplyByVector(m3, vec2);
     testComplexOperations(m2);
-    testSolution();
+    testSolution(m1, {1, 0, 1, 1});
+    code.push_back({1, 0, 1, 0});
+    matrix::Matrix m4(code);
+    testSolution(m4, {1, 1, 1, 1, 1});
+    m4.T();
     return 0;
 }
