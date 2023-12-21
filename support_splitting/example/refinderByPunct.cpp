@@ -1,5 +1,4 @@
 #include "support_splitting.h"
-#include "test_printers.h"
 #include <fstream>
 #include <chrono>
 #include <ctime>

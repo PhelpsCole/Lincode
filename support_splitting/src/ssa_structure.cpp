@@ -1,5 +1,4 @@
 #include "ssa.h"
-#include "test_printers.h"
 
 //
 #include <chrono>
