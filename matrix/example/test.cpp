@@ -193,7 +193,7 @@ int main() {
     matrix::Matrix m2(str);
     matrix::Matrix m3(code2);
     testMatrixSimpleOperations(m1, 2, 3);
-    testGenerators(5, 5, 5, 2, {1, 7, 4, 2, 5, 6, 3});
+    testGenerators(5, 5, 5, 2, {0, 6, 3, 1, 4, 5, 2});
     testMultiplyByVector(m3, vec2);
     testComplexOperations(m2);
     testSolution(m1, {1, 0, 1, 1});

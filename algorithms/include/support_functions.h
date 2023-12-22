@@ -9,6 +9,8 @@ namespace algorithms {
 size_t hammingWeight(std::vector<char>);
 size_t hammingDistance(std::vector<char>, std::vector<char>);
 size_t factorial(size_t);
+size_t gcd(size_t, size_t);
+std::vector<int> extendedGcd(int x, int y);
 std::vector<std::vector<unsigned long long>> generatePermSequences(size_t, size_t);
 std::vector<std::vector<unsigned long long>> permsOfVector(const std::vector<size_t> &, size_t);
 std::vector<std::vector<unsigned long long>> permsOfVectorWithNew(const std::vector<size_t> &, size_t, size_t);

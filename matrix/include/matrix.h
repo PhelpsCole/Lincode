@@ -46,7 +46,7 @@ public:
     void printMatrix(const std::string &filename = "NoName", char sep = ' ', std::string end = "\n") const;
     void printMatrixInBlocks(unsigned long long row_num = 1, unsigned long long col_num = 1) const;
 
-    void insertRow(unsigned long long, const std::vector<char> &);
+    void insertRow(unsigned long long, const std::vector<char> &, bool replace = false);
     void insertTriangle(std::vector<char>);
     void T();
     std::vector<unsigned long long> gaussElimination(bool = false, std::vector<unsigned long long> = {});

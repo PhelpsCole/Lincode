@@ -3,6 +3,15 @@
 
 #include "codes.h"
 
-matrix::Matrix chizhov_borodin(codes::Lincode );
+namespace codes {
+namespace attackSupporters {
+
+codes::Lincode nodRM(const codes::Lincode &rm, int a, int b);
+
+} //namespace attackSupporters
+
+matrix::Matrix chizhov_borodin(codes::Lincode);
+
+} // namespace codes
 
 #endif // CODE_ATTACKS_H

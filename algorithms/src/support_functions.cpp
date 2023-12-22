@@ -33,6 +33,36 @@ size_t factorial(size_t n) {
     return res;
 }
 
+size_t gcd(size_t x, size_t y) {
+    while (x != y) {
+        if (x > y) {
+            x -= y;
+        } else {
+            y -= x;
+        }
+    }
+    return x;
+}
+
+// Returns gcd and a, b: ax + by = gcd
+std::vector<int> extendedGcd(int x, int y) {
+    int prev_a = 1, a = 0;
+    int prev_b = 0, b = 1;
+    while (y != 0) {
+        int q = x / y;
+        int r = x % y;
+        int tmp = a;
+        a = prev_a - q * a;
+        prev_a = tmp;
+        tmp = b;
+        b = prev_b - q * b;
+        prev_b = tmp;
+        x = y;
+        y = r;
+    }
+    return {x, prev_a, prev_b};
+}
+
 std::vector<unsigned long long> supportGenerator(std::vector<unsigned long long> &s) {
     size_t size = s.size();
     std::vector<unsigned long long> res(size);

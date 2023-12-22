@@ -81,7 +81,13 @@ Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
 }
 
 Matrix hadPower(const Matrix &m, size_t power) {
-    Matrix res(m.cols(), m.rows());
+    if (power == 0) {
+        return Matrix(std::vector<char>(m.cols(), 1));
+    }
+    if (power == 1) {
+        return m;
+    }
+    Matrix res(0, 0);
     bool resEmpty = true;
     Matrix tmp(m);
     while(power) {
@@ -118,7 +124,6 @@ std::vector<char> solution(Matrix a, const std::vector<char> &b) {
             }
         }
     }
-    a.printMatrix();
     return res;
 }
 
@@ -136,14 +141,11 @@ Matrix matrFromFile(const std::string& filename, char col_sep, char row_sep) {
     }
 }
 
-// {1, 2, 3, 4} -> {1, 2, 3, 4}, p*M
-// Sets 0 if not found
+// {0, 1, 2, 3, 4} -> {0, 1, 2, 3, 4}, p*M
 Matrix permFromVector(const std::vector<unsigned long long> &v) {
     Matrix perm(v.size(), v.size());
     for (unsigned long long i = 0; i < v.size(); ++i) {
-        if (v[i] != 0) {
-            perm.at(i, v[i] - 1) = 1;
-        }
+        perm.at(i, v[i]) = 1;
     }
     return perm;
 }

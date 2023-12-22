@@ -1,2 +1,3 @@
 link_libraries(code_attacks)
-#[[add_executable(test_minder_shokrollahi test_minder_shokrollahi.cpp)]]
+add_executable(test_nodRM test_nodRM.cpp)
+add_executable(test_chizhov_borodin test_chizhov_borodin.cpp)

@@ -2,13 +2,12 @@
 
 namespace matrix {
 
-
-void Matrix::insertRow(unsigned long long row, const std::vector<char> &line) {
+void Matrix::insertRow(unsigned long long row, const std::vector<char> &line, bool replace) {
     if (row > m_rows && m_rows != 0) {
         std::cout << row << " " << m_rows << std::endl;
         throw std::invalid_argument("Incorrect row index.");
     }
-    if (m_rows == 0 && m_cols == 0) {
+    if (m_rows == 0 && m_cols == 0 && !replace) {
         m_rows = 1;
         m_cols = line.size();
         m_data = line;
@@ -16,6 +15,12 @@ void Matrix::insertRow(unsigned long long row, const std::vector<char> &line) {
     }
     if (line.size() != m_cols) {
         throw std::invalid_argument("Added row has incorrect len.");
+    }
+    if (replace) {
+        for (size_t i = 0; i < line.size(); ++i) {
+            at(row, i) = line[i];
+        }
+        return;
     }
     if (row == m_rows) {
         m_data.insert(m_data.end(), line.begin(), line.end());
