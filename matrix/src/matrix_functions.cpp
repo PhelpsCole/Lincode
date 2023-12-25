@@ -142,10 +142,14 @@ Matrix matrFromFile(const std::string& filename, char col_sep, char row_sep) {
 }
 
 // {0, 1, 2, 3, 4} -> {0, 1, 2, 3, 4}, p*M
-Matrix permFromVector(const std::vector<unsigned long long> &v) {
+Matrix permFromVector(const std::vector<unsigned long long> &v, bool transpose) {
     Matrix perm(v.size(), v.size());
     for (unsigned long long i = 0; i < v.size(); ++i) {
-        perm.at(i, v[i]) = 1;
+        if (transpose) {
+            perm.at(v[i], i) = 1;
+        } else {
+            perm.at(i, v[i]) = 1;
+        }
     }
     return perm;
 }

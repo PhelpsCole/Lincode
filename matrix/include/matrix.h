@@ -69,7 +69,7 @@ private:
 Matrix generateRandomMatrix(unsigned long long rows, unsigned long long cols);
 Matrix generateRandomNonSingular(unsigned long long rows, unsigned long long cols);
 Matrix generateRandomPermutation(unsigned long long n, unsigned long long p);
-Matrix permFromVector(const std::vector<unsigned long long> &);
+Matrix permFromVector(const std::vector<unsigned long long> &, bool transpose = false);
 Matrix diag(unsigned long long n, char elem);
 Matrix hadamardProductSafe(const Matrix &, const Matrix &);
 Matrix hadamardProduct(const Matrix &, const Matrix &);
