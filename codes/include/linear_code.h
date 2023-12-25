@@ -52,6 +52,7 @@ Lincode sum(const Lincode &, const Lincode &);
 Lincode intersect(Lincode &, Lincode &);
 Lincode hadamardProduct(const Lincode &, const Lincode &);
 Lincode hadPower(const Lincode &c, size_t power);
+bool linearDependence(const Lincode &, const Lincode &);
 
 Lincode mcEliece(const Lincode &);
 

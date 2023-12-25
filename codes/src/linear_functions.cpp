@@ -93,6 +93,19 @@ Lincode hadPower(const Lincode &c, size_t power) {
     return codes::Lincode(hadPower(c.toMatrix(), power));
 }
 
+// True if linear dependent
+bool linearDependence(const Lincode &c1, const Lincode &c2) {
+    matrix::Matrix tmp(c1.toMatrix());
+    tmp.concatenateByColumns(c2.toMatrix());
+    codes::Lincode ans(tmp);
+    ans.basisView();
+    if (ans.size() != c2.size()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 Lincode mcEliece(const Lincode &gCode) {
     std::random_device rd;
     std::mt19937 gen(rd());

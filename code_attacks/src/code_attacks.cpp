@@ -131,7 +131,9 @@ matrix::Matrix chizhov_borodin(codes::Lincode rm) {
     // Permutation of sorting rows (tested)
     a.T();
     std::vector<unsigned long long> permVec = attackSupporters::sortMatrixPermutation(a);
-    return matrix::permFromVector(permVec);
+    matrix::Matrix res(matrix::permFromVector(permVec));
+    res.T();
+    return res;
 }
 
 } // namespace codes
