@@ -56,13 +56,17 @@ void plainSort(std::vector<std::vector<char>> &vv,
                unsigned long long start,
                unsigned long long end){
     std::vector<std::vector<char>> result;
-    for (size_t i = 0; i < end - start; ++i) {
+    for (size_t i = start; i < end; ++i) {
         result.push_back(vv[i]);
     }
     std::vector<unsigned long long> tempPermVec = selectionSort(result, comparator);
+    std::vector<unsigned long long> delta(end - start);
+    for (size_t i = 0; i < delta.size(); ++i) {
+        delta[i] = permVec[start + i];
+    }
     for (size_t i = 0; i < tempPermVec.size(); ++i) {
-        vv[i] = result[i];
-        permVec[start + i] = tempPermVec[i];
+        vv[start + i] = result[i];
+        permVec[start + i] = delta[tempPermVec[i]];
     }
 
 
@@ -74,7 +78,6 @@ void merge(std::vector<std::vector<char>> &vv,
            unsigned long long start,
            unsigned long long mid,
            unsigned long long end) {
-    //double *result = malloc((high - low) * sizeof(double));
     std::vector<std::vector<char>> result;
     size_t midTmp = mid, ind = 0;
     std::vector<unsigned long long> tmpPermVec(end - start);
@@ -118,10 +121,10 @@ void _mergeSort(std::vector<std::vector<char>> &vv,
                 unsigned long long start,
                 unsigned long long end) {
         size_t MERGE_SIZE = 10;
-        if (end - start < MERGE_SIZE){
+        if (end - start < MERGE_SIZE) {
             plainSort(vv, comparator, permVec, start, end);
         }
-        else{
+        else {
             int mid = (start + end) / 2;
             _mergeSort(vv, comparator, permVec, start, mid);
             _mergeSort(vv, comparator, permVec, mid, end);

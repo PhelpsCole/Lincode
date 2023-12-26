@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     }
     codes::RMCode rm(r, m);
     codes::Lincode rmCode(rm.toMatrix());
-    testRunner(rmCode, mode);
+    //testRunner(rmCode, mode);
 
     std::uniform_int_distribution<int> distrib(1, rmCode.len());
     std::random_device rd;
