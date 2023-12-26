@@ -43,23 +43,23 @@ void Lincode::puncture(unsigned long long column) {
     }
 }
 
-void Lincode::truncate(std::vector<unsigned long long> columns) {
-    std::sort(columns.begin(), columns.end());
-    std::vector<std::vector<char>> new_basis(k);
-    for (unsigned long long row = 0; row < k; ++row) {
-        unsigned long long ind = 0;
-        std::vector<char> v(n - columns.size());
-        for (unsigned long long i = 0; i < n; ++i) {
-            if (i != columns[ind]) {
-                v[i - ind] = basis[row][i];
-            } else {
-                ++ind;
+Lincode Lincode::truncate(const std::vector<unsigned long long> &columns) const {
+    matrix::Matrix A(toMatrix());
+    matrix::Matrix B(0, 0);
+    A.gaussElimination(false, columns);
+    for (size_t i = 0; i < A.rows(); ++i) {
+        bool nullMask = true;
+        for (size_t j = 0; j < columns.size(); ++j) {
+            if (A.at(i, columns[j]) != 0) {
+                nullMask = false;
+                break;
             }
         }
-        new_basis[row] = v;
+        if (nullMask) {
+            B.insertRow(B.rows(), A.row(i));
+        }
     }
-    n -= columns.size();
-    basis = new_basis;
+    return B;
 }
 
 Lincode sum(const Lincode &first, const Lincode &second) {

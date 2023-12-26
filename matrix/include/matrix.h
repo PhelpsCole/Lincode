@@ -49,7 +49,7 @@ public:
     void insertRow(unsigned long long, const std::vector<char> &, bool replace = false);
     void insertTriangle(std::vector<char>);
     void T();
-    std::vector<unsigned long long> gaussElimination(bool = false, std::vector<unsigned long long> = {});
+    std::vector<unsigned long long> gaussElimination(bool = false, const std::vector<unsigned long long> & = {});
     void echelon(std::vector<unsigned long long> = {});
     void orthogonal();
     void hadamardProduct(const Matrix &);

@@ -7,6 +7,7 @@
 namespace codes {
 namespace attackSupporters {
 
+codes::Lincode rmReductor(const codes::Lincode &rm);
 codes::Lincode nodRM(const codes::Lincode &rm, int a, int b);
 
 } //namespace attackSupporters

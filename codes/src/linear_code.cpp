@@ -149,7 +149,7 @@ Lincode Lincode::punctured(unsigned long long column) const {
     return copy;
 }
 
-Lincode Lincode::truncated(std::vector<unsigned long long> &columns) const {
+Lincode Lincode::truncated(const std::vector<unsigned long long> &columns) const {
     Lincode copy(*this);
     copy.truncate(columns);
     return copy;

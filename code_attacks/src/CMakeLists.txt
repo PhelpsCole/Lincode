@@ -1,4 +1,5 @@
-add_library(code_attacks STATIC code_attacks.cpp)
+add_library(code_attacks STATIC chizhov_borodin.cpp
+                                minder_shokrollahi.cpp)
 
 target_include_directories(code_attacks PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(matrix PUBLIC ${CMAKE_SOURCE_DIR}/matrix/include)

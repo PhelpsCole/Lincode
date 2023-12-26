@@ -96,7 +96,7 @@ void Matrix::T() {
 // Returns positions of maximum rank submatrix
 // if columns.size() != 0 then apply only on submatrixes on these columns
 std::vector<unsigned long long> Matrix::gaussElimination(bool onlyForward,
-                                                         std::vector<unsigned long long> columns) {
+                                                         const std::vector<unsigned long long> &columns) {
     if (m_cols == 0 || m_rows == 0) {
         return std::vector<unsigned long long>();
     }

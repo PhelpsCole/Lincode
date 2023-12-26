@@ -2,12 +2,6 @@
 
 namespace codes {
 namespace attackSupporters {
-// Minder-Shokrollahi algorithm of reduction RM(r, m) -> RM(r-1,m)
-codes::Lincode rmReductor(const codes::Lincode &rm) {
-    //!
-    return rm;
-}
-
 
 // Converts RM(r,m) -> RM(d,m)
 codes::Lincode nodRM(const codes::Lincode &rm, int a, int b) {
