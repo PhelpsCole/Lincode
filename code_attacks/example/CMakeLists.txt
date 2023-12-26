@@ -1,3 +1,4 @@
 link_libraries(code_attacks)
 add_executable(test_nodRM test_nodRM.cpp)
+add_executable(test_rmReductor test_rmReductor.cpp)
 add_executable(test_chizhov_borodin test_chizhov_borodin.cpp)

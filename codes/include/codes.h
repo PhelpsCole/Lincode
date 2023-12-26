@@ -4,6 +4,5 @@
 #include "rm_code.h"
 #include "pqsigRM.h"
 #include "linear_code.h"
-#include "encoder.h"
 
 #endif // CODES_H

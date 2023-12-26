@@ -3,6 +3,7 @@
 
 #include "sorts.h"
 #include "codes.h"
+#include "encoder.h"
 
 namespace codes {
 namespace attackSupporters {

@@ -19,6 +19,10 @@ std::vector<char> Encoder::stage() const {
     return weightVec.first;
 }
 
+bool Encoder::isEnd() const {
+    return weightVec.second == weightVec.first.size();
+}
+
 unsigned long long Encoder::stageWeight() const {
     return weightVec.second;
 }

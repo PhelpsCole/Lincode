@@ -14,6 +14,7 @@ public:
     std::vector<char> next(size_t = 1);
     std::vector<char> current() const;
     std::vector<char> stage() const;
+    bool isEnd() const;
     unsigned long long stageWeight() const;
     codes::Lincode code() const;
 
