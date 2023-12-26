@@ -1,6 +1,7 @@
 #ifndef CODE_ATTACKS_H
 #define CODE_ATTACKS_H
 
+#include "sorts.h"
 #include "codes.h"
 
 namespace codes {

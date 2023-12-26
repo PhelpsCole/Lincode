@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 
     matrix::Matrix G(rmCode.toMatrix() * P);
     P = testRunner(codes::Lincode(G), mode);
-    if (!linearDependence(rmCode, G*P)) {
+    if (!codes::isEquivalent(rmCode, G*P)) {
         std::cout << "Same basises" << std::endl;
     } else {
         std::cout << "Basises are not the same" << std::endl;

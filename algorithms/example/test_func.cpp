@@ -1,4 +1,5 @@
 #include "algorithms.h"
+#include <iostream>
 
 void testHamming(std::vector<char> v1, std::vector<char> v2) {
     std::cout << "Hamming weight of first vector: " << algorithms::hammingWeight(v1) << std::endl;

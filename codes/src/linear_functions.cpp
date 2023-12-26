@@ -93,17 +93,20 @@ Lincode hadPower(const Lincode &c, size_t power) {
     return codes::Lincode(hadPower(c.toMatrix(), power));
 }
 
-// True if linear dependent
+// True if c1 fully includes c2
 bool linearDependence(const Lincode &c1, const Lincode &c2) {
     matrix::Matrix tmp(c1.toMatrix());
     tmp.concatenateByColumns(c2.toMatrix());
     codes::Lincode ans(tmp);
     ans.basisView();
-    if (ans.size() != c2.size()) {
-        return true;
-    } else {
-        return false;
-    }
+    return ans.size() != c1.size();
+}
+
+// If c1 and c2 has same basis
+bool isEquivalent(Lincode c1, Lincode c2) {
+    c1.basisView();
+    c2.basisView();
+    return c1.size() == c2.size() && linearDependence(c1, c2);
 }
 
 Lincode mcEliece(const Lincode &gCode) {
