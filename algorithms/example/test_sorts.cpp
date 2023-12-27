@@ -7,9 +7,9 @@ bool comparator(const std::vector<char> &row1, const std::vector<char> &row2) {
         throw std::invalid_argument("Incorrect rows sizes");
     }
     for (size_t i = 0; i < row1.size(); ++i) {
-        if (row1[i] > row2[i]) {
+        if (row1[i] < row2[i]) {
             return true;
-        } else if (row1[i] < row2[i]) {
+        } else if (row1[i] > row2[i]) {
             return false;
         }
     }
@@ -17,7 +17,7 @@ bool comparator(const std::vector<char> &row1, const std::vector<char> &row2) {
 }
 
 bool comparator2(const unsigned long long &a, const unsigned long long &b) {
-    return a > b;
+    return a <= b;
 }
 
 void printVector(const std::vector<unsigned long long> &v) {
@@ -49,7 +49,7 @@ int main() {
                                       {0, 0, 1, 1},
                                       {0, 0, 0, 1}};
     printVector(vv);
-    algorithms::sorts::selectionSort(vv, comparator);
+    algorithms::sorts::mergeSort(vv, comparator);
     printVector(vv);
     return 0;
 }

@@ -11,7 +11,7 @@ std::vector<unsigned long long> selectionSort(std::vector<unsigned long long> &v
         size_t ind = i;
         unsigned long long row = vv[ind];
         for (size_t j = i + 1; j < vv.size(); ++j) {
-            if (comparator(row, vv[j])) {
+            if (!comparator(row, vv[j])) {
                 ind = j;
                 row = vv[ind];
             }
@@ -35,7 +35,7 @@ std::vector<unsigned long long> selectionSort(std::vector<std::vector<char>> &vv
         size_t ind = i;
         std::vector<char> row(vv[ind]);
         for (size_t j = i + 1; j < vv.size(); ++j) {
-            if (comparator(row, vv[j])) {
+            if (!comparator(row, vv[j])) {
                 ind = j;
                 row = vv[ind];
             }
@@ -84,7 +84,7 @@ void merge(std::vector<std::vector<char>> &vv,
     size_t midTmp = mid, ind = 0;
     std::vector<unsigned long long> tmpPermVec(end - start);
     while(start != midTmp && mid != end){
-        if (comparator(vv[start], vv[mid])) {
+        if (comparator(vv[mid], vv[start])) {
             tmpPermVec[ind] = permVec[mid];
             result.push_back(vv[mid++]);
             ++ind;

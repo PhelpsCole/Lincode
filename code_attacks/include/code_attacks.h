@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <set>
+#include <algorithm>
 #include "sorts.h"
 #include "codes.h"
 #include "encoder.h"
@@ -13,7 +14,7 @@ namespace attackSupporters {
 // Supporters from minder_shokrollahi 
 std::vector<std::vector<unsigned long long>>
 decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
-					  unsigned long long M = 10);
+                      unsigned long long M = 10);
 codes::Lincode rmReductor(const codes::Lincode &rm);
 matrix::Matrix simplePerm(matrix::Matrix);
 

@@ -139,6 +139,25 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
     return std::vector<std::vector<unsigned long long>>();
 }
 
+std::vector<char> mergeCodeWords(const std::vector<char> &codeWord,
+                                 std::vector<unsigned long long> &separatedColumns) {
+    std::vector<char> result(codeWord.size());
+    //std::sort(separatedColumns);
+    unsigned long long ind = 0;
+    unsigned long long delta = 0;
+    for (size_t i = 0; i < codeWord.size(); ++i) {
+        if (codeWord[i] == 1) {
+            result[i] = 1;
+            ++delta;
+        }
+        if (i - delta == separatedColumns[ind]) {
+            result[i] = 1;
+            ++ind;
+        }
+    }
+    return result;
+}
+
 // Minder-Shokrollahi algorithm of reduction RM(r, m) -> RM(r-1,m) !!!
 codes::Lincode rmReductor(const codes::Lincode &rm) {
     matrix::Matrix B(0, 0);
@@ -157,17 +176,27 @@ codes::Lincode rmReductor(const codes::Lincode &rm) {
                 break;
             }
         }
+        std::cout << "Used code word:" << std::endl;
+        for (size_t i = 0; i < codeWord.size(); ++i) {
+            std::cout << static_cast<int>(codeWord[i]) << " ";
+        }
+        std::cout << std::endl;
         codes::Lincode truncated = rm.truncate(codeWord, true);
         truncated.printCode();
         std::vector<std::vector<unsigned long long>>
         separatedColumnSets = decomposeToColumnSets(truncated, rmSizes[0], rmSizes[1], 0);
         for (size_t i = 0; i < separatedColumnSets.size(); ++i) {
-            std::vector<char> newCodeWord(codeWord);
-            for (size_t j = 0; j < separatedColumnSets[i].size(); ++j) {
-                newCodeWord[separatedColumnSets[i][j]] = 1;
+            std::vector<char> newCodeWord(mergeCodeWords(codeWord, separatedColumnSets[i]));
+            std::cout << "f_i vector:" << std::endl;
+            for (size_t i = 0; i < codeWord.size(); ++i) {
+                std::cout << static_cast<int>(newCodeWord[i]) << " ";
             }
+            std::cout << std::endl;
             B.insertTriangle(newCodeWord);
         }
+        std::cout << "Code after intersetting vectors:" << std::endl;
+        std::cout << B.rows() << " " << B.cols() << std::endl;
+        B.printMatrix();
     }
     return codes::Lincode(B);
 }
@@ -178,9 +207,9 @@ bool comparator(const std::vector<char> &row1, const std::vector<char> &row2) {
         throw std::invalid_argument("Incorrect rows sizes");
     }
     for (size_t i = 0; i < row1.size(); ++i) {
-        if (row1[i] > row2[i]) {
+        if (row1[i] < row2[i]) {
             return true;
-        } else if (row1[i] < row2[i]) {
+        } else if (row1[i] > row2[i]) {
             return false;
         }
     }
