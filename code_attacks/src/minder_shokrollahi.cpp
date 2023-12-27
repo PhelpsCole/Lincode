@@ -8,6 +8,7 @@ separateToSubClasses(const std::vector<std::vector<unsigned long long>> &counter
                      unsigned long long max) {
     std::vector<std::set<unsigned long long>> columnSetsVec;
     for (size_t i = 0; i < counterIJ.size(); ++i) {
+        // Choosing equiv class
         bool foundColumn = false;
         unsigned long long ind = columnSetsVec.size();
         for (size_t x = 0; !foundColumn && x < columnSetsVec.size(); ++x) {
@@ -27,6 +28,7 @@ separateToSubClasses(const std::vector<std::vector<unsigned long long>> &counter
                 columnSetsVec[ind].insert(j);
             }
         }
+        // Updating equiv classes
         std::vector<std::set<unsigned long long>> tempColumnVecSet;
         std::set<unsigned long long> colizes(columnSetsVec[ind]);
         for (size_t x = 0; x < columnSetsVec.size(); ++x) {
@@ -82,9 +84,14 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
                       unsigned long long M) {
     unsigned long long degParam = 1 << (m - 2*r + 1);
     unsigned long long min_weight = 1 << (m - r);
-    unsigned long long max_weight = floor(degParam * ((1 << r) - 1) *
-                                          std::sqrt(1 - 1 / static_cast<double>(degParam)));
-    unsigned long long M_step = 10; // !
+    unsigned long long max_weight;
+    if (M == 0) {
+        max_weight = min_weight;
+    } else {
+        max_weight = floor(degParam * ((1 << r) - 1) *
+                           std::sqrt(1 - 1 / static_cast<double>(degParam)));
+    }
+    unsigned long long M_step = M;
     codes::Encoder encoder(c0);
     std::vector<std::vector<unsigned long long>> counterIJ;
     for (size_t i = 0; i < c0.len() - 1; ++i) {
@@ -111,7 +118,8 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
             }
         }
         unsigned long long c;
-        if (M == 0) {
+        bool simple = true;
+        if (M == 0 || simple) {
             c = counterIJ[0][1];
             for (size_t i = 0; i < counterIJ.size(); ++i) {
                 for (size_t j = i + 1; j < counterIJ[i].size(); ++j) {
@@ -141,8 +149,10 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
 
 std::vector<char> mergeCodeWords(const std::vector<char> &codeWord,
                                  std::vector<unsigned long long> &separatedColumns) {
+    algorithms::sorts::selectionSort(separatedColumns,
+                                     [](const unsigned long long &a, const unsigned long long &b)
+                                     { return a <= b; });
     std::vector<char> result(codeWord.size());
-    //std::sort(separatedColumns);
     unsigned long long ind = 0;
     unsigned long long delta = 0;
     for (size_t i = 0; i < codeWord.size(); ++i) {
@@ -150,7 +160,7 @@ std::vector<char> mergeCodeWords(const std::vector<char> &codeWord,
             result[i] = 1;
             ++delta;
         }
-        if (i - delta == separatedColumns[ind]) {
+        if (ind != separatedColumns.size() && i - delta == separatedColumns[ind]) {
             result[i] = 1;
             ++ind;
         }
@@ -176,27 +186,14 @@ codes::Lincode rmReductor(const codes::Lincode &rm) {
                 break;
             }
         }
-        std::cout << "Used code word:" << std::endl;
-        for (size_t i = 0; i < codeWord.size(); ++i) {
-            std::cout << static_cast<int>(codeWord[i]) << " ";
-        }
-        std::cout << std::endl;
         codes::Lincode truncated = rm.truncate(codeWord, true);
-        truncated.printCode();
         std::vector<std::vector<unsigned long long>>
+        // creating V_i(...)
         separatedColumnSets = decomposeToColumnSets(truncated, rmSizes[0], rmSizes[1], 0);
         for (size_t i = 0; i < separatedColumnSets.size(); ++i) {
             std::vector<char> newCodeWord(mergeCodeWords(codeWord, separatedColumnSets[i]));
-            std::cout << "f_i vector:" << std::endl;
-            for (size_t i = 0; i < codeWord.size(); ++i) {
-                std::cout << static_cast<int>(newCodeWord[i]) << " ";
-            }
-            std::cout << std::endl;
             B.insertTriangle(newCodeWord);
         }
-        std::cout << "Code after intersetting vectors:" << std::endl;
-        std::cout << B.rows() << " " << B.cols() << std::endl;
-        B.printMatrix();
     }
     return codes::Lincode(B);
 }

@@ -84,7 +84,7 @@ void merge(std::vector<std::vector<char>> &vv,
     size_t midTmp = mid, ind = 0;
     std::vector<unsigned long long> tmpPermVec(end - start);
     while(start != midTmp && mid != end){
-        if (comparator(vv[mid], vv[start])) {
+        if (!comparator(vv[start], vv[mid])) {
             tmpPermVec[ind] = permVec[mid];
             result.push_back(vv[mid++]);
             ++ind;
