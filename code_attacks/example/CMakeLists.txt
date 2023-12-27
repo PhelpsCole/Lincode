@@ -1,5 +1,5 @@
 link_libraries(code_attacks)
 add_executable(test_nodRM test_nodRM.cpp)
-add_executable(test_rmReductor test_rmReductor.cpp)
+add_executable(test_rmReducer test_rmReducer.cpp)
 add_executable(test_chizhov_borodin test_chizhov_borodin.cpp)
 add_executable(test_decomposeToColumnSets test_decomposeToColumnSets.cpp)
