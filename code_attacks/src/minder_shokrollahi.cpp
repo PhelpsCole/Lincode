@@ -62,11 +62,24 @@ separateToSubClasses(const std::vector<std::vector<unsigned long long>> &counter
     return ans;
 }
 
+bool checkSeparatedSets(const std::vector<std::vector<unsigned long long>> &separatedSets,
+                        unsigned long long len, unsigned long long count) {
+    if (separatedSets.size() == count) {
+        unsigned long long lenSub = len / count;
+        for (unsigned long long i = 0; i < count; ++i) {
+            if (separatedSets[i].size() != lenSub) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
 
 // M != 0 maybe incorrect
-std::vector<codes::Lincode> decomposeShortenedCode(const codes::Lincode &c0,
-                                                   size_t r, size_t m,
-                                                   unsigned long long M) {
+std::vector<std::vector<unsigned long long>>
+decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
+                      unsigned long long M) {
     unsigned long long degParam = 1 << (m - 2*r + 1);
     unsigned long long min_weight = 1 << (m - r);
     unsigned long long max_weight = floor(degParam * ((1 << r) - 1) *
@@ -114,26 +127,27 @@ std::vector<codes::Lincode> decomposeShortenedCode(const codes::Lincode &c0,
             }
             c = floor(M * (degParam - 1) / static_cast<double>((1 << (m - 1)) - (1 << (r - 1)))) - 1;
         }
-        std::vector<std::vector<unsigned long long>> columnSet(separateToSubClasses(counterIJ, c));
-        // TODO: check columnSet
+        std::vector<std::vector<unsigned long long>> separatedSets(separateToSubClasses(counterIJ, c));
+        if (checkSeparatedSets(separatedSets, c0.len(), (1 << r) - 1)) {
+            return separatedSets;
+        }
         if (M != 0) {
             M += M_step;    
         }
     }
-    std::vector<codes::Lincode> res;
-    res.push_back(c0);
-    return res;
+    std::cerr << "Code wasn't separated to classes" << std::endl;
+    return std::vector<std::vector<unsigned long long>>();
 }
 
 // Minder-Shokrollahi algorithm of reduction RM(r, m) -> RM(r-1,m) !!!
 codes::Lincode rmReductor(const codes::Lincode &rm) {
-    codes::Lincode B;
+    matrix::Matrix B(0, 0);
     std::vector<size_t> rmSizes = codes::rmSizes(rm);
     unsigned long long size = codeSizeFromRM(rmSizes[0] - 1, rmSizes[1]);
     unsigned long long weight = 1 << (rmSizes[1] - rmSizes[0]);
     std::vector<std::vector<char>> usedCodeWords;
     codes::Encoder encoder(rm);
-    while (B.size() != size) {
+    while (B.rows() != size) {
         std::vector<char> codeWord;
         // Finding word of minimum weight
         while (!encoder.isEnd()) {
@@ -145,10 +159,17 @@ codes::Lincode rmReductor(const codes::Lincode &rm) {
         }
         codes::Lincode truncated = rm.truncate(codeWord, true);
         truncated.printCode();
-        std::vector<codes::Lincode>
-        shortenedCodeVec = decomposeShortenedCode(truncated, rmSizes[0], rmSizes[1], 0);
+        std::vector<std::vector<unsigned long long>>
+        separatedColumnSets = decomposeToColumnSets(truncated, rmSizes[0], rmSizes[1], 0);
+        for (size_t i = 0; i < separatedColumnSets.size(); ++i) {
+            std::vector<char> newCodeWord(codeWord);
+            for (size_t j = 0; j < separatedColumnSets[i].size(); ++j) {
+                newCodeWord[separatedColumnSets[i][j]] = 1;
+            }
+            B.insertTriangle(newCodeWord);
+        }
     }
-    return rm;
+    return codes::Lincode(B);
 }
 
 bool comparator(const std::vector<char> &row1, const std::vector<char> &row2) {
@@ -197,7 +218,7 @@ matrix::Matrix simplePerm(matrix::Matrix trivialRMMatrix) {
     a.T();
     std::vector<std::vector<char>> vv(a.toVectors());
     std::vector<unsigned long long> permVec = algorithms::sorts::
-                                              mergeSort(vv, attackSupporters::comparator);
+                                              mergeSort(vv, comparator);
     return matrix::permFromVector(permVec, true);
 }
 

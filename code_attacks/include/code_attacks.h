@@ -11,8 +11,9 @@ namespace codes {
 namespace attackSupporters {
 
 // Supporters from minder_shokrollahi 
-std::vector<codes::Lincode> decomposeShortenedCode(const codes::Lincode &,
-                                                   size_t r, size_t m, unsigned long long M = 10);
+std::vector<std::vector<unsigned long long>>
+decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
+					  unsigned long long M = 10);
 codes::Lincode rmReductor(const codes::Lincode &rm);
 matrix::Matrix simplePerm(matrix::Matrix);
 

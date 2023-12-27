@@ -111,7 +111,8 @@ std::vector<std::vector<char>> Matrix::toVectors() const {
     return res;
 }
 
-Matrix Matrix::submatrix(const std::vector<unsigned long long> &rows, const std::vector<unsigned long long> &cols) const {
+Matrix Matrix::submatrix(const std::vector<unsigned long long> &rows,
+                         const std::vector<unsigned long long> &cols) const {
     Matrix res(rows.size(), cols.size());
     for (size_t i = 0; i < rows.size(); ++i) {
         for (size_t j = 0; j < cols.size(); ++j) {
