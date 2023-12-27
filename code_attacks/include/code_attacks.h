@@ -15,7 +15,7 @@ namespace attackSupporters {
 std::vector<std::vector<unsigned long long>>
 decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
                       unsigned long long M = 10);
-codes::Lincode rmReductor(const codes::Lincode &rm);
+codes::Lincode rmReducer(const codes::Lincode &rm);
 matrix::Matrix simplePerm(matrix::Matrix);
 
 // Supporters from chizhov_borodin

@@ -48,7 +48,7 @@ matrix::Matrix chizhov_borodin(codes::Lincode rm) {
         trivialRM = rm_d;
     } else {
         // Step 2: (d,m) => (d-1,m)' !!
-        codes::Lincode rm_d2 = attackSupporters::rmReductor(rm_d);
+        codes::Lincode rm_d2 = attackSupporters::rmReducer(rm_d);
 
         // Step 3: f((d, m)',(d-1,m)') => (1, m)'
         rm_d.dual();

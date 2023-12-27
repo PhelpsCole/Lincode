@@ -15,9 +15,9 @@ int main(int argc, char *argv[]) {
     //rmCode.printCodeSizes();
     rmCode.printCode();
     std::cout << std::endl;
-    std::cout << "START rmReductor" << std::endl;
-    rmCode = codes::attackSupporters::rmReductor(rmCode);
-    std::cout << "END rmReductor" << std::endl;
+    std::cout << "START rmReducer" << std::endl;
+    rmCode = codes::attackSupporters::rmReducer(rmCode);
+    std::cout << "END rmReducer" << std::endl;
     std::cout << "RM(r-1, m) code:" << std::endl;
     rmCode.printCodeSizes();
     rmCode.printCode();

@@ -169,7 +169,7 @@ std::vector<char> mergeCodeWords(const std::vector<char> &codeWord,
 }
 
 // Minder-Shokrollahi algorithm of reduction RM(r, m) -> RM(r-1,m) !!!
-codes::Lincode rmReductor(const codes::Lincode &rm) {
+codes::Lincode rmReducer(const codes::Lincode &rm) {
     matrix::Matrix B(0, 0);
     std::vector<size_t> rmSizes = codes::rmSizes(rm);
     unsigned long long size = codeSizeFromRM(rmSizes[0] - 1, rmSizes[1]);
