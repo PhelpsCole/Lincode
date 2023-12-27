@@ -3,12 +3,13 @@
 namespace algorithms {
 namespace sorts {
 
-std::vector<unsigned long long> selectionSort(std::vector<int> &vv, intComparatorType comparator) {
+std::vector<unsigned long long> selectionSort(std::vector<unsigned long long> &vv,
+                                              ullComparatorType comparator) {
     std::vector<unsigned long long> permVec(vv.size());
     std::iota(permVec.begin(), permVec.end(), 0);
     for (size_t i = 0; i < vv.size() - 1; ++i) {
         size_t ind = i;
-        int row = vv[ind];
+        unsigned long long row = vv[ind];
         for (size_t j = i + 1; j < vv.size(); ++j) {
             if (comparator(row, vv[j])) {
                 ind = j;
@@ -26,7 +27,8 @@ std::vector<unsigned long long> selectionSort(std::vector<int> &vv, intComparato
     return permVec;
 }
 
-std::vector<unsigned long long> selectionSort(std::vector<std::vector<char>> &vv, charVecCompType comparator) {
+std::vector<unsigned long long> selectionSort(std::vector<std::vector<char>> &vv,
+                                              charVecCompType comparator) {
     std::vector<unsigned long long> permVec(vv.size());
     std::iota(permVec.begin(), permVec.end(), 0);
     for (size_t i = 0; i < vv.size() - 1; ++i) {

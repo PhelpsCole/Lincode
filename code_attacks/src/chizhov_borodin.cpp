@@ -33,21 +33,6 @@ codes::Lincode nodRM(const codes::Lincode &rm, int a, int b) {
     }
 }
 
-bool comparator(const std::vector<char> &row1, const std::vector<char> &row2) {
-    if (row1.size() != row2.size()) {
-        std::cout << row1.size() << " " << row2.size() << std::endl;
-        throw std::invalid_argument("Incorrect rows sizes");
-    }
-    for (size_t i = 0; i < row1.size(); ++i) {
-        if (row1[i] > row2[i]) {
-            return true;
-        } else if (row1[i] < row2[i]) {
-            return false;
-        }
-    }
-    return false;
-}
-
 } //namespace attackSupporters
 
 // Return sigma^-1 by RM(r,m)^sigma
@@ -72,38 +57,7 @@ matrix::Matrix chizhov_borodin(codes::Lincode rm) {
     }
 
     // Step 4: (1, m)' => (1, m) (get sigma)
-    // Get matrix with first row (1..1)
-    matrix::Matrix trivialRMMatrix(trivialRM.toMatrix());
-    trivialRMMatrix.T();
-    std::vector<char> b(trivialRMMatrix.rows(), 1);
-    std::vector<char> sol = matrix::solution(trivialRMMatrix, b);
-    std::vector<char> aVector(sol);
-    bool removedNum = false;
-    for (size_t i = 0; i < sol.size(); ++i) {
-        if (removedNum || sol[i] == 0) {
-            aVector.insert(aVector.end(), sol.begin(), sol.end());
-            aVector[aVector.size() - sol.size() + i] ^= 1;
-        } else {
-            removedNum = true;
-        }
-    }
-    trivialRMMatrix.T();
-    matrix::Matrix a(sol.size(), sol.size(), aVector);
-    a *= trivialRMMatrix;
-
-    // Delete first row
-    std::vector<unsigned long long> rows(a.rows() - 1);
-    std::vector<unsigned long long> cols(a.cols());
-    std::iota(rows.begin(), rows.end(), 1);
-    std::iota(cols.begin(), cols.end(), 0);
-    a = a.submatrix(rows, cols);
-
-    // Permutation of sorting rows (tested)
-    a.T();
-    std::vector<std::vector<char>> vv(a.toVectors());
-    std::vector<unsigned long long> permVec = algorithms::sorts::
-                                              mergeSort(vv, attackSupporters::comparator);
-    return matrix::permFromVector(permVec, true);
+    return codes::attackSupporters::simplePerm(trivialRM.toMatrix());
 }
 
 } // namespace codes

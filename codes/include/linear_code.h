@@ -26,7 +26,8 @@ public:
     std::vector<unsigned long long> spectrum_basis() const;
     Lincode punctured(const std::vector<unsigned long long> &columns) const;
     Lincode punctured(unsigned long long column) const;
-    Lincode truncated(const std::vector<unsigned long long> &columns) const;
+    Lincode truncated(std::vector<unsigned long long> columns, bool removeZeroes = false) const;
+    Lincode truncated(const std::vector<char> &mask, bool removeZeroes = false) const;
 
     std::vector<char> encode(std::vector<char> &);
 
@@ -34,7 +35,8 @@ public:
     void dual();
     void puncture(const std::vector<unsigned long long> &columns);
     void puncture(unsigned long long column);
-    Lincode truncate(const std::vector<unsigned long long> &columns) const;
+    Lincode truncate(std::vector<unsigned long long> columns, bool removeZeroes = false) const;
+    Lincode truncate(const std::vector<char> &mask, bool removeZeroes = false) const;
 
     void printCodeSizes(const std::string &filename = "NoName") const;
     void printCode(const std::string &filename = "NoName", char sep = ' ', std::string end = "\n") const;

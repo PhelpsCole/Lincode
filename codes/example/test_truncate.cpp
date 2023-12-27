@@ -12,8 +12,8 @@ int main(void) {
     codes::Lincode res(code.truncate(columns));
     res.printVisualCode();
     columns = {4, 5};
-    std::cout << "Truncated by 4, 5 columns:" << std::endl;
-    res = code.truncate(columns);
+    std::cout << "Truncated by 4, 5 columns with deleting nulls:" << std::endl;
+    res = code.truncate(columns, true);
     res.printVisualCode();
     return 0;
 }

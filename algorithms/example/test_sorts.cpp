@@ -16,11 +16,11 @@ bool comparator(const std::vector<char> &row1, const std::vector<char> &row2) {
     return false;
 }
 
-bool comparator2(const int &a, const int &b) {
+bool comparator2(const unsigned long long &a, const unsigned long long &b) {
     return a > b;
 }
 
-void printVector(const std::vector<int> &v) {
+void printVector(const std::vector<unsigned long long> &v) {
     for (size_t i = 0; i < v.size(); ++i) {
         std::cout << v[i] << " ";
     }
@@ -38,7 +38,7 @@ void printVector(const std::vector<std::vector<char>> &vv) {
 }
 
 int main() {
-    std::vector<int> v{1, -1, 2, -4, -5, 8, 100, -3, 7};
+    std::vector<unsigned long long> v{1, 7, 2, 3, 2, 8, 100, 4, 7};
     printVector(v);
     algorithms::sorts::selectionSort(v, comparator2);
     printVector(v);

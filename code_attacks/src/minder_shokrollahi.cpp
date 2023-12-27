@@ -3,24 +3,126 @@
 namespace codes {
 namespace attackSupporters {
 
-bool vInsideVv(const std::vector<std::vector<char>> &vv, const std::vector<char> &v) {
-    for (size_t i = 0; i < vv.size(); ++i) {
-        if (vv[i].size() != v.size()) {
-            std::cerr << vv[i].size() << " " << v.size() << std::endl;
-            throw std::invalid_argument("Bad vector in vv");
-        }
-        bool inside = true;
-        for (size_t j = 0; j < vv[i].size(); ++j) {
-            if (vv[i][j] != v[j]) {
-                inside = false;
-                break;
+std::vector<std::vector<unsigned long long>>
+separateToSubClasses(const std::vector<std::vector<unsigned long long>> &counterIJ,
+                     unsigned long long max) {
+    std::vector<std::set<unsigned long long>> columnSetsVec;
+    for (size_t i = 0; i < counterIJ.size(); ++i) {
+        bool foundColumn = false;
+        unsigned long long ind = columnSetsVec.size();
+        for (size_t x = 0; !foundColumn && x < columnSetsVec.size(); ++x) {
+            for (unsigned long long elem: columnSetsVec[x]) {
+                if (i == elem) {
+                    foundColumn = true;
+                    ind = x;
+                    break;
+                }
             }
         }
-        if (inside) {
-            return inside;
+        if (!foundColumn) {
+            columnSetsVec.push_back({i});
+        }
+        for (size_t j = i + 1; j < counterIJ[i].size(); ++j) {
+            if (counterIJ[i][j] >= max) {
+                columnSetsVec[ind].insert(j);
+            }
+        }
+        std::vector<std::set<unsigned long long>> tempColumnVecSet;
+        std::set<unsigned long long> colizes(columnSetsVec[ind]);
+        for (size_t x = 0; x < columnSetsVec.size(); ++x) {
+            if (x == ind) {
+                continue;
+            }
+            bool foundColize = false;
+            for (unsigned long long prevSetElem: columnSetsVec[x]) {
+                for (unsigned long long newSetElem: columnSetsVec[ind]) {
+                    if (prevSetElem == newSetElem) {
+                        foundColize = true;
+                        break;
+                    }
+                }
+                if (foundColize) {
+                    break;
+                }
+            }
+            if (foundColize) {
+                colizes.insert(columnSetsVec[x].begin(), columnSetsVec[x].end());
+            } else {
+                tempColumnVecSet.push_back(columnSetsVec[x]);
+            }
+        }
+        columnSetsVec = tempColumnVecSet;
+        columnSetsVec.push_back(colizes);
+    }
+    std::vector<std::vector<unsigned long long>> ans;
+    for (size_t i = 0; i < columnSetsVec.size(); ++i) {
+        ans.push_back(std::vector<unsigned long long>(columnSetsVec[i].begin(),
+                                                      columnSetsVec[i].end()));
+    }
+    return ans;
+}
+
+
+// M != 0 maybe incorrect
+std::vector<codes::Lincode> decomposeShortenedCode(const codes::Lincode &c0,
+                                                   size_t r, size_t m,
+                                                   unsigned long long M) {
+    unsigned long long degParam = 1 << (m - 2*r + 1);
+    unsigned long long min_weight = 1 << (m - r);
+    unsigned long long max_weight = floor(degParam * ((1 << r) - 1) *
+                                          std::sqrt(1 - 1 / static_cast<double>(degParam)));
+    unsigned long long M_step = 10; // !
+    codes::Encoder encoder(c0);
+    std::vector<std::vector<unsigned long long>> counterIJ;
+    for (size_t i = 0; i < c0.len() - 1; ++i) {
+        counterIJ.push_back(std::vector<unsigned long long>(c0.len()));
+    }
+    while (!encoder.isEnd()) { //!!!!
+        // Every sicle it cleans
+        std::vector<std::vector<char>> selectedCodeWords;
+        while (!encoder.isEnd() && (M == 0 || selectedCodeWords.size() < M_step)) {
+            std::vector<char> codeWord = encoder.next();
+            unsigned long long weight = algorithms::hammingWeight(codeWord);
+            if (min_weight <= weight && weight <= max_weight) {
+                selectedCodeWords.push_back(codeWord);
+            }
+        }
+        for (size_t k = 0; k < selectedCodeWords.size(); ++k) {
+            std::vector<char> tmpWord(selectedCodeWords[k]);
+            for (size_t i = 0; i < tmpWord.size() - 1; ++i) {
+                for (size_t j = i + 1; j < tmpWord.size(); ++j) {
+                    if (tmpWord[i] == 1 && tmpWord[j] == 1) {
+                        ++counterIJ[i][j];
+                    }
+                }
+            }
+        }
+        unsigned long long c;
+        if (M == 0) {
+            c = counterIJ[0][1];
+            for (size_t i = 0; i < counterIJ.size(); ++i) {
+                for (size_t j = i + 1; j < counterIJ[i].size(); ++j) {
+                    if (c < counterIJ[i][j]) {
+                        c = counterIJ[i][j];
+                    }
+                }
+            }
+        } else {
+            if (selectedCodeWords.size() != M_step) {
+                M -= M_step;
+                M += selectedCodeWords.size();
+            }
+            c = floor(M * (degParam - 1) / static_cast<double>((1 << (m - 1)) - (1 << (r - 1)))) - 1;
+        }
+        std::vector<std::vector<unsigned long long>> columnSet(separateToSubClasses(counterIJ, c));
+        // TODO: check columnSet
+        if (M != 0) {
+            M += M_step;    
         }
     }
-    return false;
+    std::vector<codes::Lincode> res;
+    res.push_back(c0);
+    return res;
 }
 
 // Minder-Shokrollahi algorithm of reduction RM(r, m) -> RM(r-1,m) !!!
@@ -31,25 +133,72 @@ codes::Lincode rmReductor(const codes::Lincode &rm) {
     unsigned long long weight = 1 << (rmSizes[1] - rmSizes[0]);
     std::vector<std::vector<char>> usedCodeWords;
     codes::Encoder encoder(rm);
-    while (B.size() != size && !encoder.isEnd()) { //!!!!!!
+    while (B.size() != size) {
         std::vector<char> codeWord;
+        // Finding word of minimum weight
         while (!encoder.isEnd()) {
             codeWord = encoder.next();
-            if (algorithms::hammingWeight(codeWord) == weight && !vInsideVv(usedCodeWords, codeWord)) {
+            if (algorithms::hammingWeight(codeWord) == weight) {
                 usedCodeWords.push_back(codeWord);
                 break;
             }
         }
-        for (size_t j = 0; j < encoder.stage().size(); ++j) {
-            std::cout << static_cast<int>(encoder.stage()[j]) << " ";
-        }
-        std::cout << ": ";
-        for (size_t j = 0; j < codeWord.size(); ++j) {
-            std::cout << static_cast<int>(codeWord[j]) << " ";
-        }
-        std::cout << std::endl;
+        codes::Lincode truncated = rm.truncate(codeWord, true);
+        truncated.printCode();
+        std::vector<codes::Lincode>
+        shortenedCodeVec = decomposeShortenedCode(truncated, rmSizes[0], rmSizes[1], 0);
     }
     return rm;
+}
+
+bool comparator(const std::vector<char> &row1, const std::vector<char> &row2) {
+    if (row1.size() != row2.size()) {
+        std::cout << row1.size() << " " << row2.size() << std::endl;
+        throw std::invalid_argument("Incorrect rows sizes");
+    }
+    for (size_t i = 0; i < row1.size(); ++i) {
+        if (row1[i] > row2[i]) {
+            return true;
+        } else if (row1[i] < row2[i]) {
+            return false;
+        }
+    }
+    return false;
+}
+
+// Return permutation (1, m)' => (1, m) where (1, m) is Reed-Muller code
+matrix::Matrix simplePerm(matrix::Matrix trivialRMMatrix) {
+    // Get matrix with first row (1..1)
+    trivialRMMatrix.T();
+    std::vector<char> b(trivialRMMatrix.rows(), 1);
+    std::vector<char> sol = matrix::solution(trivialRMMatrix, b);
+    std::vector<char> aVector(sol);
+    bool removedNum = false;
+    for (size_t i = 0; i < sol.size(); ++i) {
+        if (removedNum || sol[i] == 0) {
+            aVector.insert(aVector.end(), sol.begin(), sol.end());
+            aVector[aVector.size() - sol.size() + i] ^= 1;
+        } else {
+            removedNum = true;
+        }
+    }
+    trivialRMMatrix.T();
+    matrix::Matrix a(sol.size(), sol.size(), aVector);
+    a *= trivialRMMatrix;
+
+    // Delete first row
+    std::vector<unsigned long long> rows(a.rows() - 1);
+    std::vector<unsigned long long> cols(a.cols());
+    std::iota(rows.begin(), rows.end(), 1);
+    std::iota(cols.begin(), cols.end(), 0);
+    a = a.submatrix(rows, cols);
+
+    // Permutation of sorting rows
+    a.T();
+    std::vector<std::vector<char>> vv(a.toVectors());
+    std::vector<unsigned long long> permVec = algorithms::sorts::
+                                              mergeSort(vv, attackSupporters::comparator);
+    return matrix::permFromVector(permVec, true);
 }
 
 } //namespace attackSupporters

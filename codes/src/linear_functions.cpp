@@ -43,10 +43,13 @@ void Lincode::puncture(unsigned long long column) {
     }
 }
 
-Lincode Lincode::truncate(const std::vector<unsigned long long> &columns) const {
+Lincode Lincode::truncate(std::vector<unsigned long long> columns, bool removeZeroes) const {
     matrix::Matrix A(toMatrix());
     matrix::Matrix B(0, 0);
     A.gaussElimination(false, columns);
+    algorithms::sorts::selectionSort(columns,
+                                     [](const unsigned long long &a,
+                                        const unsigned long long &b) { return a < b; });
     for (size_t i = 0; i < A.rows(); ++i) {
         bool nullMask = true;
         for (size_t j = 0; j < columns.size(); ++j) {
@@ -56,10 +59,35 @@ Lincode Lincode::truncate(const std::vector<unsigned long long> &columns) const 
             }
         }
         if (nullMask) {
-            B.insertRow(B.rows(), A.row(i));
+            if (removeZeroes) {
+                std::vector<char> tmp(A.cols() - columns.size());
+                std::vector<char> row(A.row(i));
+                size_t indTmp = 0;
+                size_t indCol = 0;
+                for (size_t i = 0; i < row.size(); ++i) {
+                    if (i == columns[indCol]) {
+                        ++indCol;
+                    } else {
+                        tmp[indTmp++] = row[i];
+                    }
+                }
+                B.insertRow(B.rows(), tmp);
+            } else {
+                B.insertRow(B.rows(), A.row(i));
+            }
         }
     }
     return B;
+}
+
+Lincode Lincode::truncate(const std::vector<char> &mask, bool removeZeroes) const {
+    std::vector<unsigned long long> columns;
+    for (unsigned long long i = 0; i < mask.size(); ++i) {
+        if (mask[i] != 0) {
+            columns.push_back(i);
+        }
+    }
+    return truncate(columns, removeZeroes);
 }
 
 Lincode sum(const Lincode &first, const Lincode &second) {

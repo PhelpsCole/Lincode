@@ -9,11 +9,11 @@ namespace algorithms {
 // Template sorts, which returns vector of permutations
 namespace sorts {
 
-typedef std::function<bool(const int &, const int &)> intComparatorType;
+typedef std::function<bool(const unsigned long long &, const unsigned long long &)> ullComparatorType;
 typedef std::function<bool(const std::vector<char> &, const std::vector<char> &)> charVecCompType;
 
-std::vector<unsigned long long> selectionSort(std::vector<int> &vv,
-                                              intComparatorType comparator);
+std::vector<unsigned long long> selectionSort(std::vector<unsigned long long> &vv,
+                                              ullComparatorType comparator);
 std::vector<unsigned long long> selectionSort(std::vector<std::vector<char>> &vv,
                                               charVecCompType comparator);
 std::vector<unsigned long long> mergeSort(std::vector<std::vector<char>> &vv,
