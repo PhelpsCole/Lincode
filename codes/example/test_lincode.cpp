@@ -48,7 +48,7 @@ void testLincodeConverters(codes::Lincode code) {
     res.printCode();
     std::cout << "Truncated code of C in {1} column:" << std::endl;
     v = {0};
-    res = code.truncated(v);
+    res = code.truncate(v);
     res.printCode();
 }
 

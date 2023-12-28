@@ -26,8 +26,6 @@ public:
     std::vector<unsigned long long> spectrum_basis() const;
     Lincode punctured(const std::vector<unsigned long long> &columns) const;
     Lincode punctured(unsigned long long column) const;
-    Lincode truncated(std::vector<unsigned long long> &columns, bool removeZeroes = false) const;
-    Lincode truncated(const std::vector<char> &mask, bool removeZeroes = false) const;
 
     std::vector<char> encode(std::vector<char> &);
 

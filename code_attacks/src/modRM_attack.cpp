@@ -69,8 +69,8 @@ bool check_signature(const codes::SSAStructure &s, size_t m,
     return false;
 }
 
-std::vector<unsigned long long> findingBlock(codes::Lincode pqsigRMcode,
-                                             bool testRun) {
+std::vector<unsigned long long> findingFirstBlock(codes::Lincode pqsigRMcode,
+                                                  bool testRun) {
     std::string filename;
     codes::Lincode startCode;
     std::vector<size_t> rmSizes = codes::rmSizes(pqsigRMcode);
@@ -138,19 +138,61 @@ std::vector<unsigned long long> findingBlock(codes::Lincode pqsigRMcode,
     return blockColumns;
 }
 
+matrix::Matrix permOfExtraction(const matrix::Matrix &modRMMatrix,
+                                const std::vector<unsigned long long> &blockColumns) {
+    matrix::Matrix block(modRMMatrix);
+    std::vector<unsigned long long> blockRows(block.gaussElimination(true, blockColumns));
+    std::cout << blockRows.size() << " " << codes::codeSizeFromRM(2, 7) << std::endl;
+    std::cout << "blockRows:" << std::endl;
+    for (size_t i = 0; i < blockRows.size(); ++i) {
+        std::cout << blockRows[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "blockColumns:" << std::endl;
+    for (size_t i = 0; i < blockColumns.size(); ++i) {
+        std::cout << blockColumns[i] << " ";
+    }
+    std::cout << std::endl;
+    block.printVisualMatrix(4);
+    block = block.submatrix(blockRows, blockColumns);
+    std::cout << block.rank() << std::endl;
+    std::cout << block.rows() << " " << block.cols() << std::endl;
+    block.printVisualMatrix();
+    block = modRMMatrix.submatrix(blockRows, blockColumns);
+    block.convertToBasis();
+    std::cout << block.rank() << std::endl;
+    std::cout << block.rows() << " " << block.cols() << std::endl;
+    block.printVisualMatrix();
+    return matrix::Matrix(0, 0);
+    matrix::Matrix P(codes::chizhov_borodin(codes::Lincode(block)));
+
+    // Removing sigma_1 from modRM
+    matrix::Matrix I(matrix::diag(P.rows(), 1));
+    P.concatenateByRows(I);
+    P.concatenateByRows(I);
+    // (P|I|I|I)
+    P.concatenateByRows(I);
+    I = P;
+    P.concatenateByColumns(I);
+    P.concatenateByColumns(I);
+    P.concatenateByColumns(I);
+    return P;
+}
+
 } // namespace attackSupporters
 
+// Attack for m >= 8 and 2 <= r < (m - 2) / 2
 matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
     // Step 1: Separating first block with RM(r,m-2)^sigma_1
-    std::vector<unsigned long long> blockColumns(attackSupporters::findingBlock(modRM));
+    std::vector<unsigned long long> blockColumns(attackSupporters::findingFirstBlock(modRM));
 
-    // Step 2: Finding sigma_1 permutation
+    // Step 2: Finding sigma_1 permutation and removing it
+    matrix::Matrix P = attackSupporters::permOfExtraction(modRM.toMatrix(), blockColumns);
+    matrix::Matrix block = modRM.toMatrix();
+    block *= P;
 
-    // Step 3: Removing sigma_1 from modRM
-
-    // Step 4: Separating last block with RM(r-2,m-2)^sigma_2
+    // Step 3: Separating last block with RM(r-2,m-2)^sigma_2
     
-    matrix::Matrix P(0, 0);
     return P;
 }
 

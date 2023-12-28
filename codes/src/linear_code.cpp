@@ -149,18 +149,6 @@ Lincode Lincode::punctured(unsigned long long column) const {
     return copy;
 }
 
-Lincode Lincode::truncated(std::vector<unsigned long long> &columns, bool removeZeroes) const {
-    Lincode copy(*this);
-    copy.truncate(columns, removeZeroes);
-    return copy;
-}
-
-Lincode Lincode::truncated(const std::vector<char> &mask, bool removeZeroes) const {
-    Lincode copy(*this);
-    copy.truncate(mask, removeZeroes);
-    return copy;
-}
-
 void Lincode::printCodeSizes(const std::string &filename) const {
     if (filename == "NoName") {
         std::cout << "k = " << k << ", n = " << n << std::endl;

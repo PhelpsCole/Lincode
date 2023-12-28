@@ -1,10 +1,5 @@
 #include "ssa.h"
 
-//
-#include <chrono>
-#include <ctime>
-//
-
 namespace codes {
 
 typedef std::map<std::string, std::vector<unsigned long long>> equivClassesMap;
@@ -14,11 +9,6 @@ SSAStructure ssaStructure(codes::Lincode c,
                           size_t invarId,
                           size_t preprocId) {
     codes::invariants::runPreproc(c, preprocId);
-    /**/
-    auto now = std::chrono::system_clock::now();
-    std::time_t time = std::chrono::system_clock::to_time_t(now);
-    std::cout << "Completed preprocCode at " << std::ctime(&time) << std::endl;
-    /**/
     size_t len = c.len();
     std::vector<unsigned long long> columns(1);
     SSAStructure result(len);
@@ -73,12 +63,6 @@ SSAStructure ssaStructure(codes::Lincode c,
         }
         equivClassesVec = newEquivClassesVec;
     }
-    //for (size_t ind = 0; ind != equivClassesVec.size(); ++ind) {
-    //    for (size_t i = 0; i < equivClassesVec[ind].size(); ++i) {
-    //        std::vector<size_t> col = {equivClassesVec[ind][i]};
-    //        result[equivClassesVec[ind][i]].push_back(std::make_pair(col, "Not found"));
-    //    }
-    //}
     return result;
 }
 

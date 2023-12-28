@@ -4,11 +4,11 @@
 #include <chrono>
 #include <ctime>
 
-void testFindingBlock(size_t r, size_t m, bool testMode) {
+void testfindingFirstBlock(size_t r, size_t m, bool testMode) {
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode pqsigRMcode(pqsigRM);
     std::vector<unsigned long long>
-    blockColumns(codes::attackSupporters::findingBlock(pqsigRMcode, testMode));
+    blockColumns(codes::attackSupporters::findingFirstBlock(pqsigRMcode, testMode));
     for (size_t i = 0; i < blockColumns.size(); ++i) {
         std::cout << blockColumns[i] << " ";
     }
@@ -32,6 +32,6 @@ int main(int argc, char *argv[]) {
         m = std::stoi(argv[2]);
         testMode = std::stoi(argv[3]);
     }
-    testFindingBlock(r, m, testMode);
+    testfindingFirstBlock(r, m, testMode);
     return 0;
 }

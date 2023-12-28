@@ -44,6 +44,9 @@ public:
     Matrix submatrix(const std::vector<unsigned long long> &, const std::vector<unsigned long long> &) const;
 
     void printMatrix(const std::string &filename = "NoName", char sep = ' ', std::string end = "\n") const;
+    void printVisualMatrix(unsigned long long blocks_num = 1,
+                           const std::string &filename = "NoName",
+                           std::string end = "\n") const;
     void printMatrixInBlocks(unsigned long long row_num = 1, unsigned long long col_num = 1) const;
 
     void insertRow(unsigned long long, const std::vector<char> &, bool replace = false);

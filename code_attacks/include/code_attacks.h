@@ -24,8 +24,10 @@ codes::Lincode nodRM(const codes::Lincode &rm, int a, int b);
 
 // Supporters from modRM_attack
 enum { PREPROC_SIMPLE_ID = 0, INVARIANT_SIZE_ID = 2 };
-std::vector<unsigned long long> findingBlock(codes::Lincode pqsigRMcode,
-                                             bool testRun = false);
+std::vector<unsigned long long> findingFirstBlock(codes::Lincode,
+                                                  bool testRun = false);
+matrix::Matrix permOfExtraction(const matrix::Matrix &,
+                                const std::vector<unsigned long long> &);
 
 } //namespace attackSupporters
 
