@@ -43,7 +43,7 @@ void Lincode::puncture(unsigned long long column) {
     }
 }
 
-Lincode Lincode::truncate(std::vector<unsigned long long> columns, bool removeZeroes) const {
+Lincode Lincode::truncate(std::vector<unsigned long long> &columns, bool removeZeroes) const {
     matrix::Matrix A(toMatrix());
     matrix::Matrix B(0, 0);
     A.gaussElimination(false, columns);

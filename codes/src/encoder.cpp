@@ -2,8 +2,8 @@
 
 namespace codes {
 
-Encoder::Encoder(const Lincode &_c) : c(_c), cMatr(_c.toMatrix()) {
-    weightVec = std::make_pair(std::vector<char>(c.size()), 0);
+Encoder::Encoder(const Lincode &_c) : cMatr(_c.toMatrix()) {
+    weightVec = std::make_pair(std::vector<char>(cMatr.rows()), 0);
 }
 
 std::vector<char> Encoder::next(size_t steps) {
@@ -28,7 +28,7 @@ unsigned long long Encoder::stageWeight() const {
 }
 
 codes::Lincode Encoder::code() const {
-    return c;
+    return cMatr;
 }
 
 } //namespace codes

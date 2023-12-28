@@ -5,8 +5,8 @@
 
 namespace algorithms {
 
-size_t hammingWeight(std::vector<char>);
-size_t hammingDistance(std::vector<char>, std::vector<char>);
+size_t hammingWeight(const std::vector<char> &);
+size_t hammingDistance(const std::vector<char> &, const std::vector<char> &);
 size_t factorial(size_t);
 size_t gcd(size_t, size_t);
 std::vector<int> extendedGcd(int x, int y);

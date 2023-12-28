@@ -23,8 +23,9 @@ codes::Lincode nodRM(const codes::Lincode &rm, int a, int b);
 
 } //namespace attackSupporters
 
-matrix::Matrix minder_shokrollahi(codes::Lincode);
-matrix::Matrix chizhov_borodin(const codes::Lincode &);
+matrix::Matrix minder_shokrollahi(codes::Lincode rm);
+matrix::Matrix chizhov_borodin(const codes::Lincode &rm);
+matrix::Matrix modRM_attack(const codes::Lincode &modRM);
 
 } // namespace codes
 

@@ -19,7 +19,6 @@ public:
     codes::Lincode code() const;
 
 private:
-    codes::Lincode c;
     matrix::Matrix cMatr;
     std::pair<std::vector<char>, unsigned long long> weightVec;
 };

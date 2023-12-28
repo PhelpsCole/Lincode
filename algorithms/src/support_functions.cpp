@@ -2,7 +2,7 @@
 
 namespace algorithms {
 
-size_t hammingWeight(std::vector<char> v) {
+size_t hammingWeight(const std::vector<char> &v) {
     size_t weight = 0;
     for (size_t i = 0; i < v.size(); ++i) {
         if (v[i] != 0) {
@@ -12,7 +12,7 @@ size_t hammingWeight(std::vector<char> v) {
     return weight;
 }
 
-size_t hammingDistance(std::vector<char> v, std::vector<char> v2) {
+size_t hammingDistance(const std::vector<char> &v, const std::vector<char> &v2) {
     if (v.size() != v2.size()) {
         throw std::invalid_argument("Vectors must have the same size");
     }
@@ -63,7 +63,7 @@ std::vector<int> extendedGcd(int x, int y) {
     return {x, prev_a, prev_b};
 }
 
-std::vector<unsigned long long> supportGenerator(std::vector<unsigned long long> &s) {
+std::vector<unsigned long long> supportGenerator(const std::vector<unsigned long long> &s) {
     size_t size = s.size();
     std::vector<unsigned long long> res(size);
     for (size_t i = 0; i < size; ++i) {

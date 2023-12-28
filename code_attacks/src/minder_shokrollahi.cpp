@@ -131,7 +131,7 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
                 M -= M_step;
                 M += selectedCodeWords.size();
             }
-            c = floor(M * (degParam - 1) / static_cast<double>((1 << (m - 1)) - (1 << (r - 1)))) - 1;
+            c = floor(M * (degParam - 1) / static_cast<double>((1 << (m - 1)) - (1 << (r - 1))));
         }
         std::vector<std::vector<unsigned long long>> separatedSets(separateToSubClasses(counterIJ, c));
         if (checkSeparatedSets(separatedSets, c0.len(), (1 << r) - 1)) {
