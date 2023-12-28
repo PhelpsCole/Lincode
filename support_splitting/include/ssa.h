@@ -29,8 +29,6 @@ SSANStructure ssaNStructure(codes::Lincode,
                             size_t invarId,
                             size_t = 1,
                             size_t preprocId = 0);
-void printSSAStructure(const SSAStructure &);
-void printSSANStructure(const SSANStructure &);
 } //namespace codes
 
 #endif // SSA_H

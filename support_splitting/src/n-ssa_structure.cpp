@@ -97,22 +97,4 @@ SSANStructure ssaNStructure(codes::Lincode c,
     return result;
 }
 
-void printSSANStructure(const SSANStructure &s) {
-    for (auto iter = s.begin(); iter != s.end(); ++iter) {
-        std::cout << "[";
-        for (size_t j = 0; j != iter->first.size(); ++j) {
-            std::cout << iter->first[j] << ", ";
-        }
-        std::cout << "](" << iter->second.size() << "): ";
-        for (size_t j = 0; j != iter->second.size(); ++j) {
-            std::cout << " {";
-            for (size_t k = 0; k != iter->second[j].first.size(); ++k) {
-                std::cout << iter->second[j].first[k] << ", ";
-            }
-            std::cout << "}:" << iter->second[j].second;
-        }
-        std::cout << std::endl;
-    }
-}
-
 } //namespace codes

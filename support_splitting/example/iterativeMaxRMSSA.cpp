@@ -3,6 +3,8 @@
 #include <chrono>
 #include <ctime>
 
+enum { PREPROC_SIMPLE_ID = 0 };
+
 void printSSAStructure(const codes::SSAStructure &s,
                        const std::string &filename) {
     std::ofstream out;
@@ -52,7 +54,7 @@ bool check_signature(const codes::SSAStructure &s, size_t m) {
 
 void testIterative(size_t r, size_t m, size_t invariantId,
                    const std::string &filename, size_t cicleStep) {
-    size_t preprocId = 0;
+    size_t preprocId = PREPROC_SIMPLE_ID;
 
     auto now = std::chrono::system_clock::now();
     std::time_t time = std::chrono::system_clock::to_time_t(now);
@@ -103,7 +105,7 @@ void testIterative(size_t r, size_t m, size_t invariantId,
 // Doesn't work for 2r >= m-2
 void testMinIterations(size_t r, size_t m, size_t invariantId,
                    const std::string &filename, size_t cicleStep) {
-    size_t preprocId = 0;
+    size_t preprocId = PREPROC_SIMPLE_ID;
 
     auto now = std::chrono::system_clock::now();
     std::time_t time = std::chrono::system_clock::to_time_t(now);
@@ -132,10 +134,12 @@ void testMinIterations(size_t r, size_t m, size_t invariantId,
         return;
     }
 
-    codes::Lincode dual = pqsigRMcode;
-    dual.dual();
     symb += "-1|";
-    pqsigRMcode = codes::hadamardProduct(pqsigRMcode, dual);
+    pqsigRMcode.dual();
+    r = (m - 2) - q * r - 1;
+    q = (m - 2) / r;
+    symb += std::to_string(q) + "|";
+    pqsigRMcode = codes::hadPower(pqsigRMcode, q);
     s = codes::ssaStructure(pqsigRMcode, invariantId, preprocId);
 
     now = std::chrono::system_clock::now();
@@ -168,14 +172,16 @@ std::string nameFile(size_t r, size_t m, std::string invarName,
 int main(int argc, char *argv[]) {
     size_t r = 2;
     size_t m = 7;
-    //size_t preprocId = 0;
     size_t invarId = 2;
     size_t cicleIter = 1;
+    size_t mod = 1;
     if (argc <= 2) {
-        std::cout << "Input args in format: r m invarId cicleIter" << std::endl;
+        std::cout << "Input args in format: r m invarId mod cicleIter" << std::endl;
+        std::cout << "Where mod=0 -- testIterative, mod=1 -- testMinIterations" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
-        std::cout << "By 2: r m " << invarId << " " << cicleIter << std::endl;
-        std::cout << "By 3: r m invarId " << cicleIter << std::endl;
+        std::cout << "By 2: r m " << invarId << " " << mod << " " << cicleIter << std::endl;
+        std::cout << "By 3: r m " << invarId << " " << mod << " cicleIter" << std::endl;
+        std::cout << "By 4: r m " << invarId << " mod cicleIter" << std::endl;
         return 0;
     } else if (argc == 3) {
         r = std::stoi(argv[1]);
@@ -183,18 +189,27 @@ int main(int argc, char *argv[]) {
     } else if (argc == 4) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);
-        invarId = std::stoi(argv[3]);
-    } else if (argc >= 5) {
+        cicleIter = std::stoi(argv[3]);
+    } else if (argc == 5) {
+        r = std::stoi(argv[1]);
+        m = std::stoi(argv[2]);
+        mod = std::stoi(argv[3]);
+        cicleIter = std::stoi(argv[4]);
+    } else if (argc >= 6) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);
         invarId = std::stoi(argv[3]);
-        cicleIter = std::stoi(argv[4]);
+        mod = std::stoi(argv[4]);
+        cicleIter = std::stoi(argv[5]);
     }
     for(size_t i = 1; i <= cicleIter; ++i) {
         std::string filename = nameFile(r, m, codes::invariants::returnInvarNameById(invarId),
                                         "iterativeMaxRM");
-        testIterative(r, m, invarId, filename, i);
-        //testMinIterations(r, m, invarId, filename, i);
+        if (mod == 0) {
+            testIterative(r, m, invarId, filename, i);
+        } else if (mod == 1) {
+            testMinIterations(r, m, invarId, filename, i);
+        }
     }
     return 0;
 }
