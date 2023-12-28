@@ -36,7 +36,7 @@ codes::Lincode nodRM(const codes::Lincode &rm, int a, int b) {
 } //namespace attackSupporters
 
 // Return sigma^-1 by RM(r,m)^sigma
-matrix::Matrix chizhov_borodin(codes::Lincode rm) {
+matrix::Matrix chizhov_borodin(const codes::Lincode &rm) {
     //Step 1: finding d = NOD(r, m-1)'
     std::vector<size_t> rmSizes = codes::rmSizes(rm);
     std::vector<int> ans = algorithms::extendedGcd(rmSizes[1] - 1, rmSizes[0]);
@@ -49,11 +49,14 @@ matrix::Matrix chizhov_borodin(codes::Lincode rm) {
     } else {
         // Step 2: (d,m) => (d-1,m)' !!
         codes::Lincode rm_d2 = attackSupporters::rmReducer(rm_d);
-
-        // Step 3: f((d, m)',(d-1,m)') => (1, m)'
-        rm_d.dual();
-        trivialRM = codes::hadamardProduct(rm_d, rm_d2);
-        trivialRM.dual();
+        if (d == 2) {
+            trivialRM = rm_d2;
+        } else {
+            // Step 3: f((d, m)',(d-1,m)') => (1, m)'
+            rm_d.dual();
+            trivialRM = codes::hadamardProduct(rm_d, rm_d2);
+            trivialRM.dual();         
+        }
     }
 
     // Step 4: (1, m)' => (1, m) (get sigma)

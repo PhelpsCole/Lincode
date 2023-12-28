@@ -78,7 +78,7 @@ bool checkSeparatedSets(const std::vector<std::vector<unsigned long long>> &sepa
     return false;
 }
 
-// M != 0 maybe incorrect
+// Doesn't work with 2r >= m and M != 0
 std::vector<std::vector<unsigned long long>>
 decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
                       unsigned long long M) {
@@ -97,7 +97,7 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
     for (size_t i = 0; i < c0.len() - 1; ++i) {
         counterIJ.push_back(std::vector<unsigned long long>(c0.len()));
     }
-    while (!encoder.isEnd()) { //!!!!
+    while (!encoder.isEnd()) {
         // Every sicle it cleans
         std::vector<std::vector<char>> selectedCodeWords;
         while (!encoder.isEnd() && (M == 0 || selectedCodeWords.size() < M_step)) {
@@ -108,18 +108,16 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
             }
         }
         for (size_t k = 0; k < selectedCodeWords.size(); ++k) {
-            std::vector<char> tmpWord(selectedCodeWords[k]);
-            for (size_t i = 0; i < tmpWord.size() - 1; ++i) {
-                for (size_t j = i + 1; j < tmpWord.size(); ++j) {
-                    if (tmpWord[i] == 1 && tmpWord[j] == 1) {
+            for (size_t i = 0; i < selectedCodeWords[k].size() - 1; ++i) {
+                for (size_t j = i + 1; j < selectedCodeWords[k].size(); ++j) {
+                    if (selectedCodeWords[k][i] == 1 && selectedCodeWords[k][j] == 1) {
                         ++counterIJ[i][j];
                     }
                 }
             }
         }
         unsigned long long c;
-        bool simple = true;
-        if (M == 0 || simple) {
+        if (M == 0) {
             c = counterIJ[0][1];
             for (size_t i = 0; i < counterIJ.size(); ++i) {
                 for (size_t j = i + 1; j < counterIJ[i].size(); ++j) {
@@ -168,10 +166,14 @@ std::vector<char> mergeCodeWords(const std::vector<char> &codeWord,
     return result;
 }
 
-// Minder-Shokrollahi algorithm of reduction RM(r, m) -> RM(r-1,m) !!!
-codes::Lincode rmReducer(const codes::Lincode &rm) {
-    matrix::Matrix B(0, 0);
+// Minder-Shokrollahi algorithm of reduction RM(r, m) -> RM(r-1,m)
+codes::Lincode rmReducer(const codes::Lincode &rm, unsigned long long M) {
     std::vector<size_t> rmSizes = codes::rmSizes(rm);
+    if (2 * rmSizes[0] >= rmSizes[1]) {
+        std::cerr << "If 2r >= m, you should send dual of RM code" << std::endl;
+        return rm;
+    }
+    matrix::Matrix B(0, 0);
     unsigned long long size = codeSizeFromRM(rmSizes[0] - 1, rmSizes[1]);
     unsigned long long weight = 1 << (rmSizes[1] - rmSizes[0]);
     std::vector<std::vector<char>> usedCodeWords;
@@ -187,9 +189,9 @@ codes::Lincode rmReducer(const codes::Lincode &rm) {
             }
         }
         codes::Lincode truncated = rm.truncate(codeWord, true);
-        std::vector<std::vector<unsigned long long>>
         // creating V_i(...)
-        separatedColumnSets = decomposeToColumnSets(truncated, rmSizes[0], rmSizes[1], 0);
+        std::vector<std::vector<unsigned long long>>
+        separatedColumnSets = decomposeToColumnSets(truncated, rmSizes[0], rmSizes[1], M);
         for (size_t i = 0; i < separatedColumnSets.size(); ++i) {
             std::vector<char> newCodeWord(mergeCodeWords(codeWord, separatedColumnSets[i]));
             B.insertTriangle(newCodeWord);
@@ -247,6 +249,24 @@ matrix::Matrix simplePerm(matrix::Matrix trivialRMMatrix) {
                                               mergeSort(vv, comparator);
     return matrix::permFromVector(permVec, true);
 }
+
+// Return sigma^-1 by RM(r,m)^sigma
+matrix::Matrix minder_shokrollahi(codes::Lincode rm) {
+    // If 2r >= m, work with dual
+    std::vector<size_t> rmSizes = codes::rmSizes(rm);
+    if (2 * rmSizes[0] >= rmSizes[1]) {
+        rm.dual();
+        rmSizes[0] = rmSizes[1] - rmSizes[0] - 1;
+    }
+    // (r, m) => (r-1, m), while r != 1
+    while (rmSizes[0] != 1) {
+        rm = rmReducer(rm);
+        --rmSizes[0];
+    }
+    // (1, m)' => (1, m)
+    return codes::attackSupporters::simplePerm(rm.toMatrix());
+}
+
 
 } //namespace attackSupporters
 } // namespace codes
