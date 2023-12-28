@@ -82,18 +82,4 @@ SSAStructure ssaStructure(codes::Lincode c,
     return result;
 }
 
-void printSSAStructure(const SSAStructure &s) {
-    for (size_t i = 0; i != s.size(); ++i) {
-        std::cout << i << "(" << s[i].size() << "): ";
-        for (size_t j = 0; j != s[i].size(); ++j) {
-            std::cout << " [";
-            for (size_t k = 0; k != s[i][j].first.size(); ++k) {
-                std::cout << s[i][j].first[k] << ", ";
-            }
-            std::cout << "]:" << s[i][j].second;
-        }
-        std::cout << std::endl;
-    }
-}
-
 } //namespace codes

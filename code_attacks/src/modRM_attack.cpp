@@ -32,7 +32,7 @@ std::string nameFile(size_t r, size_t m, std::string invarANDpreprocName) {
     return res;
 }
 
-} //namespace attackTestSupporters
+} // namespace attackTestSupporters
 
 bool check_signature(const codes::SSAStructure &s, size_t m,
                      std::vector<unsigned long long> &blockColumns) {
@@ -138,7 +138,7 @@ std::vector<unsigned long long> findingBlock(codes::Lincode pqsigRMcode,
     return blockColumns;
 }
 
-} //namespace attackSupporters
+} // namespace attackSupporters
 
 matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
     // Step 1: Separating first block with RM(r,m-2)^sigma_1

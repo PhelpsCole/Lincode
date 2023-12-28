@@ -4,7 +4,6 @@
 #include <chrono>
 #include <ctime>
 
-// Doesn't work for 2r >= m-2
 void testFindingBlock(size_t r, size_t m, bool testMode) {
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode pqsigRMcode(pqsigRM);
