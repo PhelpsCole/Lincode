@@ -9,18 +9,24 @@ void testfindingFirstBlock(size_t r, size_t m, bool testMode) {
     codes::Lincode pqsigRMcode(pqsigRM);
     std::vector<unsigned long long>
     blockColumns(codes::attackSupporters::findingFirstBlock(pqsigRMcode, testMode));
-    for (size_t i = 0; i < blockColumns.size(); ++i) {
-        std::cout << blockColumns[i] << " ";
+    if (blockColumns.size() != 0) {
+        std::cout << "First block is in columns:" << std::endl;
+        for (size_t i = 0; i < blockColumns.size(); ++i) {
+            std::cout << blockColumns[i] << " ";
+        }
+        std::cout << std::endl;
+    } else {
+        std::cout << "Block wasn't found" << std::endl;
     }
-    std::cout << std::endl;
 }
 
 int main(int argc, char *argv[]) {
     size_t r = 2;
     size_t m = 7;
-    bool testMode = true;
+    bool testMode = false;
     if (argc <= 2) {
         std::cout << "Input args in format: r m testMode" << std::endl;
+        std::cout << "Where in testMode printed files and logs" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
         std::cout << "By 2: r m " << testMode << std::endl;
         return 0;

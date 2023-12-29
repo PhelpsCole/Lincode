@@ -3,6 +3,7 @@
 namespace codes {
 namespace attackSupporters {
 
+// Makes V_1...V_{2^r - 1} from cij matrix
 std::vector<std::vector<unsigned long long>>
 separateToSubClasses(const std::vector<std::vector<unsigned long long>> &counterIJ,
                      unsigned long long max) {
@@ -78,7 +79,7 @@ bool checkSeparatedSets(const std::vector<std::vector<unsigned long long>> &sepa
     return false;
 }
 
-// Doesn't work with 2r >= m and M != 0
+// Doesn't work with 2r >= m and M != 0. Returns V_1...V_{2^r - 1}
 std::vector<std::vector<unsigned long long>>
 decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
                       unsigned long long M) {
@@ -146,6 +147,7 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
     return std::vector<std::vector<unsigned long long>>();
 }
 
+// Makes f_i | v
 std::vector<char> mergeCodeWords(const std::vector<char> &codeWord,
                                  std::vector<unsigned long long> &separatedColumns) {
     algorithms::sorts::selectionSort(separatedColumns,
