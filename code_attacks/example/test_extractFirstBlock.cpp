@@ -10,20 +10,26 @@ void testRunner(matrix::Matrix modRMMatr, size_t mode) {
     }
     std::vector<unsigned long long> cols(modRMMatr.cols() / 4);
     std::iota(cols.begin(), cols.end(), 0);
-    std::cout << "START extractFirstPerm" << std::endl;
-    matrix::Matrix afterExtruction(codes::attackSupporters::extractFirstPerm(modRMMatr, cols));
-    std::cout << "END extractFirstPerm" << std::endl;
+    std::cout << "START extractFirstBlock" << std::endl;
+    std::pair<matrix::Matrix, matrix::Matrix>
+    afterExtruction(codes::attackSupporters::extractFirstBlock(modRMMatr, cols));
+    std::cout << "END extractFirstBlock" << std::endl;
     if (mode == 0) {
         std::cout << "modRMMatr:" << std::endl;
         modRMMatr.printVisualMatrix(4);
-        std::cout << "afterExtruction:" << std::endl;
-        afterExtruction.printVisualMatrix(4);
-        std::cout << "afterExtruction.basisView():" << std::endl;
-        afterExtruction.convertToBasis();
-        afterExtruction.printVisualMatrix(4);
+        std::cout << "firstBlock:" << std::endl;
+        afterExtruction.first.printVisualMatrix(4);
+        std::cout << "firstBlock.basisView():" << std::endl;
+        afterExtruction.first.convertToBasis();
+        afterExtruction.first.printVisualMatrix(4);
+        std::cout << "sigma_1:" << std::endl;
+        afterExtruction.second.printVisualMatrix(4);
     } else {
         std::cout << modRMMatr.rows() << " " << modRMMatr.cols() << std::endl;
-        std::cout << afterExtruction.rows() << " " << afterExtruction.cols() << std::endl;
+        std::cout << afterExtruction.first.rows()
+                  << " " << afterExtruction.first.cols() << std::endl;
+        std::cout << afterExtruction.second.rows()
+                  << " " << afterExtruction.second.cols() << std::endl;
     }
 }
 

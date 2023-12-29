@@ -8,7 +8,7 @@ void testfindingFirstBlock(size_t r, size_t m, bool testMode) {
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode pqsigRMcode(pqsigRM);
     std::vector<unsigned long long>
-    blockColumns(codes::attackSupporters::findingFirstBlock(pqsigRMcode, testMode));
+    blockColumns(codes::attackSupporters::findingFirstBlockColumns(pqsigRMcode, testMode));
     if (blockColumns.size() != 0) {
         std::cout << "First block is in columns:" << std::endl;
         for (size_t i = 0; i < blockColumns.size(); ++i) {

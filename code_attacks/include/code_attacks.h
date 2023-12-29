@@ -24,11 +24,12 @@ codes::Lincode nodRM(const codes::Lincode &rm, int a, int b);
 
 // Supporters from modRM_attack
 enum { PREPROC_SIMPLE_ID = 0, INVARIANT_SIZE_ID = 2 };
-std::vector<unsigned long long> findingFirstBlock(codes::Lincode,
-                                                  bool testRun = false);
-matrix::Matrix extractFirstPerm(const matrix::Matrix &,
-                                std::vector<unsigned long long>,
-                                unsigned long long blockRowsSize = 0);
+std::vector<unsigned long long> findingFirstBlockColumns(codes::Lincode,
+                                                         bool testRun = false);
+std::pair<matrix::Matrix, matrix::Matrix>
+extractFirstBlock(const matrix::Matrix &,
+                  std::vector<unsigned long long>,
+                  unsigned long long blockRowsSize = 0);
 
 } //namespace attackSupporters
 

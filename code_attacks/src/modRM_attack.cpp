@@ -70,8 +70,8 @@ bool check_signature(const codes::SSAStructure &s, size_t m,
 }
 
 // Support splitting algorithm on hadPower of modRM
-std::vector<unsigned long long> findingFirstBlock(codes::Lincode pqsigRMcode,
-                                                  bool testRun) {
+std::vector<unsigned long long> findingFirstBlockColumns(codes::Lincode pqsigRMcode,
+                                                         bool testRun) {
     std::string filename;
     codes::Lincode startCode;
     std::vector<size_t> rmSizes = codes::rmSizes(pqsigRMcode);
@@ -140,37 +140,39 @@ std::vector<unsigned long long> findingFirstBlock(codes::Lincode pqsigRMcode,
     return blockColumns;
 }
 
-// Return modRMMatrix without sigma_1 pemutation
-matrix::Matrix extractFirstPerm(const matrix::Matrix &modRMMatrix,
-                                std::vector<unsigned long long> blockColumns,
-                                unsigned long long blockRowsSize) {
+// Finding sigma_1 and from matrix
+// (RM(r,m-2)^sigma_1|RM(r,m-2)^sigma_1|RM(r,m-2)^sigma_1|RM(r,m-2)^sigma_1) * P
+// Removing sigma_1 and writing into firstBlock
+// blockRowsSize is for checking subBlock size (is it (r,m-2)-code or not)
+// Returning pair (firstBlock, sigma_1)
+std::pair<matrix::Matrix, matrix::Matrix>
+extractFirstBlock(const matrix::Matrix &modRMMatrix,
+                  std::vector<unsigned long long> blockColumns,
+                  unsigned long long blockRowsSize) {
     matrix::Matrix block(modRMMatrix);
     std::vector<unsigned long long> blockRows(block.gaussElimination(true, blockColumns).size());
     if (blockRowsSize != 0 && blockRowsSize != blockRows.size()) {
         std::cerr << "Extracted block has wrong size:" << std::endl;
         std::cerr << "needed=" << blockRowsSize << ", counted=" << blockRows.size() << std::endl;
-        return modRMMatrix;
+        return std::make_pair(matrix::Matrix(0, 0), matrix::Matrix(0, 0));
     }
     std::iota(blockRows.begin(), blockRows.end(), 0);
+    std::vector<unsigned long long> allColumns(modRMMatrix.cols());
+    std::iota(allColumns.begin(), allColumns.end(), 0);
+    // (RM(r,m-2)^sigma_1||4) * P
+    matrix::Matrix firstBlock = block.submatrix(blockRows, allColumns);
+
+    // RM(r,m-2)^sigma_1
     block = block.submatrix(blockRows, blockColumns);
     // Finding sigma_1
-    matrix::Matrix P(codes::chizhov_borodin(codes::Lincode(block)));
+    matrix::Matrix sigma_1 = codes::chizhov_borodin(codes::Lincode(block));
 
-    // Removing sigma_1 from modRM
-    blockColumns.resize(modRMMatrix.cols());
-    std::iota(blockColumns.begin(), blockColumns.end(), 0);
-    matrix::Matrix firstRow(modRMMatrix.submatrix(blockRows, blockColumns));
-
-    unsigned long long start = blockRows.size();
-    blockRows.resize(modRMMatrix.rows() - start);
-    std::iota(blockRows.begin(), blockRows.end(), start);
-    matrix::Matrix remainingMatr(modRMMatrix.submatrix(blockRows, blockColumns));
-
-    matrix::Matrix O(P.rows(), P.cols());
-    matrix::Matrix row1(P);
+    // Removing sigma_1 from firstBlock
+    matrix::Matrix O(sigma_1.rows(), sigma_1.cols());
+    matrix::Matrix row1(sigma_1);
     matrix::Matrix row2(O);
     // O|P
-    row2.concatenateByRows(P);
+    row2.concatenateByRows(sigma_1);
     // P|O
     row1.concatenateByRows(O);
     // O|O
@@ -179,7 +181,7 @@ matrix::Matrix extractFirstPerm(const matrix::Matrix &modRMMatrix,
     // O|O|P|O
     row3.concatenateByRows(row1);
     matrix::Matrix row4(O);
-    // O|O|)|P
+    // O|O|O|P
     row4.concatenateByRows(row2);
     // P|O|O|O
     row1.concatenateByRows(O);
@@ -190,9 +192,8 @@ matrix::Matrix extractFirstPerm(const matrix::Matrix &modRMMatrix,
     row1.concatenateByColumns(row3);
     row1.concatenateByColumns(row4);
     // A|A|A|A * blockDiag(P, 4)
-    firstRow *= row1;
-    firstRow.concatenateByColumns(remainingMatr);
-    return firstRow;
+    firstBlock *= row1;
+    return std::make_pair(firstBlock, sigma_1);
 }
 
 } // namespace attackSupporters
@@ -207,18 +208,24 @@ matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
         return modRM.toMatrix();
     }
 
-    // Step 1: Separating first block with RM(r,m-2)^sigma_1
-    std::vector<unsigned long long> blockColumns(attackSupporters::findingFirstBlock(modRM));
+    // Step 1: Finding first block columns with RM(r,m-2)^sigma_1
+    std::vector<unsigned long long>
+    blockColumns(attackSupporters::findingFirstBlockColumns(modRM));
 
-    // Step 2: Finding and removing sigma_1 from modRM
-    matrix::Matrix modRMMatrix = attackSupporters::extractFirstPerm(modRM.toMatrix(), blockColumns);
+    // Step 2: Separating first block
+    //         Returns (RM(r,m-2)|RM(r,m-2)|RM(r,m-2)|RM(r,m-2)) * P and sigma_1
+    std::pair<matrix::Matrix, matrix::Matrix>
+    excratingResult = attackSupporters::extractFirstBlock(modRM.toMatrix(), blockColumns);
+    matrix::Matrix firstBlock(excratingResult.first);
+    matrix::Matrix sigma_1(excratingResult.second);
 
-    // Trivial case without sigma_2
-    if (rmSizes[0] == 2) {
-        return modRMMatrix;
-    }
-    // Step 3: Separating last block with RM(r-2,m-2)^sigma_2
-    return modRMMatrix;
+
+    // Step 3: Removing P from firstBlock by attacking concatenated code
+
+    // Step 4: modRM * P and ^sigma_1 on subblocks
+
+    // Step 5: Finding sigma_2 and returning secret key
+    return firstBlock;
 }
 
 } // namespace codes
