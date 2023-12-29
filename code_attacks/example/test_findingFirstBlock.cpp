@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     bool testMode = false;
     if (argc <= 2) {
         std::cout << "Input args in format: r m testMode" << std::endl;
-        std::cout << "Where in testMode printed files and logs" << std::endl;
+        std::cout << "testMode is a flag of printing files and logs" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
         std::cout << "By 2: r m " << testMode << std::endl;
         return 0;

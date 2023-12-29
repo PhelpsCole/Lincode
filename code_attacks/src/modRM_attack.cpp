@@ -200,12 +200,23 @@ matrix::Matrix extractFirstPerm(const matrix::Matrix &modRMMatrix,
 // Attack for m >= 8 and 2 <= r < (m - 2) / 2
 // Returns secret key
 matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
+    std::vector<size_t> rmSizes = codes::rmSizes(modRM);
+    if (rmSizes[1] < 8 || rmSizes[0] < 2 || 2 * rmSizes[0] >= rmSizes[1] - 2) {
+        std::cerr << "Unable to analyse in case of r=" << rmSizes[0];
+        std::cerr << " and m=" << rmSizes[1] << std::endl;
+        return modRM.toMatrix();
+    }
+
     // Step 1: Separating first block with RM(r,m-2)^sigma_1
     std::vector<unsigned long long> blockColumns(attackSupporters::findingFirstBlock(modRM));
 
     // Step 2: Finding and removing sigma_1 from modRM
     matrix::Matrix modRMMatrix = attackSupporters::extractFirstPerm(modRM.toMatrix(), blockColumns);
 
+    // Trivial case without sigma_2
+    if (rmSizes[0] == 2) {
+        return modRMMatrix;
+    }
     // Step 3: Separating last block with RM(r-2,m-2)^sigma_2
     return modRMMatrix;
 }
