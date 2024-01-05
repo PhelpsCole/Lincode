@@ -74,6 +74,8 @@ Matrix generateRandomNonSingular(unsigned long long rows, unsigned long long col
 Matrix generateRandomPermutation(unsigned long long n, unsigned long long p);
 Matrix permFromVector(const std::vector<unsigned long long> &, bool transpose = false);
 Matrix diag(unsigned long long n, char elem);
+Matrix blockDiag(unsigned long long blocksNum, const Matrix &);
+Matrix blockDiag(const std::vector<matrix::Matrix> &);
 Matrix hadamardProductSafe(const Matrix &, const Matrix &);
 Matrix hadamardProduct(const Matrix &, const Matrix &);
 Matrix hadPower(const Matrix &, size_t);

@@ -12,6 +12,12 @@
 namespace codes {
 namespace attackSupporters {
 
+struct ExtractSigma1Result {
+    matrix::Matrix firstRow;
+    matrix::Matrix otherBlocks;
+    matrix::Matrix sigma1;
+};
+
 // Supporters from minder_shokrollahi 
 std::vector<std::vector<unsigned long long>>
 decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
@@ -24,17 +30,18 @@ codes::Lincode nodRM(const codes::Lincode &rm, int a, int b);
 
 // Supporters from modRM_attack
 enum { PREPROC_SIMPLE_ID = 0, INVARIANT_SIZE_ID = 2 };
-std::vector<unsigned long long> findingFirstBlockColumns(codes::Lincode,
-                                                         bool testRun = false);
-std::pair<matrix::Matrix, matrix::Matrix>
-extractFirstBlock(const matrix::Matrix &,
-                  std::vector<unsigned long long>,
-                  unsigned long long blockRowsSize = 0);
+std::vector<unsigned long long> findingBlockColumns(codes::Lincode,
+                                                    size_t r, size_t m,
+                                                    bool testRun = false);
+ExtractSigma1Result extractFirstBlock(const matrix::Matrix &,
+                                      const std::vector<unsigned long long> &,
+                                      unsigned long long blockRowsSize = 0);
 
 } //namespace attackSupporters
 
 matrix::Matrix minder_shokrollahi(codes::Lincode rm);
 matrix::Matrix chizhov_borodin(const codes::Lincode &rm);
+matrix::Matrix concatenateRM_attack(const codes::Lincode &rm, size_t blocksNum);
 // Returns Matrix of code unlike other attacks
 matrix::Matrix modRM_attack(const codes::Lincode &modRM);
 

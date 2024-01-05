@@ -115,48 +115,30 @@ void testMinIterations(size_t r, size_t m, size_t invariantId,
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode pqsigRMcode(pqsigRM);
     codes::Lincode startCode(pqsigRMcode);
-
-    size_t q = (m - 2) / r;
-    if ((m - 2) % r == 0) {
-        --q;
-    }
-    std::string symb = std::to_string(q) + "|";
-    pqsigRMcode = codes::hadPower(pqsigRMcode, q);
-    codes::SSAStructure s = codes::ssaStructure(pqsigRMcode, invariantId, preprocId);
-
-    now = std::chrono::system_clock::now();
-    time = std::chrono::system_clock::to_time_t(now);
-    std::cout << "Completed computation of " << symb << " at " << std::ctime(&time) << std::endl;
-    if (check_signature(s, m)) {
+    pqsigRMcode = pqsigRMcode.hull();
+    codes::Lincode tmp(pqsigRMcode);
+    r = std::min(r, m - 2 - r - 1);
+    std::string symb;
+    while (r != m - 2 && pqsigRMcode.size() + 1 < pqsigRMcode.len()) {
+        symb = std::to_string(r++) + "|";
+        pqsigRMcode = codes::hadamardProduct(pqsigRMcode, tmp);
+        codes::SSAStructure s = codes::ssaStructure(pqsigRMcode, invariantId, preprocId);
+        now = std::chrono::system_clock::now();
+        time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Completed computation of " << symb << " at " << std::ctime(&time) << std::endl;
         std::string tempFilename = filename + '_' + symb  
-                                   + '_' + std::to_string(cicleStep) + "_found.txt";
+                                   + '_' + std::to_string(cicleStep);
+        if (check_signature(s, m)) {
+            tempFilename += "_found.txt";
+            printSSAStructure(s, tempFilename);
+            return;
+        } else {
+            tempFilename += ".txt";
+        }
         printSSAStructure(s, tempFilename);
-        return;
     }
-
-    symb += "-1|";
-    pqsigRMcode.dual();
-    r = (m - 2) - q * r - 1;
-    q = (m - 2) / r;
-    symb += std::to_string(q) + "|";
-    pqsigRMcode = codes::hadPower(pqsigRMcode, q);
-    s = codes::ssaStructure(pqsigRMcode, invariantId, preprocId);
-
-    now = std::chrono::system_clock::now();
-    time = std::chrono::system_clock::to_time_t(now);
-    std::cout << "Completed computation of " << symb << " at " << std::ctime(&time) << std::endl;
-    if (check_signature(s, m)) {
-        std::string tempFilename = filename + '_' + symb  
-                                   + '_' + std::to_string(cicleStep) + "_found.txt";
-        printSSAStructure(s, tempFilename);
-        return;
-    }
-
-    std::string tempFilename = filename + '_' + symb  
-                               + '_' + std::to_string(cicleStep) + ".txt";
     std::string unFoundMatrix = filename + '_' + symb  
                                + "_matrix" + std::to_string(cicleStep) + ".txt";
-    printSSAStructure(s, tempFilename);
     startCode.printCode(unFoundMatrix);
 }
 

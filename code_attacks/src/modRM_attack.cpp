@@ -70,24 +70,24 @@ bool check_signature(const codes::SSAStructure &s, size_t m,
 }
 
 // Support splitting algorithm on hadPower of modRM
-std::vector<unsigned long long> findingFirstBlockColumns(codes::Lincode pqsigRMcode,
-                                                         bool testRun) {
+std::vector<unsigned long long> findingBlockColumns(codes::Lincode pqsigRMcode,
+                                                    size_t r, size_t m,
+                                                    bool testRun) {
     std::string filename;
     codes::Lincode startCode;
-    std::vector<size_t> rmSizes = codes::rmSizes(pqsigRMcode);
     if (testRun) {
         startCode = pqsigRMcode;
         auto now = std::chrono::system_clock::now();
         std::time_t time = std::chrono::system_clock::to_time_t(now);
-        filename = attackTestSupporters::nameFile(rmSizes[0], rmSizes[1], "invariantSize_iterativeMaxRM");
+        filename = attackTestSupporters::nameFile(r, m, "invariantSize_iterativeMaxRM");
         std::cout << "Processing " << filename << "..." << std::endl;
         std::cout << "Started computation at " << std::ctime(&time) << std::endl;
 
     }
     // qRM(r, m-2) step
-    size_t q = (rmSizes[1] - 2) / rmSizes[0];
+    size_t q = (m - 2) / r;
     std::string symb = std::to_string(q) + "|";
-    if ((rmSizes[1] - 2) % rmSizes[0] == 0) {
+    if ((m - 2) % r == 0) {
         --q;
     }
     pqsigRMcode = codes::hadPower(pqsigRMcode, q);
@@ -99,21 +99,21 @@ std::vector<unsigned long long> findingFirstBlockColumns(codes::Lincode pqsigRMc
                   << " at " << std::ctime(&time) << std::endl;
     }
     std::vector<unsigned long long> blockColumns;
-    if (check_signature(s, rmSizes[1], blockColumns)) {
+    if (check_signature(s, m, blockColumns)) {
         if (testRun) {
             std::string tempFilename = filename + '_' + symb + "_found.txt";
             attackTestSupporters::printSSAStructure(s, tempFilename);
         }
         return blockColumns;
     }
-    if (q * rmSizes[0] != (rmSizes[1] - 2) - 1) {
+    if (q * r != (m - 2) - 1) {
         // dual(qmodRM(r, m-2)) step
         symb += "-1|";
         pqsigRMcode.dual();
 
         // max(modRM(r, m-2)) step
-        rmSizes[0] = (rmSizes[1] - 2) - q * rmSizes[0] - 1;
-        q = (rmSizes[1] - 2) / rmSizes[0];
+        r = (m - 2) - q * r - 1;
+        q = (m - 2) / r;
         symb += std::to_string(q) + "|";
         pqsigRMcode = codes::hadPower(pqsigRMcode, q);
         s = codes::ssaStructure(pqsigRMcode, INVARIANT_SIZE_ID, PREPROC_SIMPLE_ID);
@@ -123,7 +123,7 @@ std::vector<unsigned long long> findingFirstBlockColumns(codes::Lincode pqsigRMc
             std::cout << "Completed computation of " << symb
                       << " at " << std::ctime(&time) << std::endl;
         }
-        if (check_signature(s, rmSizes[1], blockColumns)) {
+        if (check_signature(s, m, blockColumns)) {
             if (testRun) {
                 std::string tempFilename = filename + '_' + symb + "_found.txt";
                 attackTestSupporters::printSSAStructure(s, tempFilename);
@@ -145,16 +145,18 @@ std::vector<unsigned long long> findingFirstBlockColumns(codes::Lincode pqsigRMc
 // Removing sigma_1 and writing into firstBlock
 // blockRowsSize is for checking subBlock size (is it (r,m-2)-code or not)
 // Returning pair (firstBlock, sigma_1)
-std::pair<matrix::Matrix, matrix::Matrix>
+codes::attackSupporters::ExtractSigma1Result
 extractFirstBlock(const matrix::Matrix &modRMMatrix,
-                  std::vector<unsigned long long> blockColumns,
+                  const std::vector<unsigned long long> &blockColumns,
                   unsigned long long blockRowsSize) {
     matrix::Matrix block(modRMMatrix);
     std::vector<unsigned long long> blockRows(block.gaussElimination(true, blockColumns).size());
     if (blockRowsSize != 0 && blockRowsSize != blockRows.size()) {
         std::cerr << "Extracted block has wrong size:" << std::endl;
         std::cerr << "needed=" << blockRowsSize << ", counted=" << blockRows.size() << std::endl;
-        return std::make_pair(matrix::Matrix(0, 0), matrix::Matrix(0, 0));
+        return codes::attackSupporters::ExtractSigma1Result({matrix::Matrix(0, 0),
+                                                             matrix::Matrix(0, 0),
+                                                             matrix::Matrix(0, 0)});
     }
     std::iota(blockRows.begin(), blockRows.end(), 0);
     std::vector<unsigned long long> allColumns(modRMMatrix.cols());
@@ -163,9 +165,9 @@ extractFirstBlock(const matrix::Matrix &modRMMatrix,
     matrix::Matrix firstBlock = block.submatrix(blockRows, allColumns);
 
     // RM(r,m-2)^sigma_1
-    block = block.submatrix(blockRows, blockColumns);
+    matrix::Matrix RMBlock = block.submatrix(blockRows, blockColumns);
     // Finding sigma_1
-    matrix::Matrix sigma_1 = codes::chizhov_borodin(codes::Lincode(block));
+    matrix::Matrix sigma_1 = codes::chizhov_borodin(codes::Lincode(RMBlock));
 
     // Removing sigma_1 from firstBlock
     matrix::Matrix O(sigma_1.rows(), sigma_1.cols());
@@ -193,7 +195,22 @@ extractFirstBlock(const matrix::Matrix &modRMMatrix,
     row1.concatenateByColumns(row4);
     // A|A|A|A * blockDiag(P, 4)
     firstBlock *= row1;
-    return std::make_pair(firstBlock, sigma_1);
+
+    // Removing other rows without zeroes in first row
+    blockRows.resize(modRMMatrix.rows() - blockRows.size());
+    std::iota(blockRows.begin(), blockRows.end(), firstBlock.rows());
+    std::vector<unsigned long long> otherCols(allColumns.size() - blockColumns.size());
+    size_t ind = 0;
+    for (unsigned long long i = 0; i < allColumns.size(); ++i) {
+        if (ind != blockColumns.size() && i != blockColumns[ind]) {
+            ++ind;
+        } else {
+            otherCols[i - ind] = i + ind;
+        }
+    }
+    return codes::attackSupporters::ExtractSigma1Result({firstBlock,
+                                                         block.submatrix(blockRows, otherCols),
+                                                         sigma_1});
 }
 
 } // namespace attackSupporters
@@ -210,21 +227,41 @@ matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
 
     // Step 1: Finding first block columns with RM(r,m-2)^sigma_1
     std::vector<unsigned long long>
-    blockColumns(attackSupporters::findingFirstBlockColumns(modRM));
+    firstBlockColumns(attackSupporters::findingBlockColumns(modRM, rmSizes[0], rmSizes[1]));
 
     // Step 2: Separating first block
     //         Returns (RM(r,m-2)|RM(r,m-2)|RM(r,m-2)|RM(r,m-2)) * P and sigma_1
-    std::pair<matrix::Matrix, matrix::Matrix>
-    excratingResult = attackSupporters::extractFirstBlock(modRM.toMatrix(), blockColumns);
-    matrix::Matrix firstBlock(excratingResult.first);
-    matrix::Matrix sigma_1(excratingResult.second);
+    codes::attackSupporters::ExtractSigma1Result excratingResult
+        = attackSupporters::extractFirstBlock(modRM.toMatrix(), firstBlockColumns);
+    matrix::Matrix firstBlock(excratingResult.firstRow);
+    matrix::Matrix otherBlocks(excratingResult.otherBlocks);
+    matrix::Matrix sigma_1(excratingResult.sigma1);
 
+    // Step 3: Finding 2-3 block columns with:
+    // (r-1,m-2)|0
+    // 0|(r-1,m-2)
+    std::vector<unsigned long long>
+    otherBlockColumns(attackSupporters::findingBlockColumns(modRM,
+                                                            rmSizes[0] - 1,
+                                                            rmSizes[1]));
+    std::vector<unsigned long long> lastBlockColumns(modRM.len() / 4);
+    size_t delta1 = 0;
+    size_t delta2 = 0;
+    for (size_t i = 0; i < modRM.len(); ++i) {
+        if (delta1 != firstBlockColumns.size() && i == firstBlockColumns[delta1]) {
+            ++delta1;
+        } else if (delta2 != otherBlockColumns.size() && i == otherBlockColumns[delta2]) {
+            ++delta2;
+        } else {
+            lastBlockColumns[i - delta1 - delta2] = i;
+        }
+    }
 
-    // Step 3: Removing P from firstBlock by attacking concatenated code
+    // Step 4: Removing P from firstBlock by attacking concatenated code
 
-    // Step 4: modRM * P and ^sigma_1 on subblocks
+    // Step 5: modRM * P and ^sigma_1 on subblocks
 
-    // Step 5: Finding sigma_2 and returning secret key
+    // Step 6: Finding sigma_2 and returning secret key
     return firstBlock;
 }
 

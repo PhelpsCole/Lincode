@@ -88,9 +88,9 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
 }
 
 // Returns (r, m) if this is rm-code and (0, 0) if not
-std::vector<size_t> rmSizes(const codes::Lincode &c) {
+std::vector<size_t> rmSizes(unsigned long long _k, unsigned long long _n) {
     std::vector<size_t> res(2);
-    size_t m = c.len();
+    size_t m = _n;
     while (m != 1) {
         if (m % 2 == 1) {
             return std::vector<size_t>(2);
@@ -98,7 +98,7 @@ std::vector<size_t> rmSizes(const codes::Lincode &c) {
         m >>= 1;
         ++res[1];
     }
-    long long k = c.size() - 1;
+    long long k = _k - 1;
     size_t tmp = res[1];
     while (k > 0) {
         k -= tmp;
@@ -111,6 +111,10 @@ std::vector<size_t> rmSizes(const codes::Lincode &c) {
     //}
     // возвращаю максимальный r
     return res;
+}
+
+std::vector<size_t> rmSizes(const codes::Lincode &c) {
+    return rmSizes(c.size(), c.len());
 }
 
 unsigned long long codeSizeFromRM(size_t r, size_t m) {

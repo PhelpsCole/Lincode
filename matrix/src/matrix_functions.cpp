@@ -61,6 +61,54 @@ Matrix diag(unsigned long long n, char elem) {
     return D;
 }
 
+Matrix blockDiag(unsigned long long blocksNum, const Matrix &elem) {
+    Matrix zero(elem.rows(), elem.cols());
+    Matrix res(0, 0);
+    Matrix tempRow(zero);
+    for (size_t i = 0; i < blocksNum; ++i) {
+        if (i == 0) {
+            res = elem;
+            for (size_t j = i + 1; j < blocksNum; ++j) {
+                res.concatenateByRows(zero);
+            }
+        } else {
+            Matrix row(tempRow);
+            row.concatenateByRows(elem);
+            for (size_t j = i + 1; j < blocksNum; ++j) {
+                row.concatenateByRows(zero);
+            }   
+            res.concatenateByColumns(row);
+            tempRow.concatenateByRows(zero);
+        }
+    }
+    return res;
+}
+
+
+Matrix blockDiag(const std::vector<matrix::Matrix> &blocks) {
+    Matrix res(0, 0);
+    unsigned long long len = 0;
+    unsigned long long lenDelta = 0;
+    for (size_t i = 0; i < blocks.size(); ++i) {
+        len += blocks[i].cols();
+    }
+    for (size_t i = 0; i < blocks.size(); ++i) {
+        if (i == 0) {
+            res = blocks[0];
+            lenDelta = blocks[0].cols();
+            res.concatenateByRows(Matrix(res.rows(), len - res.cols()));
+            continue;
+        }
+        Matrix row(blocks[i].rows(), lenDelta);
+        lenDelta += blocks[i].cols();
+        row.concatenateByRows(blocks[i]);
+        row.concatenateByRows(Matrix(row.rows(), len - row.cols()));
+        res.concatenateByColumns(row);
+    }
+    return res;
+
+}
+
 // Returns hadamard product of linear combinations A and B
 Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
     if (A.cols() != B.cols()) {

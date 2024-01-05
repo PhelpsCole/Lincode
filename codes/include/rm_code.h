@@ -31,6 +31,7 @@ private:
     std::vector<std::vector<char>> basis;
 };
 
+std::vector<size_t> rmSizes(unsigned long long k, unsigned long long n);
 std::vector<size_t> rmSizes(const codes::Lincode &);
 unsigned long long codeSizeFromRM(size_t r, size_t m);
 std::vector<int> minRMVector(size_t r, size_t m);
