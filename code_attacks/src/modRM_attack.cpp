@@ -140,77 +140,84 @@ std::vector<unsigned long long> findingBlockColumns(codes::Lincode pqsigRMcode,
     return blockColumns;
 }
 
-// Finding sigma_1 and from matrix
-// (RM(r,m-2)^sigma_1|RM(r,m-2)^sigma_1|RM(r,m-2)^sigma_1|RM(r,m-2)^sigma_1) * P
-// Removing sigma_1 and writing into firstBlock
-// blockRowsSize is for checking subBlock size (is it (r,m-2)-code or not)
-// Returning pair (firstBlock, sigma_1)
-codes::attackSupporters::ExtractSigma1Result
-extractFirstBlock(const matrix::Matrix &modRMMatrix,
-                  const std::vector<unsigned long long> &blockColumns,
+matrix::Matrix movingBlockPerm(std::vector<unsigned long long> &columns,
+                               unsigned long long matrSize) {
+    matrix::Matrix P(matrSize, matrSize);
+    algorithms::sorts::selectionSort(columns,
+                                     [] (const unsigned long long &a,
+                                         const unsigned long long &b)
+                                     { return a <= b; });
+    size_t delta = 0;
+    for (size_t i = 0; i < P.cols(); ++i) {
+        if (i == columns[delta]) {
+            P.at(i, delta++) = 1;
+        } else {
+            P.at(i, columns.size() + i - delta) = 1;
+        }
+    }
+    return P;
+}
+
+// Finding sigma_1 and removing block without first row
+// Returning pair (otherBlocks, sigma_1P_1)
+codes::attackSupporters::ExtractBlockResult
+extractFirstBlock(const matrix::Matrix &afterSSA,
                   unsigned long long blockRowsSize) {
-    matrix::Matrix block(modRMMatrix);
+    matrix::Matrix block(afterSSA);
+    std::vector<unsigned long long> blockColumns(afterSSA.cols() >> 2);
+    std::iota(blockColumns.begin(), blockColumns.end(), 0);
     std::vector<unsigned long long> blockRows(block.gaussElimination(true, blockColumns).size());
     if (blockRowsSize != 0 && blockRowsSize != blockRows.size()) {
         std::cerr << "Extracted block has wrong size:" << std::endl;
         std::cerr << "needed=" << blockRowsSize << ", counted=" << blockRows.size() << std::endl;
-        return codes::attackSupporters::ExtractSigma1Result({matrix::Matrix(0, 0),
-                                                             matrix::Matrix(0, 0),
-                                                             matrix::Matrix(0, 0)});
+        return codes::attackSupporters::ExtractBlockResult({matrix::Matrix(0, 0),
+                                                            matrix::Matrix(0, 0)});
     }
     std::iota(blockRows.begin(), blockRows.end(), 0);
-    std::vector<unsigned long long> allColumns(modRMMatrix.cols());
-    std::iota(allColumns.begin(), allColumns.end(), 0);
-    // (RM(r,m-2)^sigma_1||4) * P
-    matrix::Matrix firstBlock = block.submatrix(blockRows, allColumns);
 
-    // RM(r,m-2)^sigma_1
+    // RM(r,m-2)^sigma_1*P_1'
     matrix::Matrix RMBlock = block.submatrix(blockRows, blockColumns);
     // Finding sigma_1
-    matrix::Matrix sigma_1 = codes::chizhov_borodin(codes::Lincode(RMBlock));
-
-    // Removing sigma_1 from firstBlock
-    matrix::Matrix O(sigma_1.rows(), sigma_1.cols());
-    matrix::Matrix row1(sigma_1);
-    matrix::Matrix row2(O);
-    // O|P
-    row2.concatenateByRows(sigma_1);
-    // P|O
-    row1.concatenateByRows(O);
-    // O|O
-    O.concatenateByRows(O);
-    matrix::Matrix row3(O);
-    // O|O|P|O
-    row3.concatenateByRows(row1);
-    matrix::Matrix row4(O);
-    // O|O|O|P
-    row4.concatenateByRows(row2);
-    // P|O|O|O
-    row1.concatenateByRows(O);
-    // O|P|O|O
-    row2.concatenateByRows(O);
-
-    row1.concatenateByColumns(row2);
-    row1.concatenateByColumns(row3);
-    row1.concatenateByColumns(row4);
-    // A|A|A|A * blockDiag(P, 4)
-    firstBlock *= row1;
+    matrix::Matrix sigma_1P_1 = codes::chizhov_borodin(codes::Lincode(RMBlock));
 
     // Removing other rows without zeroes in first row
-    blockRows.resize(modRMMatrix.rows() - blockRows.size());
-    std::iota(blockRows.begin(), blockRows.end(), firstBlock.rows());
-    std::vector<unsigned long long> otherCols(allColumns.size() - blockColumns.size());
-    size_t ind = 0;
-    for (unsigned long long i = 0; i < allColumns.size(); ++i) {
-        if (ind != blockColumns.size() && i != blockColumns[ind]) {
-            ++ind;
-        } else {
-            otherCols[i - ind] = i + ind;
-        }
+    blockRows.resize(afterSSA.rows() - blockRows.size());
+    std::iota(blockRows.begin(), blockRows.end(), afterSSA.rows() - blockRows.size());
+    std::vector<unsigned long long> otherCols(afterSSA.cols() - blockColumns.size());
+    std::iota(otherCols.begin(), otherCols.end(), blockColumns.size());
+    return codes::attackSupporters::ExtractBlockResult({block.submatrix(blockRows, otherCols),
+                                                        sigma_1P_1});
+}
+
+// Finding sigma_1 and removing block without first row
+// Returning pair (concatenatedRM, sigma_2P_4)
+codes::attackSupporters::ExtractBlockResult
+extractLastBlock(const matrix::Matrix &afterSSA,
+                 unsigned long long blockRowsSize) {
+    matrix::Matrix block(afterSSA);
+    std::vector<unsigned long long> blockColumns(afterSSA.cols() / 3 * 2);
+    std::iota(blockColumns.begin(), blockColumns.end(), 0);
+    std::vector<unsigned long long> blockRows(block.gaussElimination(true, blockColumns).size());
+    if (blockRowsSize != 0 && blockRowsSize != blockRows.size()) {
+        std::cerr << "Extracted block has wrong size:" << std::endl;
+        std::cerr << "needed=" << blockRowsSize << ", counted=" << blockRows.size() << std::endl;
+        return codes::attackSupporters::ExtractBlockResult({matrix::Matrix(0, 0),
+                                                            matrix::Matrix(0, 0)});
     }
-    return codes::attackSupporters::ExtractSigma1Result({firstBlock,
-                                                         block.submatrix(blockRows, otherCols),
-                                                         sigma_1});
+    std::iota(blockRows.begin(), blockRows.end(), 0);
+
+    // 0|(r-1,m-2)
+    // (r-1,m-2)|0
+    matrix::Matrix concatenatedRM = block.submatrix(blockRows, blockColumns);
+
+    // Finding sigma_2P_2
+    blockRows.resize(afterSSA.rows() - blockRows.size());
+    std::iota(blockRows.begin(), blockRows.end(), afterSSA.rows() - blockRows.size());
+    blockColumns.resize(afterSSA.cols() - blockColumns.size());
+    std::iota(blockColumns.begin(), blockColumns.end(), afterSSA.cols() - blockColumns.size());
+
+    matrix::Matrix sigma_2P_2 = codes::chizhov_borodin(block.submatrix(blockRows, blockColumns));
+    return codes::attackSupporters::ExtractBlockResult({concatenatedRM, sigma_2P_2});
 }
 
 } // namespace attackSupporters
@@ -229,40 +236,49 @@ matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
     std::vector<unsigned long long>
     firstBlockColumns(attackSupporters::findingBlockColumns(modRM, rmSizes[0], rmSizes[1]));
 
-    // Step 2: Separating first block
-    //         Returns (RM(r,m-2)|RM(r,m-2)|RM(r,m-2)|RM(r,m-2)) * P and sigma_1
-    codes::attackSupporters::ExtractSigma1Result excratingResult
-        = attackSupporters::extractFirstBlock(modRM.toMatrix(), firstBlockColumns);
-    matrix::Matrix firstBlock(excratingResult.firstRow);
-    matrix::Matrix otherBlocks(excratingResult.otherBlocks);
-    matrix::Matrix sigma_1(excratingResult.sigma1);
+    // Step 2: Move first block columns to begining
+    matrix::Matrix P1_1 = attackSupporters::movingBlockPerm(firstBlockColumns, modRM.len());
+    // SSA-1|2-3-4
+    matrix::Matrix afterSSA(modRM.toMatrix() * P1_1);
 
-    // Step 3: Finding 2-3 block columns with:
+    // Step 3: Separating first block from other matrix
+    //         Returns sigma_1 * P_1' and 2-3-4 blocks without zeroes and first row
+    codes::attackSupporters::ExtractBlockResult excratingResult
+        = attackSupporters::extractFirstBlock(afterSSA);
+    matrix::Matrix otherBlocks(excratingResult.block);
+    matrix::Matrix sigma_1P_1(excratingResult.sigmaP);
+
+    // Step 4: Finding 2-3 block columns with:
     // (r-1,m-2)|0
     // 0|(r-1,m-2)
     std::vector<unsigned long long>
-    otherBlockColumns(attackSupporters::findingBlockColumns(modRM,
+    otherBlockColumns(attackSupporters::findingBlockColumns(otherBlocks,
                                                             rmSizes[0] - 1,
                                                             rmSizes[1]));
-    std::vector<unsigned long long> lastBlockColumns(modRM.len() / 4);
-    size_t delta1 = 0;
-    size_t delta2 = 0;
-    for (size_t i = 0; i < modRM.len(); ++i) {
-        if (delta1 != firstBlockColumns.size() && i == firstBlockColumns[delta1]) {
-            ++delta1;
-        } else if (delta2 != otherBlockColumns.size() && i == otherBlockColumns[delta2]) {
-            ++delta2;
-        } else {
-            lastBlockColumns[i - delta1 - delta2] = i;
-        }
-    }
+    // Permutation on submatrix which separates: 2-3|4
+    matrix::Matrix P4_2 = attackSupporters::movingBlockPerm(otherBlockColumns, otherBlocks.cols());
+    otherBlocks *= P4_2;
+    std::vector<matrix::Matrix> matrVec;
+    matrVec.push_back(matrix::diag(modRM.len() - P4_2.cols(), 1));
+    matrVec.push_back(P4_2);
+    matrix::Matrix P4_1(matrix::blockDiag(matrVec));
 
-    // Step 4: Removing P from firstBlock by attacking concatenated code
+    // Step 5: Separating 2-3 blocks from other matrix
+    //         Returns sigma_2 * P_4' and 2-3 blocks without zeroes
+    excratingResult = attackSupporters::extractLastBlock(otherBlocks);
+    matrix::Matrix concatenatedRM(excratingResult.block);
+    matrix::Matrix sigma_2P_4(excratingResult.sigmaP);
 
-    // Step 5: modRM * P and ^sigma_1 on subblocks
+    // Step 5: Attack concatenated code and return P2-3 permutation on blocks
+    matrix::Matrix P23_2 = codes::concatenateRM_attack(concatenatedRM, 2);
+    //std::vector<matrix::Matrix> matrVec;
+    matrVec[1] = P23_2;
+    matrVec.push_back(matrix::diag(matrVec[0].cols(), 1));
+    matrix::Matrix P23_1(matrix::blockDiag(matrVec));
 
-    // Step 6: Finding sigma_2 and returning secret key
-    return firstBlock;
+    // Known blocks 2-3 and partly found blocks 1 and 4
+    // Also known sigma_1*P_1 and sigma_2*P_4
+    return P1_1 * P4_1 * P23_1;
 }
 
 } // namespace codes

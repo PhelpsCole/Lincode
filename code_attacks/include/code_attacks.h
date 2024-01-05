@@ -12,10 +12,9 @@
 namespace codes {
 namespace attackSupporters {
 
-struct ExtractSigma1Result {
-    matrix::Matrix firstRow;
-    matrix::Matrix otherBlocks;
-    matrix::Matrix sigma1;
+struct ExtractBlockResult {
+    matrix::Matrix block;
+    matrix::Matrix sigmaP;
 };
 
 // Supporters from minder_shokrollahi 
@@ -33,9 +32,10 @@ enum { PREPROC_SIMPLE_ID = 0, INVARIANT_SIZE_ID = 2 };
 std::vector<unsigned long long> findingBlockColumns(codes::Lincode,
                                                     size_t r, size_t m,
                                                     bool testRun = false);
-ExtractSigma1Result extractFirstBlock(const matrix::Matrix &,
-                                      const std::vector<unsigned long long> &,
-                                      unsigned long long blockRowsSize = 0);
+ExtractBlockResult extractFirstBlock(const matrix::Matrix &,
+                                     unsigned long long blockRowsSize = 0);
+ExtractBlockResult extractLastBlock(const matrix::Matrix &,
+                                    unsigned long long blockRowsSize = 0);
 
 } //namespace attackSupporters
 
