@@ -142,25 +142,22 @@ std::vector<unsigned long long> findingBlockColumns(codes::Lincode pqsigRMcode,
 
 matrix::Matrix movingBlockPerm(std::vector<unsigned long long> &columns,
                                unsigned long long matrSize) {
-    std::cout << columns.size() << ":" << std::endl;
-    for (size_t i = 0; i < columns.size(); ++i) {
-        std::cout << columns[i] << " ";
-    }
-    std::cout << std::endl;
+    //std::cout << columns.size() << ":" << std::endl;
+    //for (size_t i = 0; i < columns.size(); ++i) {
+    //    std::cout << columns[i] << " ";
+    //}
+    //std::cout << std::endl;
     matrix::Matrix P(matrSize, matrSize);
-    std::cout << "HERE2" << std::endl;
     algorithms::sorts::mergeSort(columns,
                                      [] (const unsigned long long &a,
                                          const unsigned long long &b)
                                      { return a <= b; });
-    std::cout << "After sort:" << std::endl;
-    for (size_t i = 0; i < columns.size(); ++i) {
-        std::cout << columns[i] << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "HERE2" << std::endl;
+    //std::cout << "After sort:" << std::endl;
+    //for (size_t i = 0; i < columns.size(); ++i) {
+    //    std::cout << columns[i] << " ";
+    //}
+    //std::cout << std::endl;
     size_t delta = 0;
-    std::cout << "HERE2" << std::endl;
     for (size_t i = 0; i < P.cols(); ++i) {
         if (i == columns[delta]) {
             P.at(i, delta++) = 1;
@@ -168,7 +165,6 @@ matrix::Matrix movingBlockPerm(std::vector<unsigned long long> &columns,
             P.at(i, columns.size() + i - delta) = 1;
         }
     }
-    std::cout << "HERE2" << std::endl;
     return P;
 }
 
@@ -291,25 +287,25 @@ matrix::Matrix modRM_attack(const codes::Lincode &modRM, bool testRun) {
     // Step 4: Finding 2-3 block columns with:
     // (r-1,m-2)|0
     // 0|(r-1,m-2)
-    std::cout << "HERE" << std::endl;
+    //std::cout << "HERE" << std::endl;
     std::vector<unsigned long long>
     otherBlockColumns(attackSupporters::findingBlockColumns(otherBlocks,
                                                             rmSizes[0] - 1,
                                                             rmSizes[1]));
-    std::cout << "HERE" << std::endl;
+    //std::cout << "HERE" << std::endl;
     // Permutation on submatrix which separates: 2-3|4
     matrix::Matrix P4_2 = attackSupporters::movingBlockPerm(otherBlockColumns, otherBlocks.cols());
-    std::cout << "HERE" << std::endl;
+    //std::cout << "HERE" << std::endl;
     otherBlocks *= P4_2;
-    std::cout << "HERE" << std::endl;
+    //std::cout << "HERE" << std::endl;
     std::vector<matrix::Matrix> matrVec;
-    std::cout << "HERE" << std::endl;
+    //std::cout << "HERE" << std::endl;
     matrVec.push_back(matrix::diag(modRM.len() - P4_2.cols(), 1));
-    std::cout << "HERE" << std::endl;
+    //std::cout << "HERE" << std::endl;
     matrVec.push_back(P4_2);
-    std::cout << "HERE" << std::endl;
+    //std::cout << "HERE" << std::endl;
     matrix::Matrix P4_1(matrix::blockDiag(matrVec));
-    std::cout << "HERE" << std::endl;
+    //std::cout << "HERE" << std::endl;
 
     if (testRun) {
         auto now = std::chrono::system_clock::now();
