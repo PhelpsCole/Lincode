@@ -144,5 +144,81 @@ std::vector<unsigned long long> mergeSort(std::vector<std::vector<char>> &vv,
         return permVec;
 }
 
+void plainSort(std::vector<unsigned long long> &vv,
+               std::function<bool(const unsigned long long &,
+                                  const unsigned long long &)> comparator,
+               unsigned long long start,
+               unsigned long long end){
+    std::vector<unsigned long long> result;
+    for (size_t i = start; i < end; ++i) {
+        result.push_back(vv[i]);
+    }
+    std::vector<unsigned long long> tempPermVec = selectionSort(result, comparator);
+    for (size_t i = 0; i < tempPermVec.size(); ++i) {
+        vv[start + i] = result[i];
+    }
+
+
+}
+void merge(std::vector<unsigned long long> &vv,
+           std::function<bool(const unsigned long long &,
+                              const unsigned long long &)> comparator,
+           unsigned long long start,
+           unsigned long long mid,
+           unsigned long long end) {
+    std::vector<unsigned long long> result;
+    size_t midTmp = mid, ind = 0;
+    while(start != midTmp && mid != end){
+        if (!comparator(vv[start], vv[mid])) {
+            result.push_back(vv[mid++]);
+            ++ind;
+        }
+        else {
+            result.push_back(vv[start++]);
+            ++ind;
+        }
+
+    }
+    if (start == midTmp){
+        while (mid != end) {
+            result.push_back(vv[mid++]);
+            ++ind;
+        }
+    }
+    else{
+        while (start != midTmp) {
+            result.push_back(vv[start++]);
+            ++ind;
+        }
+    }
+    while(ind--){
+        vv[--end] = result[ind];
+    }
+}
+
+void _mergeSort(std::vector<unsigned long long> &vv,
+                std::function<bool(const unsigned long long &,
+                                   const unsigned long long &)> comparator,
+                unsigned long long start,
+                unsigned long long end) {
+        size_t MERGE_SIZE = 10;
+        if (end - start < MERGE_SIZE) {
+            plainSort(vv, comparator, start, end);
+        }
+        else {
+            int mid = (start + end) / 2;
+            _mergeSort(vv, comparator, start, mid);
+            _mergeSort(vv, comparator, mid, end);
+            merge(vv, comparator, start, mid, end);
+        }
+}
+
+void mergeSort(std::vector<unsigned long long> &vv,
+               std::function<bool(const unsigned long long &,
+                                  const unsigned long long &)>
+               comparator) {
+        _mergeSort(vv, comparator, 0, vv.size());
+}
+
 } // namespace sorts
 } // namespace algorithms

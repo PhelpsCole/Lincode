@@ -8,6 +8,7 @@
 #include "codes.h"
 #include "encoder.h"
 #include "support_splitting.h"
+#include "algorithms.h"
 
 namespace codes {
 namespace attackSupporters {
@@ -16,6 +17,8 @@ struct ExtractBlockResult {
     matrix::Matrix block;
     matrix::Matrix sigmaP;
 };
+
+typedef std::vector<std::vector<unsigned long long>> VectorOfColumns;
 
 // Supporters from minder_shokrollahi 
 std::vector<std::vector<unsigned long long>>
@@ -37,13 +40,23 @@ ExtractBlockResult extractFirstBlock(const matrix::Matrix &,
 ExtractBlockResult extractLastBlock(const matrix::Matrix &,
                                     unsigned long long blockRowsSize = 0);
 
+// Supporters from separate_RM_blocks
+VectorOfColumns
+separatingGaussElimination(matrix::Matrix &m, unsigned long long k1, unsigned long long k2);
+VectorOfColumns
+rowsIntersections(const matrix::Matrix &m, unsigned long long k1, unsigned long long k2);
+
 } //namespace attackSupporters
 
 matrix::Matrix minder_shokrollahi(codes::Lincode rm);
 matrix::Matrix chizhov_borodin(const codes::Lincode &rm);
 matrix::Matrix concatenateRM_attack(const codes::Lincode &rm, size_t blocksNum);
 // Returns Matrix of code unlike other attacks
-matrix::Matrix modRM_attack(const codes::Lincode &modRM);
+matrix::Matrix modRM_attack(const codes::Lincode &modRM, bool testRun = false);
+
+std::vector<unsigned long long> separate_blocks(const codes::Lincode &c,
+                                                size_t k, size_t n,
+                                                size_t minWeight);
 
 } // namespace codes
 

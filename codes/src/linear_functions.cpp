@@ -47,9 +47,9 @@ Lincode Lincode::truncate(std::vector<unsigned long long> &columns, bool removeZ
     matrix::Matrix A(toMatrix());
     matrix::Matrix B(0, 0);
     A.gaussElimination(false, columns);
-    algorithms::sorts::selectionSort(columns,
-                                     [](const unsigned long long &a,
-                                        const unsigned long long &b) { return a <= b; });
+    algorithms::sorts::mergeSort(columns,
+                                 [](const unsigned long long &a,
+                                    const unsigned long long &b) { return a <= b; });
     for (size_t i = 0; i < A.rows(); ++i) {
         bool nullMask = true;
         for (size_t j = 0; j < columns.size(); ++j) {

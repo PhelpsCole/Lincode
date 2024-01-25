@@ -20,6 +20,9 @@ std::vector<unsigned long long> mergeSort(std::vector<std::vector<char>> &vv,
                                           std::function<bool(const std::vector<char> &,
                                                              const std::vector<char> &)>
                                           comparator);
+void mergeSort(std::vector<unsigned long long> &vv,
+               std::function<bool(const unsigned long long &,
+                                  const unsigned long long &)> comparator);
 
 } // namespace sorts
 } // namespace algorithms

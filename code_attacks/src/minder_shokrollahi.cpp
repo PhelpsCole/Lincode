@@ -150,9 +150,9 @@ decomposeToColumnSets(const codes::Lincode &c0, size_t r, size_t m,
 // Makes f_i | v
 std::vector<char> mergeCodeWords(const std::vector<char> &codeWord,
                                  std::vector<unsigned long long> &separatedColumns) {
-    algorithms::sorts::selectionSort(separatedColumns,
-                                     [](const unsigned long long &a, const unsigned long long &b)
-                                     { return a <= b; });
+    algorithms::sorts::mergeSort(separatedColumns,
+                                 [](const unsigned long long &a, const unsigned long long &b)
+                                 { return a <= b; });
     std::vector<char> result(codeWord.size());
     unsigned long long ind = 0;
     unsigned long long delta = 0;

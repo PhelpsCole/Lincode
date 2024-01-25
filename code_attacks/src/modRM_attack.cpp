@@ -142,12 +142,25 @@ std::vector<unsigned long long> findingBlockColumns(codes::Lincode pqsigRMcode,
 
 matrix::Matrix movingBlockPerm(std::vector<unsigned long long> &columns,
                                unsigned long long matrSize) {
+    std::cout << columns.size() << ":" << std::endl;
+    for (size_t i = 0; i < columns.size(); ++i) {
+        std::cout << columns[i] << " ";
+    }
+    std::cout << std::endl;
     matrix::Matrix P(matrSize, matrSize);
-    algorithms::sorts::selectionSort(columns,
+    std::cout << "HERE2" << std::endl;
+    algorithms::sorts::mergeSort(columns,
                                      [] (const unsigned long long &a,
                                          const unsigned long long &b)
                                      { return a <= b; });
+    std::cout << "After sort:" << std::endl;
+    for (size_t i = 0; i < columns.size(); ++i) {
+        std::cout << columns[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "HERE2" << std::endl;
     size_t delta = 0;
+    std::cout << "HERE2" << std::endl;
     for (size_t i = 0; i < P.cols(); ++i) {
         if (i == columns[delta]) {
             P.at(i, delta++) = 1;
@@ -155,6 +168,7 @@ matrix::Matrix movingBlockPerm(std::vector<unsigned long long> &columns,
             P.at(i, columns.size() + i - delta) = 1;
         }
     }
+    std::cout << "HERE2" << std::endl;
     return P;
 }
 
@@ -224,7 +238,12 @@ extractLastBlock(const matrix::Matrix &afterSSA,
 
 // Attack for m >= 8 and 2 <= r < (m - 2) / 2
 // Returns secret key
-matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
+matrix::Matrix modRM_attack(const codes::Lincode &modRM, bool testRun) {
+    if (testRun) {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Started computation at " << std::ctime(&time) << std::endl;
+    }
     std::vector<size_t> rmSizes = codes::rmSizes(modRM);
     if (rmSizes[1] < 8 || rmSizes[0] < 2 || 2 * rmSizes[0] >= rmSizes[1] - 2) {
         std::cerr << "Unable to analyse in case of r=" << rmSizes[0];
@@ -236,10 +255,24 @@ matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
     std::vector<unsigned long long>
     firstBlockColumns(attackSupporters::findingBlockColumns(modRM, rmSizes[0], rmSizes[1]));
 
+    if (testRun) {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Completed computation of " << "Step 1: firstBlockColumns"
+                  << " at " << std::ctime(&time) << std::endl;
+    }
+
     // Step 2: Move first block columns to begining
     matrix::Matrix P1_1 = attackSupporters::movingBlockPerm(firstBlockColumns, modRM.len());
     // SSA-1|2-3-4
     matrix::Matrix afterSSA(modRM.toMatrix() * P1_1);
+
+    if (testRun) {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Completed computation of " << "Step 2: movingBlockPerm"
+                  << " at " << std::ctime(&time) << std::endl;
+    }
 
     // Step 3: Separating first block from other matrix
     //         Returns sigma_1 * P_1' and 2-3-4 blocks without zeroes and first row
@@ -248,20 +281,42 @@ matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
     matrix::Matrix otherBlocks(excratingResult.block);
     matrix::Matrix sigma_1P_1(excratingResult.sigmaP);
 
+    if (testRun) {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Completed computation of " << "Step 3: extractFirstBlock"
+                  << " at " << std::ctime(&time) << std::endl;
+    }
+
     // Step 4: Finding 2-3 block columns with:
     // (r-1,m-2)|0
     // 0|(r-1,m-2)
+    std::cout << "HERE" << std::endl;
     std::vector<unsigned long long>
     otherBlockColumns(attackSupporters::findingBlockColumns(otherBlocks,
                                                             rmSizes[0] - 1,
                                                             rmSizes[1]));
+    std::cout << "HERE" << std::endl;
     // Permutation on submatrix which separates: 2-3|4
     matrix::Matrix P4_2 = attackSupporters::movingBlockPerm(otherBlockColumns, otherBlocks.cols());
+    std::cout << "HERE" << std::endl;
     otherBlocks *= P4_2;
+    std::cout << "HERE" << std::endl;
     std::vector<matrix::Matrix> matrVec;
+    std::cout << "HERE" << std::endl;
     matrVec.push_back(matrix::diag(modRM.len() - P4_2.cols(), 1));
+    std::cout << "HERE" << std::endl;
     matrVec.push_back(P4_2);
+    std::cout << "HERE" << std::endl;
     matrix::Matrix P4_1(matrix::blockDiag(matrVec));
+    std::cout << "HERE" << std::endl;
+
+    if (testRun) {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Completed computation of " << "Step 4: Finding 2-3 block columns and movingBlockPerm"
+                  << " at " << std::ctime(&time) << std::endl;
+    }
 
     // Step 5: Separating 2-3 blocks from other matrix
     //         Returns sigma_2 * P_4' and 2-3 blocks without zeroes
@@ -269,16 +324,30 @@ matrix::Matrix modRM_attack(const codes::Lincode &modRM) {
     matrix::Matrix concatenatedRM(excratingResult.block);
     matrix::Matrix sigma_2P_4(excratingResult.sigmaP);
 
+    if (testRun) {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Completed computation of " << "Step 5: extractLastBlock"
+                  << " at " << std::ctime(&time) << std::endl;
+     }
+
     // Step 5: Attack concatenated code and return P2-3 permutation on blocks
     matrix::Matrix P23_2 = codes::concatenateRM_attack(concatenatedRM, 2);
     //std::vector<matrix::Matrix> matrVec;
     matrVec[1] = P23_2;
     matrVec.push_back(matrix::diag(matrVec[0].cols(), 1));
-    matrix::Matrix P23_1(matrix::blockDiag(matrVec));
+    matrix::Matrix P23(matrix::blockDiag(matrVec));
+
+    if (testRun) {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Completed computation of " << "Step 6: concatenateRM_attack"
+                  << " at " << std::ctime(&time) << std::endl;
+     }
 
     // Known blocks 2-3 and partly found blocks 1 and 4
     // Also known sigma_1*P_1 and sigma_2*P_4
-    return P1_1 * P4_1 * P23_1;
+    return P1_1 * P4_1 * P23;
 }
 
 } // namespace codes
