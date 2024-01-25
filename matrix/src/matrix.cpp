@@ -145,6 +145,7 @@ void Matrix::printMatrix(const std::string &filename, char sep, std::string end)
 }
 
 void Matrix::printVisualMatrix(unsigned long long blocks_num,
+                               bool printWeight,
                                const std::string &filename,
                                std::string end) const {
     if (filename == "NoName") {
@@ -158,6 +159,9 @@ void Matrix::printVisualMatrix(unsigned long long blocks_num,
                 } else if (at(i, j) == 1) {
                     std::cout << "+";
                 }
+            }
+            if (printWeight) {
+                std::cout << " [" << algorithms::hammingWeight(row(i)) << "]";
             }
             std::cout << end;
         }

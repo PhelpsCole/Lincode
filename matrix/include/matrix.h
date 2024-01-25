@@ -11,6 +11,8 @@
 #include <map>
 #include <fstream>
 
+#include "algorithms.h"
+
 
 namespace matrix {
 
@@ -45,6 +47,7 @@ public:
 
     void printMatrix(const std::string &filename = "NoName", char sep = ' ', std::string end = "\n") const;
     void printVisualMatrix(unsigned long long blocks_num = 1,
+                           bool printWeight = false,
                            const std::string &filename = "NoName",
                            std::string end = "\n") const;
     void printMatrixInBlocks(unsigned long long row_num = 1, unsigned long long col_num = 1) const;

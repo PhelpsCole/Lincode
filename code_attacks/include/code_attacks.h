@@ -8,7 +8,6 @@
 #include "codes.h"
 #include "encoder.h"
 #include "support_splitting.h"
-#include "algorithms.h"
 
 namespace codes {
 namespace attackSupporters {
@@ -18,7 +17,6 @@ struct ExtractBlockResult {
     matrix::Matrix sigmaP;
 };
 
-typedef std::vector<std::vector<unsigned long long>> VectorOfColumns;
 
 // Supporters from minder_shokrollahi 
 std::vector<std::vector<unsigned long long>>
@@ -41,10 +39,13 @@ ExtractBlockResult extractLastBlock(const matrix::Matrix &,
                                     unsigned long long blockRowsSize = 0);
 
 // Supporters from separate_RM_blocks
-VectorOfColumns
+std::vector<std::vector<unsigned long long>>
 separatingGaussElimination(matrix::Matrix &m, unsigned long long k1, unsigned long long k2);
-VectorOfColumns
-rowsIntersections(const matrix::Matrix &m, unsigned long long k1, unsigned long long k2);
+std::vector<std::vector<unsigned long long>>
+rowsIntersections(const matrix::Matrix &m,
+                  std::vector<unsigned long long> row1,
+                  std::vector<unsigned long long> row2,
+                  std::vector<unsigned long long> row3);
 
 } //namespace attackSupporters
 

@@ -57,21 +57,27 @@ void testRunner(matrix::Matrix rmCode,
     rmCode.printVisualMatrix(3);
 
     std::cout << "START separatingGaussElimination" << std::endl;
-    codes::attackSupporters::VectorOfColumns
+    std::vector<std::vector<unsigned long long>>
     result(codes::attackSupporters::separatingGaussElimination(rmCode, k1, k2));
     std::cout << "END separatingGaussElimination" << std::endl;
 
     std::cout << "Sublock:" << std::endl;
-    rmCode.printVisualMatrix(3);
-    std::cout << "First vector's elements of size " << result[0].size() << ":" << std::endl;
+    rmCode.printVisualMatrix(3, true);
+    std::cout << "First block columns [" << result[0].size() << "]:" << std::endl;
     printVector(result[0]);
-    std::cout << "Second vector's elements of size " << result[1].size() << ":" << std::endl;
+    std::cout << "First block rows [" << result[1].size() << "]:" << std::endl;
     printVector(result[1]);
-    std::cout << "Third vector's elements of size " << result[2].size() << ":" << std::endl;
+    std::cout << "First block columns [" << result[2].size() << "]:" << std::endl;
     printVector(result[2]);
+    std::cout << "First block rows [" << result[3].size() << "]:" << std::endl;
+    printVector(result[3]);
+    std::cout << "First block columns [" << result[4].size() << "]:" << std::endl;
+    printVector(result[4]);
+    std::cout << "First block rows [" << result[5].size() << "]:" << std::endl;
+    printVector(result[5]);
 
     std::cout << "START rowsIntersections" << std::endl;
-    result = codes::attackSupporters::rowsIntersections(rmCode, k1, k2);
+    result = codes::attackSupporters::rowsIntersections(rmCode, result[1], result[3], result[5]);
     std::cout << "END rowsIntersections" << std::endl;
     std::cout << "Vectors of intersections:" << std::endl;
     std::cout << "(1,1), [" << result[0].size() << "]: ";
