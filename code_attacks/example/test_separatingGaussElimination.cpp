@@ -119,6 +119,7 @@ void testRunner(matrix::Matrix rmCode,
             std::cout << result[5][i] << " ";
         }
     }
+    std::cout << std::endl;
     std::cout << "[" << ind << "]" << std::endl;
     std::cout << "END testRunner" << std::endl;
 }

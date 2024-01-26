@@ -1,4 +1,5 @@
 #include "support_functions.h"
+#include "sorts.h"
 
 namespace algorithms {
 
@@ -203,6 +204,85 @@ void addToBinWeightVector(std::pair<std::vector<char>, unsigned long long> &v, s
             n >>= 1;
         }
     }
+}
+
+bool isIntersected(const std::vector<unsigned long long> &a, const std::vector<unsigned long long> &b) {
+    for (size_t i = 0; i < a.size(); ++i) {
+        for (size_t j = 0; j < b.size(); ++j) {
+            if (a[i] == b[j]) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+std::vector<std::vector<unsigned long long>>
+classSplitter(const std::vector<std::vector<char>> &vv) {
+    std::vector<std::vector<unsigned long long>> classes;
+    for (unsigned long long i = 0; i < vv.size(); ++i) {
+        std::vector<unsigned long long> newClass;
+        for (unsigned long long j = 0; j < vv[i].size(); ++j) {
+            if (vv[i][j] == 1) {
+                newClass.push_back(j);
+            }
+        }
+        bool isIntersected = false;
+        std::vector<size_t> intersectedIndexes;
+        for (size_t k = 0; k < classes.size(); ++k) {
+            isIntersected = algorithms::isIntersected(classes[k], newClass);
+            if (isIntersected) {
+                intersectedIndexes.push_back(k);
+            }
+        }
+        if (!isIntersected) {
+            classes.push_back(newClass);
+        } else if (intersectedIndexes.size() == 1) {
+            for (size_t n = 0; n < newClass.size(); ++n) {
+                bool insideClass = false;
+                for (size_t m = 0; m < classes[intersectedIndexes[0]].size(); ++m) {
+                    if (classes[intersectedIndexes[0]][m] == newClass[n]) {
+                        insideClass = true;
+                        break;
+                    }
+                }
+                if (!insideClass) {
+                    classes[intersectedIndexes[0]].push_back(newClass[n]);
+                }
+            }
+        } else {
+            size_t ind = 0;
+            for (size_t k = 0; k < classes.size(); ++k) {
+                if (ind != intersectedIndexes.size() && intersectedIndexes[ind] == k) {
+                    std::vector<unsigned long long> tmp;
+                    for (size_t m = 0; m < classes[k].size(); ++m) {
+                        bool insideClass = false;
+                        for (size_t n = 0; n < newClass.size(); ++n) {
+                            if (classes[k][m] == newClass[n]) {
+                                insideClass = true;
+                                break;
+                            }
+                        }
+                        if (!insideClass) {
+                            tmp.push_back(classes[k][m]);
+                        }
+                    }
+                    newClass.insert(newClass.end(), tmp.begin(), tmp.end());
+                    ++ind;
+                } else if (ind != 0) {
+                    classes[k - ind] = classes[k];
+                }
+            }
+            classes.resize(classes.size() - ind);
+            classes.push_back(newClass);
+        }
+    }
+    for (size_t i = 0; i < classes.size(); ++i) {
+        algorithms::sorts::mergeSort(classes[i], [](const unsigned long long &a,
+                                                    const unsigned long long &b)
+                                                 { return a <= b; });
+    }
+    return classes;
 }
 
 } // namespace algorithms

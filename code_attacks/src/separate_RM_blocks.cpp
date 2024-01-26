@@ -78,9 +78,9 @@ separatingGaussElimination(matrix::Matrix &m,
         algorithms::sorts::mergeSort(usedRows,
                                      [](const unsigned long long &a, const unsigned long long &b)
                                      { return a <= b; });
-        //algorithms::sorts::mergeSort(result[2 * i + 1],
-        //                             [](const unsigned long long &a, const unsigned long long &b)
-        //                             { return a <= b; });
+        algorithms::sorts::mergeSort(result[2 * i + 1],
+                                     [](const unsigned long long &a, const unsigned long long &b)
+                                     { return a <= b; });
     }
     return result;
 }
