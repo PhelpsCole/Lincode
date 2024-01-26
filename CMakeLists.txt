@@ -9,7 +9,7 @@ add_compile_options( -W  -Wall      -pedantic       -fstack-protector-all
                      -Wcast-align   -Wpointer-arith -Wformat-security
                      -Wformat       -Wwrite-strings -Wcast-align
                      -Wno-long-long -Wunused        -Wcast-qual)
-
+option(BUILD_TEST "Build the unit tests" OFF)
 add_subdirectory(algorithms)
 add_subdirectory(matrix)
 add_subdirectory(codes)

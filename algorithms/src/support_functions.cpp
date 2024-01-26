@@ -218,8 +218,12 @@ bool isIntersected(const std::vector<unsigned long long> &a, const std::vector<u
 }
 
 std::vector<std::vector<unsigned long long>>
-classSplitter(const std::vector<std::vector<char>> &vv) {
+classSplitter(const std::vector<std::vector<char>> &vv,
+              const std::vector<unsigned long long> &start_class) {
     std::vector<std::vector<unsigned long long>> classes;
+    if (start_class.size() != 0) {
+        classes.push_back(start_class);
+    }
     for (unsigned long long i = 0; i < vv.size(); ++i) {
         std::vector<unsigned long long> newClass;
         for (unsigned long long j = 0; j < vv[i].size(); ++j) {
