@@ -42,6 +42,7 @@ void testSubblockStructure(size_t r, size_t m, bool permMode) {
     }
     std::vector<unsigned long long> columns(subblock.cols());
     std::iota(columns.begin(), columns.end(), 2 * subblock.cols() / 3);
+
     subblock.gaussElimination();
 
     std::vector<std::vector<unsigned long long>> sets;

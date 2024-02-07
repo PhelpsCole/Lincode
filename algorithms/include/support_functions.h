@@ -23,5 +23,8 @@ bool isIntersected(const std::vector<unsigned long long> &a,
 std::vector<std::vector<unsigned long long>>
 classSplitter(const std::vector<std::vector<char>> &vv,
               const std::vector<unsigned long long> &start_class = {});
+std::vector<std::pair<std::vector<unsigned long long>, std::vector<unsigned long long>>>
+combinationsOfSeparatingSets(unsigned long long p1, unsigned long long p2,
+                             std::vector<unsigned long long> columns);
 
 } // namespace algorithms

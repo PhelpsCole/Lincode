@@ -1,4 +1,6 @@
 #include "code_attacks.h"
+#include <chrono>
+#include <ctime>
 
 matrix::Matrix testRunner(codes::Lincode rmCode, size_t mode) {
     std::cout << "START testRunner:" << std::endl;
@@ -43,6 +45,11 @@ int main(int argc, char *argv[]) {
         m = std::stoi(argv[2]);
         mode = std::stoi(argv[3]);
     }
+    {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Started generating keys at " << std::ctime(&time) << std::endl;
+    }
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode pqsigRMcode(pqsigRM);
     
@@ -52,6 +59,11 @@ int main(int argc, char *argv[]) {
     matrix::Matrix P = matrix::generateRandomPermutation(pqsigRMcode.len(), distrib(gen));
 
     matrix::Matrix G(pqsigRMcode.toMatrix() * P);
+    {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Ended generating keys at " << std::ctime(&time) << std::endl;
+    }
     P = testRunner(codes::Lincode(G), mode);
     if (!codes::isEquivalent(pqsigRMcode, G*P)) {
         std::cout << "Same basises" << std::endl;

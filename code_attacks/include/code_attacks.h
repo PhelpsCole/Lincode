@@ -16,6 +16,10 @@ struct ExtractBlockResult {
     matrix::Matrix block;
     matrix::Matrix sigmaP;
 };
+typedef std::pair<std::vector<std::pair<std::vector<unsigned long long>,
+                                        std::vector<unsigned long long>>>,
+                 unsigned long long> combinationStepType;
+typedef std::vector<combinationStepType> combinationStepVector;
 
 
 // Supporters from minder_shokrollahi 
@@ -32,10 +36,13 @@ codes::Lincode nodRM(const codes::Lincode &rm, int a, int b);
 enum { PREPROC_SIMPLE_ID = 0, INVARIANT_SIZE_ID = 2 };
 std::vector<unsigned long long> findingBlockColumns(codes::Lincode,
                                                     size_t r, size_t m,
+                                                    bool returnMax = false,
                                                     bool testRun = false);
 ExtractBlockResult extractFirstBlock(const matrix::Matrix &,
+                                     bool findSigma = true,
                                      unsigned long long blockRowsSize = 0);
 ExtractBlockResult extractLastBlock(const matrix::Matrix &,
+                                    bool findSigma = true,
                                     unsigned long long blockRowsSize = 0);
 
 // Supporters from separate_RM_blocks
@@ -46,6 +53,10 @@ rowsIntersections(const matrix::Matrix &m,
                   std::vector<unsigned long long> row1,
                   std::vector<unsigned long long> row2,
                   std::vector<unsigned long long> row3);
+std::vector<std::vector<unsigned long long>>
+splittingToClassesByWords(const std::vector<std::vector<unsigned long long>> &minWeightWordsSupports,
+                          std::map<unsigned long long, size_t> &interCnt,
+                          unsigned long long minWeight);
 
 } //namespace attackSupporters
 

@@ -11,15 +11,52 @@ void printVector(const std::vector<unsigned long long> &v) {
     std::cout << std::endl;
 }
 
+// Returns vector of two vectors {cols, rows}
+// usedCols already contains startCols columns
 std::vector<std::vector<unsigned long long>>
 separatingGaussEliminationStep(matrix::Matrix &m,
                            std::vector<unsigned long long> &usedRows,
                            const std::vector<unsigned long long> &usedCols,
-                           unsigned long long k) {
+                           unsigned long long k,
+                           const std::vector<unsigned long long> &startCols = {}) {
     std::vector<std::vector<unsigned long long>> result(2);
     result[0].reserve(k);
     result[1].reserve(k);
-    unsigned long long indRows = 0, indCols = 0;
+    // Start columns are in usedCols
+    unsigned long long indRows = 0;
+    for (unsigned long long j = 0; j < startCols.size() && result[0].size() != k; ++j) {
+        for (unsigned long long i = 0; i < m.rows(); ++i) {
+            if (indRows < usedRows.size() && i == usedRows[indRows]) {
+                ++indRows;
+                continue;
+            }
+            if (m.at(i, startCols[j]) == 1) {
+                bool isUsed = false;
+                for (size_t l = 0; l < usedRows.size(); ++l) {
+                    if (usedRows[l] == i) {
+                        isUsed = true;
+                        continue;
+                    }
+                }
+                if (isUsed) {
+                    continue;
+                }
+                result[0].push_back(startCols[j]);
+                result[1].push_back(i);
+                usedRows.push_back(i);
+                for (size_t l = 0; l < m.rows(); ++l) {
+                    if (m.at(l, startCols[j]) == 1 && l != i) {
+                        for (size_t p = 0; p < m.cols(); ++p) {
+                            m.at(l, p) ^= m.at(i, p);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+    unsigned long long indCols = 0;
+    indRows = 0;
     for (unsigned long long j = 0; j < m.cols() && result[0].size() != k; ++j) {
         if (indCols < usedCols.size() && j == usedCols[indCols]) {
             ++indCols;
@@ -152,6 +189,102 @@ std::vector<std::vector<unsigned long long>> rowsIntersections(const matrix::Mat
     result.push_back(rowsIntersectionsStepSame(vv, row3));
     return result;
 }
+
+
+// Split minWeight codewords to two classes by criteria (0|0|x) and (x'|0|x')/(0|x'|x')
+// interPair sorted by count
+// Returns vector of rows and cols from different classes
+// {cols1, rows1, cols2, rows2}
+std::vector<std::vector<unsigned long long>>
+splittingToClassesByWords(const std::vector<std::vector<unsigned long long>> &minWeightWordsSupports,
+                          std::map<unsigned long long, size_t> &interCnt,
+                          unsigned long long minWeight) {
+    std::vector<unsigned long long> firstCols;
+    std::vector<unsigned long long> firstRows;
+    std::vector<unsigned long long> lastCols;
+    std::vector<unsigned long long> lastRows;
+    for (size_t i = 0; i < minWeightWordsSupports.size(); ++i) {
+        unsigned long long diagColumn;
+        std::vector<unsigned long long> firstColsTmp;
+        std::vector<unsigned long long> lastColsTmp;
+        std::vector<std::pair<unsigned long long, size_t>> notFounded;
+        // Fullfil candidates to classes
+        combinationStepVector vecCombinations;
+        for (size_t j = 0; j < minWeightWordsSupports[i].size(); ++j) {
+            if (interCnt.find(minWeightWordsSupports[i][j]) != interCnt.end()) {
+                bool found = false;
+                for (size_t l = 0; !found && l < firstCols.size(); ++l) {
+                    if (minWeightWordsSupports[i][j] == firstCols[l]) {
+                        firstColsTmp.push_back(minWeightWordsSupports[i][j]);
+                        found = true;
+                    }
+                }
+                for (size_t l = 0; !found && l < lastCols.size(); ++l) {
+                    if (minWeightWordsSupports[i][j] == lastCols[l]) {
+                        lastColsTmp.push_back(minWeightWordsSupports[i][j]);
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    bool isInserted = false;
+                    for (auto iter = notFounded.begin(); !isInserted && iter != notFounded.end(); ++iter) {
+                        if (interCnt[minWeightWordsSupports[i][j]] < iter->second) {
+                            notFounded.push_back(std::make_pair(minWeightWordsSupports[i][j],
+                                                                interCnt[minWeightWordsSupports[i][j]]));
+                            isInserted = true;
+                        }
+                    }
+                    if (!isInserted) {
+                        notFounded.push_back(std::make_pair(minWeightWordsSupports[i][j],
+                                                            interCnt[minWeightWordsSupports[i][j]]));
+                    }
+                }
+            } else {
+                diagColumn = j;
+            }
+        }
+        unsigned long long separateVal = minWeight / 2;
+        std::vector<unsigned long long> notFoundedVector(notFounded.size());
+        for (size_t i = 0; i < notFounded.size(); ++i) {
+            notFoundedVector[i] = notFounded[i].first;
+        }
+        if (lastColsTmp.size() > separateVal) {
+            if (firstColsTmp.size() == 0) {
+                for (size_t l = 0; l < notFoundedVector.size(); ++l) {
+                    lastColsTmp.push_back(notFoundedVector[l]);
+                }
+                lastColsTmp.push_back(diagColumn);
+                // Need to update
+                lastRows.push_back(i);
+            } else {
+                // Bad case, refind
+            }
+        } else if (firstColsTmp.size() > separateVal) {
+            // Bad case, refind
+        } else {
+            // Fork case, need to be updated
+            unsigned long long p1;
+            unsigned long long p2;
+            combinationStepType combStep = std::make_pair(algorithms::combinationsOfSeparatingSets(p1, p2, notFoundedVector), 0);
+            if (firstColsTmp.size() == 0) {
+                combStep.first.insert(combStep.first.begin(), std::make_pair(notFoundedVector, std::vector<unsigned long long>()));
+                // Need to update
+                lastRows.push_back(i);
+            } else {
+                // Need to update
+                firstRows.push_back(i);
+            }
+            for (size_t i = 0; i < combStep.first[combStep.second].first.size(); ++i) {
+                firstCols.push_back(combStep.first[combStep.second].first[i]);
+            }
+            for (size_t i = 0; i < combStep.first[combStep.second].second.size(); ++i) {
+                lastCols.push_back(combStep.first[combStep.second].second[i]);
+            }
+        }
+    }
+    return {firstCols, firstRows, lastCols, lastRows};
+}
+
 
 } //namespace attackSupporters
 

@@ -289,4 +289,37 @@ classSplitter(const std::vector<std::vector<char>> &vv,
     return classes;
 }
 
+// Returns all combinations of separating vector to two sets of sizes p1 and p2
+std::vector<std::pair<std::vector<unsigned long long>, std::vector<unsigned long long>>>
+combinationsOfSeparatingSets(unsigned long long p1, unsigned long long p2,
+                             std::vector<unsigned long long> columns) {
+    std::vector<std::pair<std::vector<unsigned long long>, std::vector<unsigned long long>>>
+    result;
+    result.push_back(std::make_pair(std::vector<unsigned long long>({}), std::vector<unsigned long long>({})));
+    for (unsigned long long i = 0; i < columns.size(); ++i) {
+        std::vector<std::pair<std::vector<unsigned long long>, std::vector<unsigned long long>>>
+        tmpResult;
+        for (unsigned long long j = 0; j < result.size(); ++j) {
+            if (result[j].first.size() != p1 && result[j].second.size() != p2) {
+                std::vector<unsigned long long> tmp1(result[j].first);
+                std::vector<unsigned long long> tmp2(result[j].second);
+                std::vector<unsigned long long> tmp(tmp1);
+                tmp.push_back(columns[i]);
+                tmpResult.push_back(std::make_pair(tmp, tmp2));
+                tmp = tmp2;
+                tmp.push_back(columns[i]);
+                tmpResult.push_back(std::make_pair(tmp1, tmp));
+            } else if (result[j].first.size() != p1) {
+                result[j].first.push_back(columns[i]);
+                tmpResult.push_back(result[j]);
+            } else if (result[j].second.size() != p2) {
+                result[j].second.push_back(columns[i]);
+                tmpResult.push_back(result[j]);
+            }
+        }
+        result = tmpResult;
+    }
+    return result;
+}
+
 } // namespace algorithms
