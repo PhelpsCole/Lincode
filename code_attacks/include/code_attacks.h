@@ -58,13 +58,28 @@ splittingToClassesByWords(const std::vector<std::vector<unsigned long long>> &mi
                           std::map<unsigned long long, size_t> &interCnt,
                           unsigned long long minWeight);
 
+std::vector<unsigned long long> hadPowerCounter(const codes::Lincode &modRM,
+                                                unsigned long long k1,
+                                                unsigned long long k2,
+                                                unsigned long long minWeight,
+                                                unsigned long long iterationNumber,
+                                                bool printData = true);
+std::vector<unsigned long long>
+hadPowerCounterSelectors(const codes::Lincode &modRM,
+                         unsigned long long iterationNumber,
+                         bool printData = true);
+
 } //namespace attackSupporters
 
 matrix::Matrix minder_shokrollahi(codes::Lincode rm);
 matrix::Matrix chizhov_borodin(const codes::Lincode &rm);
 matrix::Matrix concatenateRM_attack(const codes::Lincode &rm, size_t blocksNum);
-// Returns Matrix of code unlike other attacks
-matrix::Matrix modRM_attack(const codes::Lincode &modRM, bool testRun = false);
+std::vector<std::vector<unsigned long long>>
+separateConcatenatedCodeToSets(const codes::Lincode &concatCode);
+matrix::Matrix separateConcatenatedCodes(const codes::Lincode &concatCode);
+// Returns perm 1 x P_{2-3} x 1, P'_1 and P'_4
+std::vector<matrix::Matrix>
+modRM_attack(const codes::Lincode &modRM, bool testRun = false);
 
 std::vector<unsigned long long> separate_blocks(const codes::Lincode &c,
                                                 size_t k, size_t n,

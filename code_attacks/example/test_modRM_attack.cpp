@@ -11,7 +11,12 @@ matrix::Matrix testRunner(codes::Lincode rmCode, size_t mode) {
         rmCode.printCodeSizes();
     }
     std::cout << "START modRM_attack" << std::endl;
-    matrix::Matrix permMatr(codes::modRM_attack(rmCode, true));
+    std::vector<matrix::Matrix> ans(codes::modRM_attack(rmCode, true));
+    if (ans.size() == 0) {
+        std::cerr << "Wrong matrix and zero result" << std::endl;
+        return matrix::Matrix(0, 0);
+    }
+    matrix::Matrix permMatr = ans[0];
     std::cout << "END modRM_attack" << std::endl;
     if (mode == 0) {
         std::cout << "Perm matrix:" << std::endl;

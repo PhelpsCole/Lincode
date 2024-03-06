@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
     size_t m = 7;
     size_t invarId = 2;
     size_t cicleIter = 1;
-    size_t mod = 1;
+    size_t mod = 0;
     if (argc <= 2) {
         std::cout << "Input args in format: r m invarId mod cicleIter" << std::endl;
         std::cout << "Where mod=0 -- testIterative, mod=1 -- testMinIterations" << std::endl;

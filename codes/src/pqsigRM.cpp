@@ -16,8 +16,8 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m) {
     unsigned long long p1 = distrib(gen);
     unsigned long long p2 = distrib(gen);
     //std::cout << "p1 = " << p1 << ", p2 = " << p2 << std::endl;
-    A *= matrix::generateRandomPermutation(size, p1);
-    C *= matrix::generateRandomPermutation(size, p2);
+    A = A * matrix::generateRandomPermutation(size, p1);
+    C = C * matrix::generateRandomPermutation(size, p2);
     matrix::Matrix part1 = A;
     part1.concatenateByRows(A);
     part1.concatenateByRows(part1); // A^s|A^s|A^s|A^s

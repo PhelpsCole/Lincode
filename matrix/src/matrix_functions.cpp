@@ -110,11 +110,22 @@ Matrix blockDiag(const std::vector<matrix::Matrix> &blocks) {
 }
 
 // Returns hadamard product of linear combinations A and B
-Matrix hadamardProduct(const Matrix &A, const Matrix &B) {
+Matrix hadamardProduct(const Matrix &A, const Matrix &B, bool full) {
     if (A.cols() != B.cols()) {
         throw std::invalid_argument("Incorrect inputted matrix.");
     }
     unsigned long long k1 = A.rows(), k2 = B.rows(), k12 = A.cols();
+    if (full) {
+        Matrix res(k1 * k2, k12);
+        for (unsigned long long i = 0; i < k1; ++i) {
+            for (unsigned long long j = 0; j < k2; ++j) {
+                for (unsigned long long p = 0; p < k12; ++p) {
+                    res.at(i * k2 + j, p) = A.at(i, p) & B.at(j, p);
+                }
+            }
+        }
+        return res;
+    }
     Matrix res(0, 0);
     std::vector<char> tmp(k12);
     for (unsigned long long i = 0; i < k1; ++i) {
@@ -150,6 +161,21 @@ Matrix hadPower(const Matrix &m, size_t power) {
         power >>= 1;
         if (power) {
             tmp = hadamardProduct(tmp, tmp);
+        }
+    }
+    return res;
+}
+
+Matrix hadamardSquare(const Matrix &m, bool full) {
+    if (!full) {
+        return hadPower(m, 2);
+    }
+    Matrix res(m.rows() * (m.rows() - 1) / 2, m.cols());
+    for (unsigned long long i = 0; i < m.rows() - 1; ++i) {
+        for (unsigned long long j = i + 1; j < m.rows(); ++j) {
+            for (unsigned long long k = 0; k < m.cols(); ++k) {
+                res.at(i * m.rows() + j, k) = m.at(i, k) & m.at(j, k);
+            }
         }
     }
     return res;

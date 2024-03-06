@@ -73,6 +73,26 @@ std::vector<unsigned long long> supportGenerator(const std::vector<unsigned long
     return res;
 }
 
+// Generate seq from 1 to max of size size
+std::vector<unsigned long long> generateCols(unsigned long long max, unsigned long long size) {
+    std::vector<unsigned long long> res(size);
+    std::vector<unsigned long long> unused(max, 1);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<unsigned long long> distrib(0, max - 1);
+    for (size_t i = 0; i < res.size(); ++i) {
+        unsigned long long ind = distrib(gen);
+        while (!unused[ind]) {
+            ind = distrib(gen);
+        }
+        unused[ind] = 0;
+        res[i] = ind;
+    }
+    algorithms::sorts::mergeSort(res, [](const unsigned long long &a,
+                                         const unsigned long long &b)
+                                         { return a <= b; });
+    return res;
+}
 
 // Slow, need to fix
 std::vector<std::vector<unsigned long long>> generatePermSequences(size_t n, size_t k) {

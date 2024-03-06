@@ -80,8 +80,9 @@ Matrix diag(unsigned long long n, char elem);
 Matrix blockDiag(unsigned long long blocksNum, const Matrix &);
 Matrix blockDiag(const std::vector<matrix::Matrix> &);
 Matrix hadamardProductSafe(const Matrix &, const Matrix &);
-Matrix hadamardProduct(const Matrix &, const Matrix &);
+Matrix hadamardProduct(const Matrix &, const Matrix &, bool full = false);
 Matrix hadPower(const Matrix &, size_t);
+Matrix hadamardSquare(const Matrix &m, bool full = false);
 
 std::vector<char> solution(Matrix, const std::vector<char> &);
 

@@ -31,9 +31,13 @@ matrix::Matrix separateRMs(codes::Lincode concRM, size_t r, size_t m) {
     }
     if (r != 0) {
         q = m / r - 1;
+        //codes::Lincode temp(codes::hadPower(concRM, q));
+        //temp.dual();
+        //concRM = codes::hadamardProduct(codes::hadPower(concRM, q - 1), temp);
         codes::Lincode temp(codes::hadPower(concRM, q));
-        temp.dual();
-        concRM = codes::hadamardProduct(codes::hadPower(concRM, q - 1), temp);
+        codes::Lincode dual(temp);
+        dual.dual();
+        concRM = codes::hadamardProduct(dual, temp);
         concRM.dual();
     }
     matrix::Matrix concMatr(concRM.toMatrix());
@@ -53,11 +57,11 @@ matrix::Matrix concatenateRM_attack(const codes::Lincode &concRM, size_t blocksN
     std::vector<unsigned long long> rows(separated.rows() / blocksNum);
     std::vector<matrix::Matrix> permBlockVec;
     for (size_t i = 0; i < blocksNum; ++i) {
-        std::iota(cols.begin(), cols.end(), i * separated.cols() / blocksNum);
+        std::iota(cols.begin(), cols.end(), i * cols.size());
         unsigned long long rowsPos;
         for (size_t j = 0; j < blocksNum; ++j) {
-            if (separated.at(j * separated.rows() / blocksNum, cols[0]) == 1) {
-                rowsPos = j * separated.rows() / blocksNum;
+            if (separated.at(j * rows.size(), cols[0]) == 1) {
+                rowsPos = j * rows.size();
                 break;
             }
         }

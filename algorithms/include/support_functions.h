@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <random>
 
 namespace algorithms {
 
@@ -11,6 +12,7 @@ size_t factorial(size_t);
 size_t gcd(size_t, size_t);
 std::vector<int> extendedGcd(int x, int y);
 std::vector<std::vector<unsigned long long>> generatePermSequences(size_t, size_t);
+std::vector<unsigned long long> generateCols(unsigned long long max, unsigned long long size);
 std::vector<std::vector<unsigned long long>> permsOfVector(const std::vector<size_t> &, size_t);
 std::vector<std::vector<unsigned long long>>
 permsOfVectorWithNew(const std::vector<size_t> &, size_t, size_t);

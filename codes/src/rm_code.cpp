@@ -30,12 +30,12 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
     unsigned long long code_len = 1 << m;
     std::vector<char> a(code_len, 1);
 
-    std::list<std::pair<int, std::vector<char>>> rows;
+    std::list<std::pair<size_t, std::vector<char>>> rows;
     rows.emplace_back(-1, a);
-
+    
     if (r >= 1) {
         std::vector<std::vector<char>> monoms(m);
-        for (unsigned int i = 0; i < m; ++i) {
+        for (size_t i = 0; i < m; ++i) {
             size_t r = 0;
             int b = 0;
             for (unsigned long long j = 0; j < code_len; ++j) {
@@ -54,9 +54,9 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
         auto lEnd = rows.begin();
         std::advance(lEnd, rows.size() - 1);
 
-        for (unsigned int i = 1; i < r; ++i) {
+        for (size_t i = 1; i < r; ++i) {
             for (auto e = std::next(lStart); e != lEnd; ++e) {
-                for (unsigned int j = e->first + 1; j < m; ++j) {
+                for (size_t j = e->first + 1; j < m; ++j) {
                     std::vector<char> current_row(code_len);
                     for (unsigned long long k = 0; k < code_len; ++k) {
                         current_row[k] = monoms[j][k] & e->second[k];
@@ -64,7 +64,7 @@ std::vector<std::vector<char>> generateRMCode(size_t r, size_t m) {
                     rows.emplace_back(j, current_row);
                 }
             }
-            for (unsigned int j = lEnd->first + 1; j < m; ++j) {
+            for (size_t j = lEnd->first + 1; j < m; ++j) {
                 std::vector<char> current_row(code_len);
                 for (unsigned long long k = 0; k < code_len; ++k) {
                     current_row[k] = monoms[j][k] & lEnd->second[k];
