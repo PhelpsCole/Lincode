@@ -151,22 +151,15 @@ std::vector<unsigned long long> findingBlockColumns(codes::Lincode pqsigRMcode,
 }
 
 matrix::Matrix movingBlockPerm(std::vector<unsigned long long> &columns,
-                               unsigned long long matrSize) {
-    //std::cout << columns.size() << ":" << std::endl;
-    //for (size_t i = 0; i < columns.size(); ++i) {
-    //    std::cout << columns[i] << " ";
-    //}
-    //std::cout << std::endl;
+                               unsigned long long matrSize,
+                               bool ordered=false) {
     matrix::Matrix P(matrSize, matrSize);
-    algorithms::sorts::mergeSort(columns,
-                                 [] (const unsigned long long &a,
-                                     const unsigned long long &b)
-                                 { return a <= b; });
-    //std::cout << "After sort:" << std::endl;
-    //for (size_t i = 0; i < columns.size(); ++i) {
-    //    std::cout << columns[i] << " ";
-    //}
-    //std::cout << std::endl;
+    if (!ordered) {
+        algorithms::sorts::mergeSort(columns,
+                                     [] (const unsigned long long &a,
+                                         const unsigned long long &b)
+                                     { return a <= b; });
+    }
     size_t delta = 0;
     for (size_t i = 0; i < P.cols(); ++i) {
         if (i == columns[delta]) {
@@ -213,42 +206,30 @@ extractFirstBlock(const matrix::Matrix &afterSSA,
                                                         sigma_1P_1});
 }
 
-matrix::Matrix moveLastBlock(const matrix::Matrix &afterSeparateRM,
-                             size_t r, size_t m) {
-    size_t blocksNum = 3;
-    unsigned long long rmCodeSize = codes::codeSizeFromRM(r, m);
-    std::vector<unsigned long long> cols(afterSeparateRM.cols() / blocksNum);
-    std::vector<unsigned long long> rows(afterSeparateRM.rows());
+matrix::Matrix
+separatorToLastBlocks(const std::vector<std::vector<unsigned long long>> &columnSets,
+                      const matrix::Matrix &otherBlocks, unsigned long long codeSize,
+                      unsigned long long matrSize) {
+    std::vector<unsigned long long> rows(otherBlocks.rows());
     std::iota(rows.begin(), rows.end(), 0);
-    size_t i = 0;
-    for (; i < blocksNum; ++i) {
-        std::iota(cols.begin(), cols.end(), i * cols.size());
-        matrix::Matrix tmp(afterSeparateRM.submatrix(rows, cols));
-        if (tmp.gaussElimination(true).size() != rmCodeSize) {
-            break;
+    size_t block4 = columnSets.size();
+
+    //std::vector<unsigned long long> columns(otherBlocks.cols() / 3);
+    //std::iota(columns.begin(), columns.end(), 0);
+    std::vector<unsigned long long> columns;
+
+    for (size_t i = 0; i < columnSets.size(); ++i) {
+        if (block4 == columnSets.size()) {
+            matrix::Matrix temp(otherBlocks.submatrix(rows, columnSets[i]));
+            if (temp.gaussElimination(true).size() != codeSize) {
+                block4 = i;
+                continue;
+            }
         }
+        columns.insert(columns.end(), columnSets[i].begin(), columnSets[i].end());
     }
-    if (i == blocksNum) {
-        return matrix::diag(afterSeparateRM.cols(), 1);
-    }
-    matrix::Matrix I(matrix::diag(afterSeparateRM.cols() / blocksNum, 1));
-    matrix::Matrix O(afterSeparateRM.cols() / blocksNum, afterSeparateRM.cols() / blocksNum);
-    matrix::Matrix len1(I);
-    len1.concatenateByRows(O);
-    matrix::Matrix len2(O);
-    len2.concatenateByRows(len1);
-    len1.concatenateByRows(O);
-    matrix::Matrix len3(O);
-    len3.concatenateByRows(O);
-    len3.concatenateByRows(I);
-    if (i == 0) {
-        len1.concatenateByColumns(len3);
-        len1.concatenateByColumns(len2);
-        return len1;
-    }
-    len3.concatenateByColumns(len2);
-    len3.concatenateByColumns(len1);
-    return len3;
+    columns.insert(columns.end(), columnSets[block4].begin(), columnSets[block4].end());
+    return movingBlockPerm(columns, matrSize, true);
 }
 
 // Finding sigma_2 and removing block without first row
@@ -269,8 +250,8 @@ extractLastBlock(const matrix::Matrix &afterSSA,
     }
     std::iota(blockRows.begin(), blockRows.end(), 0);
 
-    // 0|(r-1,m-2)
     // (r-1,m-2)|0
+    // 0|(r-1,m-2)
     matrix::Matrix concatenatedRM = block.submatrix(blockRows, blockColumns);
 
     // Finding sigma_2P_2
@@ -284,6 +265,17 @@ extractLastBlock(const matrix::Matrix &afterSSA,
         sigma_2P_2 = codes::chizhov_borodin(block.submatrix(blockRows, blockColumns));
     }
     return codes::attackSupporters::ExtractBlockResult({concatenatedRM, sigma_2P_2});
+}
+
+matrix::Matrix findRMmiddle(const matrix::Matrix &concRM) {
+    std::vector<unsigned long long> rows(concRM.rows() / 2);
+    std::iota(rows.begin(), rows.end(), 0);
+    std::vector<unsigned long long> cols(concRM.cols() / 2);
+    std::iota(cols.begin(), cols.end(), 0);
+    matrix::Matrix first(codes::chizhov_borodin(concRM.submatrix(rows, cols)));
+    std::iota(rows.begin(), rows.end(), rows.size());
+    std::iota(cols.begin(), cols.end(), cols.size());
+    return matrix::blockDiag({first, codes::chizhov_borodin(concRM.submatrix(rows, cols))});
 }
 
 } // namespace attackSupporters
@@ -343,39 +335,44 @@ modRM_attack(const codes::Lincode &modRM, bool testRun) {
                   << " at " << std::ctime(&time) << std::endl;
     }
 
-    // Step 4: Separating (r,m)x(r,m)xC constraction in matrix:
+    // Step 4: Separating (r,m)x(r,m)xC construction in had square of matrix:
     // (r-1,m-2)|    0    |     (r-1,m-2)
     //     0    |(r-1,m-2)|     (r-1,m-2)
     //     0    |    0    |(r-2,m-2)^\sigma_2
-    // And remove perm from 2-3 blocks
+    // To column sets
     // Works on 2r - 2 < m - 2
-    //FIX HERE
-    matrix::Matrix P234(0,0);// = codes::concatenateRM_attack(otherBlocks, 3, true);
-    std::cout << "HERE" << std::endl;
-    otherBlocks *= P234;
+    std::vector<std::vector<unsigned long long>>
+    columnSets(separateConcatenatedCodeToSets(matrix::hadPower(otherBlocks, 2)));
 
     if (testRun) {
         auto now = std::chrono::system_clock::now();
         std::time_t time = std::chrono::system_clock::to_time_t(now);
-        std::cout << "Completed computation of " << "Step 4: Separating (r,m)x(r,m)xC"
+        std::cout << "Completed computation of " << "Step 4: separateConcatenatedCodeToSets"
                   << "constraction in matrix" << " at " << std::ctime(&time) << std::endl;
     }
 
-    // Step 5: Move 4 block to the end
-    matrix::Matrix movePerm = codes::attackSupporters::moveLastBlock(otherBlocks, rmSizes[0] - 1, rmSizes[1] - 2);
-    otherBlocks *= movePerm;
+    // Step 5: Finding 4 block set and permutation which separates and sorts 2|3|4 blocks:
+    matrix::Matrix P234_sub(attackSupporters::
+                            separatorToLastBlocks(columnSets, otherBlocks,
+                                                  codes::codeSizeFromRM(rmSizes[0] - 1,
+                                                                        rmSizes[0] - 2),
+                                                  modRM.len()));
+    otherBlocks *= P234_sub;
+    matrix::Matrix P234(matrix::blockDiag({matrix::diag(firstBlockColumns.size(), 1),
+                                           P234_sub}));
 
     if (testRun) {
         auto now = std::chrono::system_clock::now();
         std::time_t time = std::chrono::system_clock::to_time_t(now);
-        std::cout << "Completed computation of " << "Step 5: moveLastBlock"
-                  << " at " << std::ctime(&time) << std::endl;
-     }
+        std::cout << "Completed computation of " << "Step 5: separatorToLastBlocks"
+                  << "constraction in matrix" << " at " << std::ctime(&time) << std::endl;
+    }
 
     // Step 6: Separating 2-3 blocks from other matrix
     //         Returns sigma_2 * P_4' and 2-3 blocks without zeroes
     excratingResult = attackSupporters::extractLastBlock(otherBlocks, findSigmas);
     matrix::Matrix sigma_2P_4(excratingResult.sigmaP);
+    otherBlocks = excratingResult.block;
 
     if (testRun) {
         auto now = std::chrono::system_clock::now();
@@ -384,9 +381,22 @@ modRM_attack(const codes::Lincode &modRM, bool testRun) {
                   << " at " << std::ctime(&time) << std::endl;
      }
 
+    // Step 7: Find perm on 2 and 3 blocks
+    //         otherBlocks needs to be sorted
+    matrix::Matrix P23(matrix::blockDiag({matrix::diag(firstBlockColumns.size(), 1),
+                                          attackSupporters::findRMmiddle(otherBlocks),
+                                          matrix::diag(sigma_2P_4.cols(), 1)}));
+
+    if (testRun) {
+        auto now = std::chrono::system_clock::now();
+        std::time_t time = std::chrono::system_clock::to_time_t(now);
+        std::cout << "Completed computation of " << "Step 7: findRMmiddle"
+                  << " at " << std::ctime(&time) << std::endl;
+     }
+
     // Known blocks 2-3 and partly found blocks 1 and 4
     std::vector<matrix::Matrix> ans;
-    ans.push_back(P1_1 * P234 * movePerm);
+    ans.push_back(P1_1 * P234 * P23);
     ans.push_back(sigma_1P_1);
     ans.push_back(sigma_2P_4);
     return ans;
