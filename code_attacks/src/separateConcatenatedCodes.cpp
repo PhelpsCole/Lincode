@@ -3,7 +3,6 @@
 namespace codes {
 namespace attackSupporters {
 
-} //namespace attackSupporters
 void printVector(const std::vector<unsigned long long> &vec) {
     for (unsigned long long i = 0; i < vec.size(); ++i) {
         std::cout << vec[i] << " ";
@@ -21,6 +20,8 @@ void printRow(const std::vector<char> &row) {
     }
     std::cout << std::endl;
 }
+
+} //namespace attackSupporters
 
 std::vector<std::vector<unsigned long long>>
 separateConcatenatedCodeToSets(const codes::Lincode &concatCode) {
@@ -66,9 +67,31 @@ separateConcatenatedCodeToSets(const codes::Lincode &concatCode) {
         }
     }
     std::vector<std::vector<unsigned long long>> ans;
+    std::vector<unsigned long long> tmp;
+    unsigned long long maxSize = 0;
     for (auto iter = separator.begin(); iter != separator.end(); ++iter) {
-        ans.push_back(iter->second);
+        if (iter->second.size() == 1) {
+            tmp.push_back(iter->second[0]);
+        } else {
+            if (iter->second.size() > maxSize) {
+                maxSize = iter->second.size();
+            }
+            ans.push_back(iter->second);
+        }
     }
+    for (size_t i = 0; i < ans.size(); ++i) {
+        if (ans[i].size() != maxSize) {
+            ans[i].insert(ans[i].end(), tmp.begin(), tmp.end());
+            algorithms::sorts::mergeSort(ans[i],
+                                         [](const unsigned long long &a,
+                                            const unsigned long long &b) { return a <= b; });
+            return ans;
+        }
+    }
+    algorithms::sorts::mergeSort(tmp,
+                                 [](const unsigned long long &a,
+                                    const unsigned long long &b) { return a <= b; });
+    ans.push_back(tmp);
     return ans;
 }
 

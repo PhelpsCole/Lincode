@@ -32,6 +32,7 @@ public:
     void operator+=(const Matrix &other);
     Matrix operator*(const Matrix &other) const;
     void operator*=(const Matrix &other);
+    void addRow(unsigned long long rowInd, const std::vector<char> &row);
 
     char &at(unsigned long long row, unsigned long long col);
     const char &at(unsigned long long row, unsigned long long col) const;
@@ -52,6 +53,9 @@ public:
                            std::string end = "\n") const;
     void printMatrixInBlocks(unsigned long long row_num = 1, unsigned long long col_num = 1) const;
 
+    void copyToSubMatrix(unsigned long long sepRow, unsigned long long sepCol,
+                         const Matrix &other, unsigned long long sepRow2, unsigned long long sepCol2,
+                         unsigned long long rowSize, unsigned long long colSize);
     void insertRow(unsigned long long, const std::vector<char> &, bool replace = false);
     void insertTriangle(std::vector<char>);
     void T();

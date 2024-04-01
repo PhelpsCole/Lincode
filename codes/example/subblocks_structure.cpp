@@ -40,9 +40,28 @@ void testSubblockStructure(size_t r, size_t m, bool permMode) {
     } else {
         subblock = M * subblock;
     }
-    std::vector<unsigned long long> columns(subblock.cols());
-    std::iota(columns.begin(), columns.end(), 2 * subblock.cols() / 3);
+/*
+    codes::Lincode hull(subblock);
+    hull.printVisualCode(3);
+    std::cout << "Dual:" << std::endl;
+    hull.dual();
+    hull.printVisualCode(3);
+    hull = subblock;
+    hull = hull.hull();
+    std::cout << "Hull:" << std::endl;
+    hull.printVisualCode(3);
+    hull.basisView();
+    hull.printVisualCode(3);
 
+    size_t power = m / (m - r);
+    std::cout << power << std::endl;
+    //hull = subblock;
+    //hull.dual();
+    hull = hadPower(hull, power);
+    hull.dual();
+    hull.toMatrix().printVisualMatrix(3, true);
+    return;
+*/
     subblock.gaussElimination();
 
     std::vector<std::vector<unsigned long long>> sets;
@@ -103,7 +122,7 @@ int main(int argc, char *argv[]) {
         std::cout << "Input args in format: r m permMode iter_num" << std::endl;
         std::cout << "Where permMode=0 is *= P" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
-        std::cout << "By 2: r m " << permMode << iter_num << std::endl;
+        std::cout << "By 2: r m " << permMode << " " << iter_num << std::endl;
         std::cout << "By 3: r m permMode " << iter_num << std::endl;
         return 0;
     } else if (argc == 3) {

@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
         std::cout << "Where mode=1 -- print visual, mode=0 -- print sizes" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
         std::cout << "By 2: r m " << permMode << " " << mode << " " << iterNum << std::endl;
-        std::cout << "By 3: r m permMode" << mode << " " << iterNum << std::endl;
+        std::cout << "By 3: r m permMode " << mode << " " << iterNum << std::endl;
         std::cout << "By 4: r m permMode mode " << iterNum << std::endl;
         return 0;
     } else if (argc == 3) {

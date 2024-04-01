@@ -1,9 +1,5 @@
 #include "ssa.h"
 
-//
-#include <chrono>
-#include <ctime>
-//
 
 namespace codes {
 
@@ -33,11 +29,6 @@ SSANStructure ssaNStructure(codes::Lincode c,
                             size_t n_sign,
                             size_t preprocId) {
     codes::invariants::runPreproc(c, preprocId);
-    /**/
-    auto now = std::chrono::system_clock::now();
-    std::time_t time = std::chrono::system_clock::to_time_t(now);
-    std::cout << "Completed preprocCode at " << std::ctime(&time) << std::endl;
-    /**/
     size_t len = c.len();
     SSANStructure result;
     equivClassesMap equivClasses;

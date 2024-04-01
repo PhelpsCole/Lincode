@@ -1,9 +1,11 @@
 add_library(code_attacks STATIC chizhov_borodin.cpp
                                 minder_shokrollahi.cpp
+                                modRM_remover.cpp
                                 modRM_attack.cpp
                                 concatenateRM_attack.cpp
                                 separate_RM_blocks.cpp
                                 hadPowerCounter.cpp
+                                hadPowerCounterTwice.cpp
                                 hadPowerCounterSelectors.cpp
                                 separateConcatenatedCodes.cpp)
 

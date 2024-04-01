@@ -1,58 +1,15 @@
 #include "support_splitting.h"
+#include "ssa_test.h"
 #include <fstream>
 #include <chrono>
 #include <ctime>
-
-void printSSAStructure(const codes::SSAStructure &s,
-                       const std::string &filename) {
-    std::ofstream out;
-    out.open(filename);
-    if (out.is_open()) {
-        for (size_t i = 0; i != s.size(); ++i) {
-            out << i << "(" << s[i].size() << "): ";
-            for (size_t j = 0; j != s[i].size(); ++j) {
-                out << " [";
-                for (size_t k = 0; k != s[i][j].first.size(); ++k) {
-                    out << s[i][j].first[k] << ", ";
-                }
-                out << "]:" << s[i][j].second;
-            }
-            out << std::endl;
-        }
-    }
-    out.close();
-}
-
-void printSSANStructure(const codes::SSANStructure &s,
-                        const std::string &filename) {
-    std::ofstream out;
-    out.open(filename);
-    if (out.is_open()) {
-        for (auto iter = s.begin(); iter != s.end(); ++iter) {
-            out << "(";
-            for (size_t j = 0; j != iter->first.size(); ++j) {
-                out << iter->first[j] << ", ";
-            }
-            out << "): ";
-            for (size_t j = 0; j != iter->second.size(); ++j) {
-                out << " [";
-                for (size_t k = 0; k != iter->second[j].first.size(); ++k) {
-                    out << iter->second[j].first[k] << ", ";
-                }
-                out << "]:" << iter->second[j].second;
-            }
-            out << std::endl;
-        }
-    }
-    out.close();
-}
 
 void testPqsigRM(size_t r, size_t m, size_t invariantId,
                  const std::string &filename, size_t preprocId = 0) {
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode c(pqsigRM);
     codes::SSAStructure s = codes::ssaStructure(c, invariantId, preprocId);
-    printSSAStructure(s, filename);
+    ssa_test::printSSAStructure(s, filename);
 }
 
 void testPqsigRM_N(size_t r, size_t m, size_t invariantId,
@@ -60,7 +17,7 @@ void testPqsigRM_N(size_t r, size_t m, size_t invariantId,
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode c(pqsigRM);
     codes::SSANStructure s = codes::ssaNStructure(c, invariantId, n_sign, preprocId);
-    printSSANStructure(s, filename);
+    ssa_test::printSSANStructure(s, filename);
 }
 
 void testRunner(size_t r, size_t m, size_t invariantId,

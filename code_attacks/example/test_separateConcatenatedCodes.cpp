@@ -63,7 +63,7 @@ void testRunner(const codes::Lincode &concatenatedCode, bool printCodes) {
     concatenatedMatrix = M * concatenatedMatrix * P;
     //concatenatedMatrix *= P;
     std::cout << "START separateConcatenatedCodes" << std::endl;
-    P = codes::separateConcatenatedCodes(concatenatedMatrix);
+    //P = codes::separateConcatenatedCodes(concatenatedMatrix);
     std::cout << "END separateConcatenatedCodes" << std::endl;
     //printMatrix(P, printCodes);
     concatenatedMatrix *= P;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
     unsigned long long maxCodeLen = 10;
     unsigned long long minCodeLen = 1;
     if (argc < 2 || argc == 4 || argc == 6) {
-        std::cout << "Input args in format: blocksNum printCodes maxCodeSize"
+        std::cout << "Input args in format: blocksNum printCodes maxCodeSize "
                   << "maxCodeLen minCodeSize minCodeLen" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
         std::cout << "By 1: blocksNum " << printCodes << " " << maxCodeSize << " "
@@ -109,8 +109,8 @@ int main(int argc, char *argv[]) {
     }
 
     std::vector<matrix::Matrix> codesSet = generateRMCodes(blocksNum,
-                                                         maxCodeSize, maxCodeLen,
-                                                         minCodeSize, minCodeLen);
+                                                           maxCodeSize, maxCodeLen,
+                                                           minCodeSize, minCodeLen);
     for (size_t i = 0; i < codesSet.size(); ++i) {
         std::cout << codesSet[i].rows() << " " << codesSet[i].cols() << std::endl;
         if (printCodes) {

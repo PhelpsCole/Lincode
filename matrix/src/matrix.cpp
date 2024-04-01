@@ -58,6 +58,12 @@ void Matrix::operator*=(const Matrix &other) {
     m_data = result;
 }
 
+void Matrix::addRow(unsigned long long rowInd, const std::vector<char> &row) {
+    for (unsigned long long j = 0; j < row.size(); ++j) {
+        at(rowInd, j) ^= row[j];
+    }
+}
+
 
 char& Matrix::at(unsigned long long row, unsigned long long col) {
     return m_data[row * m_cols + col];

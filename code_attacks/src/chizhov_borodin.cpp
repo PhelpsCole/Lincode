@@ -29,6 +29,8 @@ codes::Lincode nodRM(const codes::Lincode &rm, int a, int b) {
         }
         return qrm;
     } else {
+        std::cerr << a << " " << b << std::endl;
+        std::cerr << rm.size() << " " << rm.len() << std::endl;
         throw std::invalid_argument("Incorrect r and m sizes");
     }
 }

@@ -2,6 +2,21 @@
 
 namespace matrix {
 
+void Matrix::copyToSubMatrix(unsigned long long sepRow, unsigned long long sepCol,
+                             const Matrix &other,
+                             unsigned long long sepRow2, unsigned long long sepCol2,
+                             unsigned long long rowSize, unsigned long long colSize) {
+    if (sepRow + rowSize > rows() || sepCol + colSize > cols() ||
+        sepRow2 + rowSize > other.rows() || sepCol2 + colSize > other.cols()) {
+        throw std::invalid_argument("Incorrect matrix sizes");
+    }
+    for (unsigned long long row = 0; row < rowSize; ++row) {
+        for (unsigned long long col = 0; col < colSize; ++col) {
+            at(sepRow + row, sepCol + col) = other.at(sepRow2 + row, sepCol + col);
+        }
+    }
+}
+
 void Matrix::insertRow(unsigned long long row, const std::vector<char> &line, bool replace) {
     if (row > m_rows && m_rows != 0) {
         std::cout << row << " " << m_rows << std::endl;
