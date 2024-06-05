@@ -2,7 +2,7 @@
 #include <set>
 
 // Problem with Cmake linkage
-void testSubblockStructure(size_t r, size_t m, bool permMode) {
+void testSubblockStructure(size_t r, size_t m, bool permMode, bool withHull) {
     std::cout << "STARTS testSubblockStructure" << std::endl;
     codes::RMCode rm(r, m);
     matrix::Matrix rmMatr(rm.toMatrix());
@@ -40,28 +40,29 @@ void testSubblockStructure(size_t r, size_t m, bool permMode) {
     } else {
         subblock = M * subblock;
     }
-/*
-    codes::Lincode hull(subblock);
-    hull.printVisualCode(3);
-    std::cout << "Dual:" << std::endl;
-    hull.dual();
-    hull.printVisualCode(3);
-    hull = subblock;
-    hull = hull.hull();
-    std::cout << "Hull:" << std::endl;
-    hull.printVisualCode(3);
-    hull.basisView();
-    hull.printVisualCode(3);
 
-    size_t power = m / (m - r);
-    std::cout << power << std::endl;
-    //hull = subblock;
-    //hull.dual();
-    hull = hadPower(hull, power);
-    hull.dual();
-    hull.toMatrix().printVisualMatrix(3, true);
+    if (withHull) {
+        codes::Lincode hull(subblock);
+        hull.printVisualCode(3);
+        std::cout << "Dual:" << std::endl;
+        hull.dual();
+        hull.printVisualCode(3);
+        hull = subblock;
+        hull = hull.hull();
+        std::cout << "Hull:" << std::endl;
+        hull.printVisualCode(3);
+        hull.basisView();
+        hull.printVisualCode(3);
+
+        size_t power = m / (m - r);
+        std::cout << power << std::endl;
+        //hull = subblock;
+        //hull.dual();
+        hull = hadPower(hull, power);
+        hull.dual();
+        hull.toMatrix().printVisualMatrix(3, true);
+    }
     return;
-*/
     subblock.gaussElimination();
 
     std::vector<std::vector<unsigned long long>> sets;
@@ -118,12 +119,14 @@ int main(int argc, char *argv[]) {
     size_t iter_num = 1;
     size_t r = 2, m = 7;
     bool permMode = 0;
+    bool withHull = 0;
     if (argc < 3) {
-        std::cout << "Input args in format: r m permMode iter_num" << std::endl;
+        std::cout << "Input args in format: r m permMode withHull iter_num" << std::endl;
         std::cout << "Where permMode=0 is *= P" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
-        std::cout << "By 2: r m " << permMode << " " << iter_num << std::endl;
-        std::cout << "By 3: r m permMode " << iter_num << std::endl;
+        std::cout << "By 2: r m " << permMode << " " << withHull << " " << iter_num << std::endl;
+        std::cout << "By 3: r m permMode " << withHull << " " << iter_num << std::endl;
+        std::cout << "By 4: r m permMode withHull " << iter_num << std::endl;
         return 0;
     } else if (argc == 3) {
         r = std::stoi(argv[1]);
@@ -132,14 +135,20 @@ int main(int argc, char *argv[]) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);
         permMode = std::stoi(argv[3]);
-    } else if (argc >= 5) {
+    } else if (argc == 5) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);
         permMode = std::stoi(argv[3]);
-        iter_num = std::stoi(argv[4]);
+        withHull = std::stoi(argv[4]);
+    } else if (argc >= 6) {
+        r = std::stoi(argv[1]);
+        m = std::stoi(argv[2]);
+        permMode = std::stoi(argv[3]);
+        withHull = std::stoi(argv[4]);
+        iter_num = std::stoi(argv[5]);
     }
     for (size_t i = 0; i < iter_num; ++i) {
-        testSubblockStructure(r, m, permMode);
+        testSubblockStructure(r, m, permMode, withHull);
     }
     return 0;
 }

@@ -88,9 +88,9 @@ std::vector<unsigned long long> generateCols(unsigned long long max, unsigned lo
         unused[ind] = 0;
         res[i] = ind;
     }
-    algorithms::sorts::mergeSort(res, [](const unsigned long long &a,
+    /*algorithms::sorts::mergeSort(res, [](const unsigned long long &a,
                                          const unsigned long long &b)
-                                         { return a <= b; });
+                                         { return a <= b; });*/
     return res;
 }
 

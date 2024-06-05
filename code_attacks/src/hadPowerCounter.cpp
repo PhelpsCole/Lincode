@@ -5,6 +5,9 @@ namespace attackSupporters {
 
 void printVector(const std::vector<unsigned long long> &v, bool withNums = false) {
     for (unsigned long long i = 0; i < v.size(); ++i) {
+        if (i == v.size() / 3 * 2) {
+            std::cout << "| ";
+        }
         if (withNums) {
             std::cout << "[" << i << "]:";
         }
@@ -65,41 +68,99 @@ std::vector<std::vector<char>> minWeightWords(std::vector<std::vector<char>> mat
     return result;
 }
 
+std::vector<unsigned long long>
+generateBlockCols(const matrix::Matrix &modRMMatrix, unsigned long long k2) {
+    unsigned long long endBlock = modRMMatrix.cols() / 3 * 2;
+    std::vector<unsigned long long>
+    cols(algorithms::generateCols(endBlock, modRMMatrix.rows() - k2));
+    std::vector<unsigned long long>
+    cols2(algorithms::generateCols(modRMMatrix.cols() / 3, k2));
+    for (unsigned long long i = 0; i < cols2.size(); ++i) {
+        cols2[i] += endBlock;
+    }
+    cols.insert(cols.end(), cols2.begin(), cols2.end());
+    //printVector(cols);
+    return cols;
+}
 
-std::vector<unsigned long long> hadPowerCounter(const codes::Lincode &modRM,
-                                                unsigned long long k1,
-                                                unsigned long long k2,
-                                                unsigned long long minWeight,
-                                                unsigned long long iterationNumber,
-                                                bool printData) {
+
+std::vector<unsigned long long>
+hadPowerCounter(const codes::Lincode &modRM,
+                unsigned long long iterationNumber,
+                unsigned long long k2,
+                bool hullMode,
+                bool byMinWeight,
+                unsigned long long minWeight,
+                size_t fillingNumber,
+                bool includeDependent) {
     std::vector<unsigned long long> counter(modRM.len());
+    unsigned long long mid;
+    unsigned long long border = modRM.len() / 3 - k2 + 1;
+    unsigned long long wordsNumber = k2;
+    if (hullMode) {
+        border = modRM.len();
+        wordsNumber = modRM.size();
+    }
+    std::cout << border << std::endl;
+    matrix::Matrix modRMMatrix(0, 0);
+    unsigned long long midSum = 0;
+    std::vector<unsigned long long> v;
+    std::vector<unsigned long long> cols;
+    bool notFinding = false;
+    for (size_t i = 0; i < fillingNumber; ) {
+        mid = 0;
+        modRMMatrix = modRM.toMatrix();
+        cols = algorithms::generateCols(modRMMatrix.cols(), modRMMatrix.rows());
+        v = modRMMatrix.gaussElimination(false,  cols);
+        for (unsigned long long i = modRMMatrix.rows() - wordsNumber;
+             i < modRMMatrix.rows(); ++i) {
+            mid += algorithms::hammingWeight(modRMMatrix.row(i));
+        }
+        //std::cout << modRMMatrix.rows() << " " << v.size() << std::endl;
+        //std::cout << mid / wordsNumber << " " << border << std::endl;
+        //std::cout << std::endl;
+        if ((!includeDependent && v.size() < modRMMatrix.rows()) || (mid / wordsNumber) > border) {
+            continue;
+        }
+        //std::cout << "FOUND" << std::endl;
+        ++i;
+        midSum += mid;
+    }
+    border = midSum / (fillingNumber * wordsNumber);
+    std::cout << "New: " << border << std::endl;
     while (iterationNumber--) {
-        if (printData) {
-            printVector(counter);
-            printVector(counter, true);
-        }
-        matrix::Matrix modRMMatrix(modRM.toMatrix());
-
-        /*
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<int> distrib(1, modRMMatrix.cols());
-        matrix::Matrix P = matrix::generateRandomPermutation(modRMMatrix.cols(), distrib(gen));
-        modRMMatrix *= P;
-        codes::attackSupporters::separatingGaussElimination(modRMMatrix, k1, k2);
-        //modRMMatrix.gaussElimination();
-        */
-        while (modRMMatrix.gaussElimination(false,
-                                            algorithms::generateCols(modRMMatrix.cols(),
-                                                                     modRMMatrix.rows())).size()
-               < modRMMatrix.rows()) {
+        do {
+            mid = 0;
             modRMMatrix = modRM.toMatrix();
+            cols = algorithms::generateCols(modRMMatrix.cols(), modRMMatrix.rows());
+            v = modRMMatrix.gaussElimination(false,  cols);
+            for (unsigned long long i = modRMMatrix.rows() - wordsNumber;
+                 i < modRMMatrix.rows(); ++i) {
+                mid += algorithms::hammingWeight(modRMMatrix.row(i));
+            }
+            mid /= wordsNumber;
+        } while ((v.size() < modRMMatrix.rows() && !includeDependent) || mid > border);
+        //std::cout << "After gaussElimination:" << std::endl;
+        //std::cout << mid << std::endl;
+        //modRMMatrix.printVisualMatrix(3, true);
+        /*
+        for (size_t i = 0; i < cols.size(); ++i) {
+            if (i == modRMMatrix.rows() - k2) {
+                std::cout << "|";
+            }
+            std::cout << cols[i] << " ";
         }
-        std::vector<std::vector<char>> codeWords(minWeightWords(modRMMatrix.toVectors(), minWeight, printData));
-        if (codeWords.size() >=2) {
-            modRMMatrix = matrix::Matrix(codeWords);
-            //P.T();
-            //modRMMatrix *= P;
+        std::cout << std::endl;
+        */
+        std::vector<std::vector<char>> codeWords;
+        if (byMinWeight) {
+            codeWords = minWeightWords(modRMMatrix.toVectors(), minWeight, false);
+            std::cout << codeWords.size() << " ";
+        }
+        if (!byMinWeight || codeWords.size() >=2) {
+            if (byMinWeight) {
+                modRMMatrix = matrix::Matrix(codeWords);
+            }
             for (unsigned long long i = 0; i < modRMMatrix.rows() - 1; ++i) {
                 for (unsigned long long j = i + 1; j < modRMMatrix.rows(); ++j) {
                     for (unsigned long long k = 0; k < modRMMatrix.cols(); ++k) {
@@ -109,46 +170,9 @@ std::vector<unsigned long long> hadPowerCounter(const codes::Lincode &modRM,
                     }
                 }
             }
-            //
-            for (unsigned long long i = 0; i < modRMMatrix.rows() - 2; ++i) {
-                for (unsigned long long j = i + 1; j < modRMMatrix.rows() - 1; ++j) {
-                    for (unsigned long long l = j + 1; l < modRMMatrix.rows(); ++l) {
-                        for (unsigned long long k = 0; k < modRMMatrix.cols(); ++k) {
-                            if (modRMMatrix.at(i, k) & modRMMatrix.at(j, k) & modRMMatrix.at(l, k)) {
-                                ++counter[k];
-                            }
-                        }
-                    }
-                }
-            }
         } else {
             ++iterationNumber;
         }
-        /*
-        //P.T();
-        //modRMMatrix *= P;
-        for (unsigned long long i = 0; i < modRMMatrix.rows() - 1; ++i) {
-            for (unsigned long long j = i + 1; j < modRMMatrix.rows(); ++j) {
-                for (unsigned long long k = 0; k < modRMMatrix.cols(); ++k) {
-                    if (modRMMatrix.at(i, k) & modRMMatrix.at(j, k)) {
-                        ++counter[k];
-                    }
-                }
-            }
-        }
-        //
-        for (unsigned long long i = 0; i < modRMMatrix.rows() - 2; ++i) {
-            for (unsigned long long j = i + 1; j < modRMMatrix.rows() - 1; ++j) {
-                for (unsigned long long l = j + 1; l < modRMMatrix.rows(); ++l) {
-                    for (unsigned long long k = 0; k < modRMMatrix.cols(); ++k) {
-                        if (modRMMatrix.at(i, k) & modRMMatrix.at(j, k) & modRMMatrix.at(l, k)) {
-                            ++counter[k];
-                        }
-                    }
-                }
-            }
-        }
-        */
     }
     return counter;
 }

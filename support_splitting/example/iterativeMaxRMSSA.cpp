@@ -6,17 +6,12 @@
 
 enum { PREPROC_SIMPLE_ID = 0 };
 
-void testIterative(size_t r, size_t m, size_t invariantId,
-                   const std::string &filename, size_t cicleStep) {
+size_t testIterative(size_t r, size_t m, size_t invariantId,
+                   const std::string &filename, size_t cicleStep, int permMod) {
     size_t preprocId = PREPROC_SIMPLE_ID;
 
-    auto now = std::chrono::system_clock::now();
-    std::time_t time = std::chrono::system_clock::to_time_t(now);
-    std::cout << "Processing " << filename << "..." << std::endl;
-    std::cout << "Started computation at " << std::ctime(&time) << std::endl;
 
-
-    matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
+    matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m, permMod);
     codes::Lincode pqsigRMcode(pqsigRM);
     codes::Lincode startCode(pqsigRMcode);
     std::vector<int> maxRMVector = codes::maxRMVector(r, m - 2);
@@ -36,29 +31,26 @@ void testIterative(size_t r, size_t m, size_t invariantId,
 
             s = codes::ssaStructure(pqsigRMcode, invariantId, preprocId);
 
-            now = std::chrono::system_clock::now();
-            time = std::chrono::system_clock::to_time_t(now);
-            std::cout << "Completed computation of " << symb << " at " << std::ctime(&time) << std::endl;
-
             if (ssa_test::check_signature(s, m)) {
                 std::string tempFilename = filename + '_' + symb  
                                            + '_' + std::to_string(cicleStep) + "_found.txt";
                 ssa_test::printSSAStructure(s, tempFilename);
-                return;
+                return 1;
             }
         }
     }
     std::string tempFilename = filename + '_' + symb  
                                + '_' + std::to_string(cicleStep) + ".txt";
-    std::string unFoundMatrix = filename + '_' + symb  
-                               + "_matrix" + std::to_string(cicleStep) + ".txt";
-    ssa_test::printSSAStructure(s, tempFilename);
-    startCode.printCode(unFoundMatrix);
+    //std::string unFoundMatrix = filename + '_' + symb  
+    //                           + "_matrix" + std::to_string(cicleStep) + ".txt";
+    //ssa_test::printSSAStructure(s, tempFilename);
+    //startCode.printCode(unFoundMatrix);
+    return 0;
 }
 
 // Doesn't work for 2r >= m-2
 void testMinIterations(size_t r, size_t m, size_t invariantId,
-                   const std::string &filename, size_t cicleStep) {
+                   const std::string &filename, size_t cicleStep, int permMod) {
     size_t preprocId = PREPROC_SIMPLE_ID;
 
     auto now = std::chrono::system_clock::now();
@@ -66,7 +58,7 @@ void testMinIterations(size_t r, size_t m, size_t invariantId,
     std::cout << "Processing " << filename << "..." << std::endl;
     std::cout << "Started computation at " << std::ctime(&time) << std::endl;
 
-    matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
+    matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m, permMod);
     codes::Lincode pqsigRMcode(pqsigRM);
     codes::Lincode startCode(pqsigRMcode);
     pqsigRMcode = pqsigRMcode.hull();
@@ -91,9 +83,9 @@ void testMinIterations(size_t r, size_t m, size_t invariantId,
         }
         ssa_test::printSSAStructure(s, tempFilename);
     }
-    std::string unFoundMatrix = filename + '_' + symb  
-                               + "_matrix" + std::to_string(cicleStep) + ".txt";
-    startCode.printCode(unFoundMatrix);
+    //std::string unFoundMatrix = filename + '_' + symb  
+    //                           + "_matrix" + std::to_string(cicleStep) + ".txt";
+    //startCode.printCode(unFoundMatrix);
 }
 
 std::string nameFile(size_t r, size_t m, std::string invarName,
@@ -111,13 +103,16 @@ int main(int argc, char *argv[]) {
     size_t invarId = 2;
     size_t cicleIter = 1;
     size_t mod = 0;
+    int permMod = 0;
     if (argc <= 2) {
-        std::cout << "Input args in format: r m invarId mod cicleIter" << std::endl;
+        std::cout << "Input args in format: r m invarId permMod mod cicleIter" << std::endl;
+        std::cout << "Where permMod is mode of pqsigRM key generation" << std::endl;
         std::cout << "Where mod=0 -- testIterative, mod=1 -- testMinIterations" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
-        std::cout << "By 2: r m " << invarId << " " << mod << " " << cicleIter << std::endl;
-        std::cout << "By 3: r m " << invarId << " " << mod << " cicleIter" << std::endl;
-        std::cout << "By 4: r m " << invarId << " mod cicleIter" << std::endl;
+        std::cout << "By 2: r m " << invarId << " " << permMod << " " << mod << " " << cicleIter << std::endl;
+        std::cout << "By 3: r m " << invarId << " " << permMod << " " << mod << " cicleIter" << std::endl;
+        std::cout << "By 4: r m " << invarId << " " << permMod << " mod cicleIter" << std::endl;
+        std::cout << "By 5: r m " << invarId << " permMod mod cicleIter" << std::endl;
         return 0;
     } else if (argc == 3) {
         r = std::stoi(argv[1]);
@@ -131,21 +126,34 @@ int main(int argc, char *argv[]) {
         m = std::stoi(argv[2]);
         mod = std::stoi(argv[3]);
         cicleIter = std::stoi(argv[4]);
-    } else if (argc >= 6) {
+    } else if (argc == 6) {
+        r = std::stoi(argv[1]);
+        m = std::stoi(argv[2]);
+        permMod = std::stoi(argv[3]);
+        mod = std::stoi(argv[4]);
+        cicleIter = std::stoi(argv[5]);
+    } else if (argc >= 7) {
         r = std::stoi(argv[1]);
         m = std::stoi(argv[2]);
         invarId = std::stoi(argv[3]);
-        mod = std::stoi(argv[4]);
-        cicleIter = std::stoi(argv[5]);
+        permMod = std::stoi(argv[4]);
+        mod = std::stoi(argv[5]);
+        cicleIter = std::stoi(argv[6]);
     }
+    size_t cnt = 0;
     for(size_t i = 1; i <= cicleIter; ++i) {
         std::string filename = nameFile(r, m, codes::invariants::returnInvarNameById(invarId),
                                         "iterativeMaxRM");
+
+        if (permMod != 0) {
+            filename = "!" + std::to_string(permMod) + "_" + filename;
+        }
         if (mod == 0) {
-            testIterative(r, m, invarId, filename, i);
+            cnt += testIterative(r, m, invarId, filename, i, permMod);
         } else if (mod == 1) {
-            testMinIterations(r, m, invarId, filename, i);
+            testMinIterations(r, m, invarId, filename, i, permMod);
         }
     }
+    std::cout << "(" << r << "," << m << ") " << permMod << ": " << cnt << "/" << cicleIter << std::endl;
     return 0;
 }

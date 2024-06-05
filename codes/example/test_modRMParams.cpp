@@ -2,7 +2,6 @@
 #include "codes.h"
 
 void printCode(const codes::Lincode &c, std::string line, size_t mode) {
-    return;
     std::cout << line << std::endl;
     if (mode == 1) {
         c.printCodeSizes();

@@ -12,6 +12,7 @@ void printSSANStructure(const codes::SSANStructure &s,
                         const std::string &filename);
 
 bool check_signature(const codes::SSAStructure &s, size_t m);
+bool checkSubblockSignature(const codes::SSAStructure &s, size_t m);
 // Need to fix
 bool check_signature(const codes::SSANStructure &s, size_t m);
 

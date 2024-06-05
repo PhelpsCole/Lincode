@@ -33,7 +33,10 @@ matrix::Matrix simplePerm(matrix::Matrix);
 codes::Lincode nodRM(const codes::Lincode &rm, int a, int b);
 
 // Supporters from modRM_attack
-enum { PREPROC_SIMPLE_ID = 0, INVARIANT_SIZE_ID = 2 };
+enum {
+    PREPROC_SIMPLE_ID = 0, INVARIANT_SIZE_ID = 2,
+    PREPROC_DUAL_ID = 1,
+};
 std::vector<unsigned long long> findingBlockColumns(codes::Lincode,
                                                     size_t r, size_t m,
                                                     bool returnMax = false,
@@ -58,24 +61,34 @@ splittingToClassesByWords(const std::vector<std::vector<unsigned long long>> &mi
                           std::map<unsigned long long, size_t> &interCnt,
                           unsigned long long minWeight);
 
-std::vector<unsigned long long> hadPowerCounter(const codes::Lincode &modRM,
-                                                unsigned long long k1,
-                                                unsigned long long k2,
-                                                unsigned long long minWeight,
-                                                unsigned long long iterationNumber,
-                                                bool printData = true);
+std::vector<unsigned long long>
+hadPowerCounter(const codes::Lincode &modRM,
+                unsigned long long iterationNumber,
+                unsigned long long k2,
+                bool hullMode = false,
+                bool byMinWeight = false,
+                unsigned long long minWeight = 0,
+                size_t fillingNumber = 100,
+                bool includeDependent = false);
+
+std::vector<std::vector<unsigned long long>> 
+findingCounter(const codes::Lincode &modRM,
+               unsigned long long minWeight,
+               unsigned long long iterationNumber,
+               bool printData = true);
+
 std::vector<std::vector<unsigned long long>>
-hadPowerCounterTwice(const codes::Lincode &modRM,
-                     unsigned long long k1,
-                     unsigned long long k2,
-                     unsigned long long minWeight,
-                     unsigned long long iterationNumber,
-                     bool printData = true);
+secSeparatorByStat(const codes::Lincode &modRM,
+                   unsigned long long minWeight,
+                   unsigned long long iterationNumber,
+                   bool printData = true);
 std::vector<unsigned long long>
 hadPowerCounterSelectors(const codes::Lincode &modRM,
                          unsigned long long iterationNumber,
                          bool printData = true);
 
+bool testSSASubblocks(const matrix::Matrix &pqsigRMSubblock,
+                      size_t r, size_t m, size_t cicleStep=0);
 } //namespace attackSupporters
 
 matrix::Matrix minder_shokrollahi(codes::Lincode rm);

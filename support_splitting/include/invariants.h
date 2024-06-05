@@ -17,6 +17,7 @@ std::string invariantWeight(const codes::Lincode &code,
 std::string invariantWeightBasis(const codes::Lincode &code,
                                  const std::vector<unsigned long long> &columns);
 
+void preprocDual(codes::Lincode &);
 void preprocHull(codes::Lincode &);
 void preprocHadPower(codes::Lincode &);
 void preprocHadPowerHull(codes::Lincode &);

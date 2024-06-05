@@ -5,9 +5,10 @@ add_library(code_attacks STATIC chizhov_borodin.cpp
                                 concatenateRM_attack.cpp
                                 separate_RM_blocks.cpp
                                 hadPowerCounter.cpp
-                                hadPowerCounterTwice.cpp
                                 hadPowerCounterSelectors.cpp
-                                separateConcatenatedCodes.cpp)
+                                secSeparatorByStat.cpp
+                                separateConcatenatedCodes.cpp
+                                testSSASubblocks.cpp)
 
 target_include_directories(code_attacks PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(matrix PUBLIC ${CMAKE_SOURCE_DIR}/matrix/include)

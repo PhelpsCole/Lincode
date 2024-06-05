@@ -14,6 +14,7 @@ public:
     Lincode(const Lincode &, bool check_basis = false);
     Lincode(const matrix::Matrix &, bool check_basis = false);
     Lincode(std::string &,  char tabs = '\0', char sep = '\n', bool check_basis = false);
+    Lincode &operator=(const Lincode &) = default;
 
     unsigned long long size() const;
     unsigned long long len() const;

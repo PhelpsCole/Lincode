@@ -101,8 +101,8 @@ int main(int argc, char *argv[]) {
         std::cout << "Ended generating keys at " << std::ctime(&time) << std::endl;
     }
     P = testRunner(codes::Lincode(G), mode, countSigmas, modRM_remover);
-    if (modRM_remover && !codes::isEquivalent(pqsigRMcode, G*P)
-        || !modRM_remover && !codes::isEquivalent(pqsigRMcode, P)) {
+    if ((modRM_remover && !codes::isEquivalent(pqsigRMcode, G*P))
+        || (!modRM_remover && !codes::isEquivalent(pqsigRMcode, P))) {
         std::cout << "Same basises" << std::endl;
     } else {
         std::cout << "Basises are not the same" << std::endl;

@@ -4,6 +4,9 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
+// Strange moment that it needed for iota
+#include <random>
+
 
 namespace algorithms {
 // Template sorts, which returns vector of permutations

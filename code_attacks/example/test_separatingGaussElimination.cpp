@@ -1,49 +1,6 @@
 #include "code_attacks.h"
 #include "algorithms.h"
 
-matrix::Matrix matrixGenerator(size_t r, size_t m, size_t permMode) {
-    std::cout << "START matrixGenerator" << std::endl;
-    codes::RMCode rm(r, m);
-    matrix::Matrix rmMatr(rm.toMatrix());
-    matrix::Matrix zero(rmMatr.rows(), rmMatr.cols());
-    matrix::Matrix subblock(rmMatr);
-    matrix::Matrix row2(zero);
-    subblock.concatenateByRows(zero);
-    // (r,m)|0|(r,m)
-    subblock.concatenateByRows(rmMatr);
-    row2.concatenateByRows(rmMatr);
-    // 0|(r,m)|(r,m)
-    row2.concatenateByRows(rmMatr);
-    subblock.concatenateByColumns(row2);
-
-    rm = codes::RMCode(r - 1, m);
-    rmMatr = rm.toMatrix();
-    zero = matrix::Matrix(rmMatr.rows(), 2 * rmMatr.cols());
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> distrib(1, rmMatr.cols());
-    matrix::Matrix P = matrix::generateRandomPermutation(rmMatr.cols(), distrib(gen));
-
-    rmMatr = rmMatr * P;
-
-    // 0|0|(r-1,m)
-    zero.concatenateByRows(rmMatr);
-    subblock.concatenateByColumns(zero);
-
-    matrix::Matrix M = matrix::generateRandomNonSingular(subblock.rows(), subblock.rows());
-    std::uniform_int_distribution<int> distrib2(1, subblock.cols());
-    P = matrix::generateRandomPermutation(subblock.cols(), distrib2(gen));
-    if (!permMode) {
-        subblock = M * subblock * P;
-    } else {
-        subblock = M * subblock;
-    }
-
-    std::cout << "END matrixGenerator" << std::endl;
-    return subblock;
-}
-
 void printVector(const std::vector<unsigned long long> &v) {
     for (size_t i = 0; i < v.size(); ++i) {
         std::cout << v[i] << " ";
@@ -170,7 +127,7 @@ int main(int argc, char *argv[]) {
     size_t iterNum = 1;
     if (argc < 3) {
         std::cout << "Input args in format: r m permMode mode iterNum" << std::endl;
-        std::cout << "Where permMode=0 -- *= P and permMode=1 --default" << std::endl;
+        std::cout << "Where permMode=1 -- *= P and permMode=0 --default" << std::endl;
         std::cout << "Where mode=1 -- print visual, mode=0 -- print sizes" << std::endl;
         std::cout << "Shortcuts:" << std::endl;
         std::cout << "By 2: r m " << permMode << " " << mode << " " << iterNum << std::endl;
@@ -197,7 +154,7 @@ int main(int argc, char *argv[]) {
         iterNum = std::stoi(argv[5]);
     }
     for (size_t i = 0; i < iterNum; ++i) {
-        testRunner(matrixGenerator(r, m, permMode),
+        testRunner(codes::pqsigRMSubblockGenerator(r, m, permMode),
                    codes::codeSizeFromRM(r, m), codes::codeSizeFromRM(r - 1, m), 1 << (m - (r - 1)), mode);
     }
     return 0;

@@ -42,14 +42,16 @@ void runPreproc(codes::Lincode &c, size_t id) {
     case 0:
         return;
     case 1:
-        return preprocHull(c);
+        return preprocDual(c);
     case 2:
-        return preprocHadPower(c);
+        return preprocHull(c);
     case 3:
-        return preprocHadPowerHull(c);
+        return preprocHadPower(c);
     case 4:
-        return preprocMaxRMSubMatrPqsigRM(c);
+        return preprocHadPowerHull(c);
     case 5:
+        return preprocMaxRMSubMatrPqsigRM(c);
+    case 6:
         return preprocMultDual(c);
     }
 }
@@ -59,14 +61,16 @@ std::string returnPreprocNameById(size_t id) {
     case 0:
         return "No preproc";
     case 1:
-        return "preprocHull";
+        return "preprocDual";
     case 2:
-        return "preprocHadPower";
+        return "preprocHull";
     case 3:
-        return "preprocHadPowerHull";
+        return "preprocHadPower";
     case 4:
-        return "preprocMaxRMSubMatrPqsigRM";
+        return "preprocHadPowerHull";
     case 5:
+        return "preprocMaxRMSubMatrPqsigRM";
+    case 6:
         return "preprocMultDual";
     }
     return "No preproc";
@@ -181,6 +185,10 @@ std::string invariantWeightBasis(const codes::Lincode &code,
     return codes::invariants::support::
            invariantConvecterSendrier(code, columns,
                                       codes::invariants::support::invariantWeightSupporter);
+}
+
+void preprocDual(codes::Lincode &c) {
+    c.dual();
 }
 
 void preprocHull(codes::Lincode &c) {
