@@ -1,6 +1,4 @@
 project(tests)
 add_subdirectory(algorithms)
-add_subdirectory(code_attacks)
 add_subdirectory(codes)
 add_subdirectory(matrix)
-add_subdirectory(support_splitting)

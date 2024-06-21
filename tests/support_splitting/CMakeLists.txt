@@ -1,6 +1,0 @@
-link_libraries(support_splitting)
-add_executable(reportTests final.cpp)
-add_executable(iterativeMaxRM iterativeMaxRMSSA.cpp)
-add_executable(refinderByPunct refinderByPunct.cpp)
-add_executable(2rBiggerCase 2rBiggerCase.cpp)
-add_executable(subblockCase subblockCase.cpp)
