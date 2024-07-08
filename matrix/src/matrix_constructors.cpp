@@ -70,4 +70,7 @@ Matrix::Matrix(std::string &str,  char tabs, char sep) {
     m_data.resize(m_cols * m_rows);
 }
 
+Matrix::Matrix(const Matrix &M)
+    : m_rows(M.m_rows), m_cols(M.m_cols), m_data(M.m_data) {};
+
 } // namespace matrix
