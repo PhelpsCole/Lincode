@@ -24,7 +24,7 @@ public:
     Matrix(const std::vector<char> &vec, bool isTransposed = false);
     Matrix(unsigned long long rows, unsigned long long cols, std::string &str);
     Matrix(std::string &str, char tabs = '\0', char sep='\n');
-    Matrix(const Matrix &) = default;
+    Matrix(const Matrix &);
     ~Matrix() = default;
 
     Matrix &operator=(const Matrix &) = default;
