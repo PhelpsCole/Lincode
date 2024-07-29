@@ -21,7 +21,7 @@ void elemDeleter(std::vector<size_t> &, const std::vector<size_t> &);
 void addToBinVector(std::vector<char> &v, size_t n);
 void addToBinWeightVector(std::pair<std::vector<char>, unsigned long long> &v, size_t n);
 bool isIntersected(const std::vector<unsigned long long> &a,
-				   const std::vector<unsigned long long> &b);
+                   const std::vector<unsigned long long> &b);
 std::vector<std::vector<unsigned long long>>
 classSplitter(const std::vector<std::vector<char>> &vv,
               const std::vector<unsigned long long> &start_class = {});

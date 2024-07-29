@@ -138,16 +138,12 @@ bool isEquivalent(Lincode c1, Lincode c2) {
 }
 
 Lincode mcEliece(const Lincode &gCode) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    
     unsigned long long k = gCode.size();
     unsigned long long n = gCode.len();
     matrix::Matrix m(gCode.toMatrix());
     matrix::Matrix M = matrix::generateRandomNonSingular(k, k);
 
-    std::uniform_int_distribution<int> distrib(1, n);
-    matrix::Matrix P = matrix::generateRandomPermutation(n, distrib(gen));
+    matrix::Matrix P = permutation::generateRandomPermutation(n).matrix();
     matrix::Matrix res = M * m * P;
     return Lincode(res);
 }

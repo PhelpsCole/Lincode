@@ -1,5 +1,6 @@
 #include "codes.h"
 #include "encoder.h"
+#include "permutation.h"
 
 bool counter(const matrix::Matrix &M, size_t m) {
     std::vector<char> vals(M.cols() / 2);
@@ -87,7 +88,7 @@ bool generator(size_t r, size_t m, int p = 0) {
     } else if (p == -1) {
         p = size;
     }
-    B = B * matrix::generateRandomPermutation(size, p);
+    B = B * permutation::generateRandomPermutationOfP(size, p).matrix();
 
     matrix::Matrix C = codes::RMCode(r-1, m).toMatrix();
 

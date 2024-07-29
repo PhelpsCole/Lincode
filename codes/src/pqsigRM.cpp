@@ -31,8 +31,8 @@ matrix::Matrix pqsigRMGenerator(size_t r, size_t m, int p) {
         p2 = p;
     }
     //std::cout << "p1 = " << p1 << ", p2 = " << p2 << std::endl;
-    A = A * matrix::generateRandomPermutation(size, p1);
-    C = C * matrix::generateRandomPermutation(size, p2);
+    A = A * permutation::generateRandomPermutationOfP(size, p1).matrix();
+    C = C * permutation::generateRandomPermutationOfP(size, p2).matrix();
     matrix::Matrix part1 = A;
     part1.concatenateByRows(A);
     part1.concatenateByRows(part1); // A^s|A^s|A^s|A^s
@@ -83,9 +83,8 @@ matrix::Matrix pqsigRMSubblockGenerator(size_t r, size_t m, bool permMode) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> distrib(1, rmMatr.cols());
-    matrix::Matrix P = matrix::generateRandomPermutation(rmMatr.cols(), distrib(gen));
 
-    rmMatr = rmMatr * P;
+    rmMatr = rmMatr * permutation::generateRandomPermutationOfP(rmMatr.cols(), distrib(gen)).matrix();
 
     // 0|0|(r-1,m)
     zero.concatenateByRows(rmMatr);
@@ -94,8 +93,7 @@ matrix::Matrix pqsigRMSubblockGenerator(size_t r, size_t m, bool permMode) {
     matrix::Matrix M = matrix::generateRandomNonSingular(subblock.rows(), subblock.rows());
     std::uniform_int_distribution<int> distrib2(1, subblock.cols());
     if (permMode) {
-        P = matrix::generateRandomPermutation(subblock.cols(), distrib2(gen));
-        subblock = M * subblock * P;
+        subblock = M * subblock * permutation::generateRandomPermutationOfP(subblock.cols(), distrib2(gen)).matrix();
     } else {
         subblock = M * subblock;
     }
@@ -110,7 +108,7 @@ matrix::Matrix pqsigRMMcEliece(size_t r, size_t m) {
     std::mt19937 gen(rd());
 
     std::uniform_int_distribution<int> distrib(1, n);
-    matrix::Matrix P = matrix::generateRandomPermutation(n, distrib(gen));
+    matrix::Matrix P = permutation::generateRandomPermutationOfP(n, distrib(gen)).matrix();
     return matrix::generateRandomNonSingular(G.rows(), G.rows()) * G * P;
 }
 

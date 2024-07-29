@@ -1,4 +1,5 @@
 #include "code_attacks.h"
+#include "permutation.h"
 
 namespace codes {
 namespace attackSupporters {
@@ -250,7 +251,9 @@ matrix::Matrix simplePerm(matrix::Matrix trivialRMMatrix) {
     std::vector<std::vector<char>> vv(a.toVectors());
     std::vector<unsigned long long> permVec = algorithms::sorts::
                                               mergeSort(vv, comparator);
-    return matrix::permFromVector(permVec, true);
+    a = permutation::Permutation(permVec).matrix();
+    a.T();
+    return a;
 }
 
 // Return sigma^-1 by RM(r,m)^sigma

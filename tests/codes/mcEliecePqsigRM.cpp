@@ -1,4 +1,5 @@
 #include "pqsigRM.h"
+#include "permutation.h"
 
 int main(void) {
 	std::random_device rd;
@@ -16,7 +17,7 @@ int main(void) {
     matrix::Matrix M = matrix::generateRandomNonSingular(k, k);
 
     std::uniform_int_distribution<int> distrib(1, n);
-    matrix::Matrix P = matrix::generateRandomPermutation(n, distrib(gen));
+    matrix::Matrix P = permutation::generateRandomPermutationOfP(n, distrib(gen)).matrix();
 
     std::cout << "M: " << std::endl;
     M.printMatrix();

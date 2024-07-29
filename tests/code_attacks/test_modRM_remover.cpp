@@ -1,4 +1,5 @@
 #include "code_attacks.h"
+#include "permutation.h"
 #include <chrono>
 #include <ctime>
 
@@ -89,10 +90,7 @@ int main(int argc, char *argv[]) {
     matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
     codes::Lincode pqsigRMcode(pqsigRM);
     
-    std::uniform_int_distribution<int> distrib(1, pqsigRMcode.len());
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    matrix::Matrix P = matrix::generateRandomPermutation(pqsigRMcode.len(), distrib(gen));
+    matrix::Matrix P = permutation::generateRandomPermutation(pqsigRMcode.len()).matrix();
 
     matrix::Matrix G(pqsigRMcode.toMatrix() * P);
     {

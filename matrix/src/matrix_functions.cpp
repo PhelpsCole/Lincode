@@ -24,34 +24,6 @@ Matrix generateRandomNonSingular(unsigned long long rows, unsigned long long col
     return m;
 }
 
-// Ineffective algorithm of finding equiv perms
-Matrix generateRandomPermutation(unsigned long long n, unsigned long long p) {
-    std::vector<std::vector<char>> vv;
-    for (unsigned long long i = 0; i < n; ++i) {
-        std::vector<char> tmp(n);
-        tmp[i] = 1;
-        vv.push_back(tmp);
-    }
-    std::random_device rd;  // a seed source for the random number engine
-    std::mt19937 gen(rd()); // mersenne_twister_engine seeded with rd()
-    std::uniform_int_distribution<unsigned long long> distrib(0, n - 1);
-    unsigned long long k, l;
-    std::vector<std::pair<unsigned long long, unsigned long long>> dups;
-    for (unsigned long long i = 0; i < p; ++i) {
-
-        do {
-            k = distrib(gen);
-            do {
-                l = distrib(gen);
-            } while (k == l);
-        } while (std::find(dups.begin(), dups.end(), std::make_pair(k, l)) != dups.end());
-        dups.push_back(std::make_pair(k, l));
-        dups.push_back(std::make_pair(l, k));
-
-        iter_swap(vv.begin() + k, vv.begin() + l);
-    }
-    return Matrix(vv);
-}
 
 Matrix diag(unsigned long long n, char elem) {
     Matrix D(n, n);
@@ -215,18 +187,6 @@ Matrix matrFromFile(const std::string& filename, char col_sep, char row_sep) {
     }
 }
 
-// {0, 1, 2, 3, 4} -> {0, 1, 2, 3, 4}, p*M
-Matrix permFromVector(const std::vector<unsigned long long> &v, bool transpose) {
-    Matrix perm(v.size(), v.size());
-    for (unsigned long long i = 0; i < v.size(); ++i) {
-        if (transpose) {
-            perm.at(v[i], i) = 1;
-        } else {
-            perm.at(i, v[i]) = 1;
-        }
-    }
-    return perm;
-}
 bool isEqual(const Matrix &m1, const Matrix &m2) {
     if (m1.cols() != m2.cols() || m1.rows() != m2.rows()) {
         return false;

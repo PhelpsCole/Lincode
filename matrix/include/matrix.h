@@ -78,8 +78,6 @@ private:
 
 Matrix generateRandomMatrix(unsigned long long rows, unsigned long long cols);
 Matrix generateRandomNonSingular(unsigned long long rows, unsigned long long cols);
-Matrix generateRandomPermutation(unsigned long long n, unsigned long long p);
-Matrix permFromVector(const std::vector<unsigned long long> &, bool transpose = false);
 Matrix diag(unsigned long long n, char elem);
 Matrix blockDiag(unsigned long long blocksNum, const Matrix &);
 Matrix blockDiag(const std::vector<matrix::Matrix> &);

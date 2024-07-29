@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "sorts.h"
 #include "codes.h"
+#include "permutation.h"
 #include "encoder.h"
 #include "support_splitting.h"
 

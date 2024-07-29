@@ -51,10 +51,7 @@ void printMatrix(const matrix::Matrix &matrix, bool printCodes) {
 
 void testRunner(const codes::Lincode &concatenatedCode, bool printCodes) {
     printCode(concatenatedCode, printCodes);
-    std::uniform_int_distribution<int> distrib(1, concatenatedCode.len());
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    matrix::Matrix P = matrix::generateRandomPermutation(concatenatedCode.len(), distrib(gen));
+    matrix::Matrix P = permutation::generateRandomPermutation(concatenatedCode.len()).matrix();
     matrix::Matrix M = matrix::generateRandomNonSingular(concatenatedCode.size(), concatenatedCode.size());
 
     matrix::Matrix concatenatedMatrix(concatenatedCode.toMatrix());

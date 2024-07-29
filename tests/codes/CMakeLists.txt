@@ -1,5 +1,6 @@
 link_libraries(codes)
-link_libraries(support_splitting)
+link_libraries(permutation)
+#link_libraries(support_splitting)
 if (BUILD_TEST)
 	add_executable(test_rm test_rm.cpp)
 	add_executable(test_pqsigRM test_pqsigRM.cpp)
