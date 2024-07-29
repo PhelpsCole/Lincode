@@ -3,6 +3,7 @@
 
 #include <random>
 #include "rm_code.h"
+#include "permutation.h"
 
 namespace codes {
 

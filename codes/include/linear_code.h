@@ -3,6 +3,7 @@
 
 #include "matrix.h"
 #include "algorithms.h"
+#include "permutation.h"
 
 namespace codes {
 

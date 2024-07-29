@@ -1,4 +1,5 @@
 #include "codes.h"
+#include "permutation.h"
 #include <set>
 
 // Problem with Cmake linkage
@@ -21,22 +22,15 @@ void testSubblockStructure(size_t r, size_t m, bool permMode, bool withHull) {
     rmMatr = rm.toMatrix();
     zero = matrix::Matrix(rmMatr.rows(), 2 * rmMatr.cols());
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> distrib(1, rmMatr.cols());
-    matrix::Matrix P = matrix::generateRandomPermutation(rmMatr.cols(), distrib(gen));
-
-    rmMatr = rmMatr * P;
+    rmMatr = rmMatr * permutation::generateRandomPermutation(rmMatr.cols()).matrix();
 
     // 0|0|(r-1,m)
     zero.concatenateByRows(rmMatr);
     subblock.concatenateByColumns(zero);
 
     matrix::Matrix M = matrix::generateRandomNonSingular(subblock.rows(), subblock.rows());
-    std::uniform_int_distribution<int> distrib2(1, subblock.cols());
-    P = matrix::generateRandomPermutation(subblock.cols(), distrib2(gen));
     if (!permMode) {
-        subblock = M * subblock * P;
+        subblock = M * subblock * permutation::generateRandomPermutation(subblock.cols()).matrix();
     } else {
         subblock = M * subblock;
     }

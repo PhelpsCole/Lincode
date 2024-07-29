@@ -110,9 +110,7 @@ void testMultiplyByVector(matrix::Matrix &m, std::vector<char> &v) {
     }
 }
 
-void testGenerators(unsigned long long rows, unsigned long long cols,
-                    unsigned long long n, size_t p,
-                    std::vector<unsigned long long> v) {
+void testGenerators(unsigned long long rows, unsigned long long cols) {
     std::cout << "STARTS testGenerators" << std::endl;
     matrix::Matrix m = matrix::generateRandomMatrix(rows, cols);
     std::cout << "Random matrix:" << std::endl;
@@ -120,6 +118,7 @@ void testGenerators(unsigned long long rows, unsigned long long cols,
     m = matrix::generateRandomNonSingular(rows, cols);
     std::cout << "Random Non-Singular matrix:" << std::endl;
     m.printMatrix();
+    /*
     std::cout << "Permutation matrix of " << p << " perms and "
               << n << " size:" << std::endl;
     m = matrix::generateRandomPermutation(n, p);
@@ -131,6 +130,7 @@ void testGenerators(unsigned long long rows, unsigned long long cols,
     std::cout << "}" << std::endl;
     m = matrix::permFromVector(v);
     m.printMatrix();
+    */
 }
 
 void testComplexOperations(matrix::Matrix &matrix) {
@@ -193,7 +193,7 @@ int main() {
     matrix::Matrix m2(str);
     matrix::Matrix m3(code2);
     testMatrixSimpleOperations(m1, 2, 3);
-    testGenerators(5, 5, 5, 2, {0, 6, 3, 1, 4, 5, 2});
+    testGenerators(5, 5);
     testMultiplyByVector(m3, vec2);
     testComplexOperations(m2);
     testSolution(m1, {1, 0, 1, 1});

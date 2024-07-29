@@ -12,5 +12,6 @@ add_compile_options( -W  -Wall      -pedantic       -fstack-protector-all
 option(BUILD_TEST "Build the unit tests" OFF)
 add_subdirectory(algorithms)
 add_subdirectory(matrix)
+add_subdirectory(permutation)
 add_subdirectory(codes)
 add_subdirectory(tests)
