@@ -1,7 +1,0 @@
-link_libraries(algorithms matrix)
-if (BUILD_TEST)
-	add_executable(test_func test_func.cpp)
-	add_executable(test_sorts test_sorts.cpp)
-	add_executable(test_classSplitter test_classSplitter.cpp)
-	add_executable(test_combinationsOfSeparatingSets test_combinationsOfSeparatingSets.cpp)
-endif()
