@@ -16,3 +16,6 @@ add_executable(test_chizhov_borodin test_chizhov_borodin.cpp)
 add_executable(test_modRM_remover test_modRM_remover.cpp)
 #[add_executable(test_modRM_attack test_modRM_attack.cpp)]#
 add_executable(test_separateConcatenatedCodes test_separateConcatenatedCodes.cpp)
+add_executable(pqsigRM_separation_attack pqsigRM_separation_attack.cpp)
+add_executable(pqsigRM_separation_experiments pqsigRM_separation_experiments.cpp)
+add_executable(test_lastStep test_lastStep.cpp)

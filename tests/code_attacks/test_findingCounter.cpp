@@ -139,13 +139,9 @@ int main(int argc, char *argv[]) {
         minWeight = 1 << (m - r + 2);
         matrix::Matrix pqsigRM = codes::pqsigRMGenerator(r, m);
 
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<int> distrib(1, pqsigRM.cols());
-
         matrix::Matrix M = matrix::generateRandomNonSingular(pqsigRM.rows(), pqsigRM.rows());
         if (permMode) {
-            matrix::Matrix P = matrix::generateRandomPermutation(pqsigRM.cols(), distrib(gen));
+            matrix::Matrix P = permutation::generateRandomPermutation(pqsigRM.cols()).matrix();
             pqsigRM = M * pqsigRM * P;
         } else {
             pqsigRM = M * pqsigRM;
