@@ -42,16 +42,20 @@ void wordFinder(const matrix::Matrix &A, unsigned long long minWeight) {
         //std::cout << algorithms::hammingWeight(firstPart) << " ";
         if (algorithms::hammingWeight(firstPart) == minWeight) {
             //std::cout << "(";
-            for (unsigned long long j = 0; j < firstPart.size(); ++j) {
+            unsigned long long j = 0;
+            /*
+            for (; j < firstPart.size(); ++j) {
                 std::cout << (int) firstPart[j];// << ", ";
             }
-            //std::cout << "), (";
+            //std::cout << (int) firstPart[j] << "), (";
             std::cout << " ";
-            unsigned long long j = 0;
-            for (; j < secondPart.size() - 1; ++j) {
-                std::cout << (int) secondPart[j];// << ", ";
+            j = 0;
+            */
+            for (; j < secondPart.size(); ++j) {
+                std::cout << (int) secondPart[j] ;//<< ", ";
             }
-            std::cout << (int) secondPart[j] << " " << algorithms::hammingWeight(secondPart) << std::endl;
+            //std::cout << (int) secondPart[j] << ")";
+            std::cout /*<< " " << algorithms::hammingWeight(secondPart)*/ << std::endl;
             //decodeSearch(secondPart, );
         }
     }

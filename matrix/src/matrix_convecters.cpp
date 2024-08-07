@@ -55,7 +55,7 @@ void Matrix::insertRow(unsigned long long row, const std::vector<char> &line, bo
 
 // Functions insert row in triangle matrix with saving it's triangle form.
 // If row is linear independent with matrix. Matrix doesn't changed 
-void Matrix::insertTriangle(std::vector<char> row) {
+void Matrix::insertTriangle(std::vector<char> &row) {
     if (m_rows == 0 && m_cols == 0) {
         m_rows = 1;
         m_cols = row.size();

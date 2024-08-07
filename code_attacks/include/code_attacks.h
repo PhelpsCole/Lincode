@@ -13,10 +13,6 @@
 namespace codes {
 namespace attackSupporters {
 
-struct ExtractBlockResult {
-    matrix::Matrix block;
-    matrix::Matrix sigmaP;
-};
 typedef std::pair<std::vector<std::pair<std::vector<unsigned long long>,
                                         std::vector<unsigned long long>>>,
                  unsigned long long> combinationStepType;
@@ -42,12 +38,10 @@ std::vector<unsigned long long> findingBlockColumns(codes::Lincode,
                                                     size_t r, size_t m,
                                                     bool returnMax = false,
                                                     bool testRun = false);
-ExtractBlockResult extractFirstBlock(const matrix::Matrix &,
-                                     bool findSigma = true,
+matrix::Matrix extractFirstBlock(const matrix::Matrix &,
                                      unsigned long long blockRowsSize = 0);
-ExtractBlockResult extractLastBlock(const matrix::Matrix &,
-                                    bool findSigma = true,
-                                    unsigned long long blockRowsSize = 0);
+matrix::Matrix extractLastBlock(const matrix::Matrix &,
+                                unsigned long long blockRowsSize = 0);
 
 // Supporters from separate_RM_blocks
 std::vector<std::vector<unsigned long long>>

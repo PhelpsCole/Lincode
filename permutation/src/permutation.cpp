@@ -44,10 +44,30 @@ void Permutation::_setVector() {
 }
 
 void Permutation::_clearMatrix() {
-    for (unsigned long long i = 0; i < _matr.rows(); ++i) {
-        for (unsigned long long j = 0; j < _matr.cols(); ++j) {
-            _matr.at(i, j) = 0;
+    if (_definedMatrix) {
+        for (unsigned long long i = 0; i < _matr.rows(); ++i) {
+            for (unsigned long long j = 0; j < _matr.cols(); ++j) {
+                _matr.at(i, j) = 0;
+            }
         }
+        _definedMatrix = false;
+    }
+}
+
+Permutation Permutation::operator+(const Permutation &other) const {
+    std::vector<unsigned long long> res(_vec);
+    res.resize(_len + other._len);
+    for (unsigned long long i = 0; i < other._vec.size(); ++i) {
+        res[i + _len] = other._vec[i] + _len;
+    }
+    return res;
+
+}
+void Permutation::operator+=(const Permutation &other) {
+    _clearMatrix();
+    _vec.resize(_len + other._len);
+    for (unsigned long long i = 0; i < other._vec.size(); ++i) {
+        _vec[i + _len] = other._vec[i] + _len;
     }
 }
 
@@ -63,7 +83,6 @@ Permutation Permutation::operator*(const Permutation &other) const {
 
 }
 void Permutation::operator*=(const Permutation &other) {
-    _definedMatrix = false;
     _clearMatrix();
     if (_len != other._len) {
         throw std::invalid_argument("Bad vector sizes.");
@@ -75,7 +94,6 @@ void Permutation::operator*=(const Permutation &other) {
     _vec = tmp;
 }
 void Permutation::reverse() {
-    _definedMatrix = false;
     _clearMatrix();
     std::vector<unsigned long long> tmp(_len);
     for (unsigned long long i = 0; i < _len; ++i) {
@@ -83,6 +101,15 @@ void Permutation::reverse() {
     }
     _vec = tmp;
 
+}
+void Permutation::permute(unsigned long long i, unsigned long long j) {
+    _clearMatrix();
+    if (i >= _len || j >= _len) {
+        throw std::invalid_argument("Bad indexes.");
+    }
+    unsigned long long tmp = _vec[i];
+    _vec[i] = _vec[j];
+    _vec[j] = tmp;
 }
 void Permutation::permute(std::vector<unsigned long long> &inp) const {
     if (_len != inp.size()) {
