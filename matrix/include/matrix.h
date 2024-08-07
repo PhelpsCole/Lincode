@@ -57,7 +57,7 @@ public:
                          const Matrix &other, unsigned long long sepRow2, unsigned long long sepCol2,
                          unsigned long long rowSize, unsigned long long colSize);
     void insertRow(unsigned long long, const std::vector<char> &, bool replace = false);
-    void insertTriangle(std::vector<char>);
+    void insertTriangle(std::vector<char> &);
     void T();
     std::vector<unsigned long long> gaussElimination(bool = false, const std::vector<unsigned long long> & = {});
     void echelon(std::vector<unsigned long long> = {});

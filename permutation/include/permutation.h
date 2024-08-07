@@ -16,9 +16,12 @@ public:
     ~Permutation() = default;
 
     Permutation &operator=(const Permutation &) = default;
+    Permutation operator+(const Permutation &other) const; //concatenation
+    void operator+=(const Permutation &other);
     Permutation operator*(const Permutation &other) const;
     void operator*=(const Permutation &other);
     void reverse();
+    void permute(unsigned long long i, unsigned long long j);
     void permute(std::vector<unsigned long long> &inp) const;
     void permute(matrix::Matrix &matr); // M * P
 
@@ -36,6 +39,7 @@ private:
     matrix::Matrix _matr;
 };
 
+//Permutation removePerm(std::vector<unsigned long long> before, std::vector<unsigned long long> after);
 Permutation generateRandomPermutation(unsigned long long size);
 Permutation generateRandomPermutationOfP(unsigned long long size, unsigned long long p);
 
